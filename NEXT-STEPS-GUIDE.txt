@@ -1,0 +1,194 @@
+================================================================================
+NEXT STEPS - Complete Your Email Campaign Automation
+================================================================================
+
+CURRENT STATUS: ✅ Email 2 Scenario Working Perfectly!
+================================================================================
+
+STEP 1: Add Schedule Trigger to Email 2 (5 minutes)
+---------------------------------------------------
+
+1. Go to Make.com
+2. Open "Email 2 - Reminder" scenario
+3. Click on Scenario Settings (gear icon)
+4. Add Trigger: Schedule
+5. Set to: Every day at 9:00 AM (or your preferred time)
+6. Save
+
+This will automatically run daily and send Email 2 to eligible leads.
+
+================================================================================
+STEP 2: Create Email 3 Scenario - Final Call (30 minutes)
+-----------------------------------------------------------
+
+Create a new scenario: "Email 3 - Final Call"
+
+STRUCTURE (Same as Email 2):
+----------------------------
+
+Module 1: Date/Time → Set Variable
+- Variable name: fourDaysAgo
+- Value: {{addDays(now; -4)}}
+
+Module 2: Google Sheets → Search Rows
+- Filter 1: Status (E) = "Email 2 Sent"
+- Filter 2: Email 2 Date (H) < {{fourDaysAgo}}
+- Field Type: date
+
+Module 3: Router
+- Route 1: English leads (Language = "en")
+- Route 2: Arabic leads (Language = "ar")
+
+Route 1 (English):
+- Module 4: Resend → Send Email (English Final Call template)
+- Module 5: Google Sheets → Update Row
+  - Status → "Campaign Complete"
+  - Email 3 Date (I) → {{now}}
+
+Route 2 (Arabic):
+- Module 6: Resend → Send Email (Arabic Final Call template)
+- Module 7: Google Sheets → Update Row
+  - Status → "Campaign Complete"
+  - Email 3 Date (I) → {{now}}
+
+EMAIL TEMPLATES:
+---------------
+Use the Final Call templates from: all-email-templates.html
+- English: Email 3 - Final Call
+- Arabic: Email 3 - Final Call (Arabic)
+
+SUBJECT LINES:
+-------------
+- English: "⏰ Final Call - UAE Property Expo Starts Soon!"
+- Arabic: "⏰ النداء الأخير - معرض عقارات الإمارات يبدأ قريباً!"
+
+================================================================================
+STEP 3: Test Email 3 Scenario (10 minutes)
+-------------------------------------------
+
+1. Add a test lead or reset existing lead:
+   - Status: "Email 2 Sent"
+   - Email 2 Date: 5+ days ago (older than 4 days)
+   - Language: "en" or "ar"
+
+2. Run Email 3 scenario manually
+3. Verify:
+   ☐ Email 3 received
+   ☐ Correct language
+   ☐ Image loads
+   ☐ Google Sheets: Status = "Campaign Complete"
+   ☐ Google Sheets: Email 3 Date populated
+
+================================================================================
+STEP 4: Add Schedule Trigger to Email 3 (5 minutes)
+-----------------------------------------------------
+
+1. Open "Email 3 - Final Call" scenario
+2. Add Schedule trigger: Every day at 9:00 AM
+3. Save
+
+================================================================================
+STEP 5: Test Complete Flow End-to-End (15 minutes)
+---------------------------------------------------
+
+Test the entire sequence:
+
+1. Add new test lead:
+   - Status: "New"
+   - Language: "en" or "ar"
+
+2. Run Email 1 scenario → Verify Email 1 sent
+
+3. Wait or manually update:
+   - Status: "Email 1 Sent"
+   - Email 1 Date: 4 days ago
+
+4. Run Email 2 scenario → Verify Email 2 sent
+
+5. Wait or manually update:
+   - Status: "Email 2 Sent"
+   - Email 2 Date: 5 days ago
+
+6. Run Email 3 scenario → Verify Email 3 sent
+
+7. Verify final status: "Campaign Complete"
+
+================================================================================
+STEP 6: Production Checklist (10 minutes)
+------------------------------------------
+
+Before going live:
+
+☐ Email 1 scenario tested and scheduled
+☐ Email 2 scenario tested and scheduled ✅
+☐ Email 3 scenario tested and scheduled
+☐ All three scenarios run daily at 9:00 AM
+☐ Tested with real email addresses
+☐ Verified images load in all emails
+☐ Checked spam folders
+☐ Verified Google Sheets updates correctly
+☐ Tested both languages (EN and AR)
+☐ No duplicate emails sent
+
+================================================================================
+STEP 7: Monitor and Maintain
+-----------------------------
+
+After going live:
+
+1. Monitor execution logs daily
+2. Check for any errors
+3. Verify emails are being sent
+4. Check Google Sheets for correct status updates
+5. Monitor email delivery rates
+
+================================================================================
+QUICK REFERENCE: Scenario Structure
+================================================================================
+
+EMAIL 1 (Invitation):
+- Trigger: Google Sheets → Watch New Row
+- Filter: Status = "New"
+- Send Email 1
+- Update: Status = "Email 1 Sent", Email 1 Date = {{now}}
+
+EMAIL 2 (Reminder): ✅ COMPLETE
+- Trigger: Schedule (Daily 9:00 AM)
+- Filter: Status = "Email 1 Sent", Email 1 Date < 3 days ago
+- Send Email 2
+- Update: Status = "Email 2 Sent", Email 2 Date = {{now}}
+
+EMAIL 3 (Final Call): ⏳ NEXT
+- Trigger: Schedule (Daily 9:00 AM)
+- Filter: Status = "Email 2 Sent", Email 2 Date < 4 days ago
+- Send Email 3
+- Update: Status = "Campaign Complete", Email 3 Date = {{now}}
+
+================================================================================
+PRIORITY ORDER
+================================================================================
+
+1. ⚡ URGENT: Add Schedule to Email 2 (5 min)
+2. ⚡ URGENT: Create Email 3 Scenario (30 min)
+3. ⚡ URGENT: Test Email 3 (10 min)
+4. ⚡ URGENT: Add Schedule to Email 3 (5 min)
+5. 📋 IMPORTANT: Test Complete Flow (15 min)
+6. 📋 IMPORTANT: Production Checklist (10 min)
+
+Total time: ~75 minutes to complete everything!
+
+================================================================================
+NEED HELP?
+================================================================================
+
+If you need help creating Email 3 scenario:
+- Use Email 2 as a template
+- Change filters to look for "Email 2 Sent"
+- Change date filter to 4 days (not 3)
+- Use Final Call email templates
+- Update Status to "Campaign Complete"
+
+All email templates are in: all-email-templates.html
+
+================================================================================
+
