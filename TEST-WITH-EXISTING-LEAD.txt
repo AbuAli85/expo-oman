@@ -1,0 +1,143 @@
+================================================================================
+TEST EMAIL 2 WITH EXISTING LEAD
+================================================================================
+
+YOUR LEAD DATA:
+---------------
+Name: Fahad Alamri
+Email: chairman@falconeyegroup.net
+Language: ar (lowercase) ✅
+Status: Email 1 Sent ✅
+Email 1 Date: 2025-11-24T12:47:31.395Z (Nov 24, 2025)
+
+================================================================================
+OPTION 1: QUICK TEST - Change Date Filter Temporarily (Recommended)
+================================================================================
+
+To test Email 2 immediately without changing the lead data:
+
+1. Open "Email 2 - Reminder" scenario in Make.com
+2. Go to Module 1 (Google Sheets Filter Rows)
+3. Find the date filter (Email 1 Date)
+4. Temporarily change from:
+   {{addDays(now; -3)}}
+   
+   To:
+   {{addDays(now; -1)}}  (1 day instead of 3 days)
+   
+   OR even shorter:
+   {{addHours(now; -1)}}  (1 hour instead of 3 days)
+
+5. Save the scenario
+6. Run "Email 2 - Reminder" scenario manually
+7. It should find this lead and send Email 2
+8. After testing, change filter back to {{addDays(now; -3)}}
+
+================================================================================
+OPTION 2: Change Lead Date Manually
+================================================================================
+
+To test with the current filter (3 days):
+
+1. Open Google Sheets
+2. Find the row for Fahad Alamri
+3. Change Email 1 Date to: 4 days ago
+   - If today is Dec 4, change to Nov 30
+   - Or any date that's at least 3 days old
+4. Save Google Sheets
+5. Run "Email 2 - Reminder" scenario manually
+6. It should find this lead and send Email 2
+
+================================================================================
+WHAT TO CHECK
+================================================================================
+
+After running Email 2 scenario:
+
+☐ Email 2 sent to: chairman@falconeyegroup.net
+☐ Email is in Arabic (RTL formatting)
+☐ Image loads: https://i.imgur.com/r0drplC.jpeg
+☐ Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+☐ Google Sheets updated:
+   - Status changed to: "Email 2 Sent"
+   - Email 2 Date populated with current timestamp
+
+================================================================================
+IF EMAIL 2 DOESN'T SEND
+================================================================================
+
+Check these:
+
+1. Router Filter:
+   - Route 2 should check: Language = "ar" (lowercase)
+   - Your lead has "ar" ✅ - should match!
+
+2. Date Filter:
+   - If using Option 1 (short delay): Should work immediately
+   - If using Option 2 (old date): Make sure date is 3+ days old
+
+3. Email Address:
+   - Verify: chairman@falconeyegroup.net is correct
+   - Check spam folder
+
+4. Resend Connection:
+   - Make sure Resend is connected
+   - Check if there are any API errors
+
+================================================================================
+AFTER EMAIL 2 WORKS - TEST EMAIL 3
+================================================================================
+
+Once Email 2 is sent successfully:
+
+1. The lead should now have:
+   - Status: "Email 2 Sent"
+   - Email 2 Date: (today's timestamp)
+
+2. To test Email 3 immediately:
+   - Option A: Change Email 3 filter to short delay (1 hour)
+   - Option B: Manually change Email 2 Date to 5 days ago
+
+3. Run "Email 3 - Final Call" scenario
+4. Verify Email 3 is sent
+
+================================================================================
+COMPLETE TEST SEQUENCE
+================================================================================
+
+With your existing lead (Fahad Alamri):
+
+TEST 1: Email 2
+--------------
+1. Temporarily change Email 2 filter to: {{addHours(now; -1)}}
+2. Run Email 2 scenario
+3. Verify email sent to chairman@falconeyegroup.net
+4. Check Google Sheets: Status = "Email 2 Sent"
+
+TEST 2: Email 3
+--------------
+1. Temporarily change Email 3 filter to: {{addHours(now; -1)}}
+2. Run Email 3 scenario
+3. Verify email sent
+4. Check Google Sheets: Status = "Campaign Complete"
+
+TEST 3: Restore Production Settings
+-----------------------------------
+1. Change Email 2 filter back to: {{addDays(now; -3)}}
+2. Change Email 3 filter back to: {{addDays(now; -4)}}
+3. Set schedules to run daily
+
+================================================================================
+QUICK COMMANDS FOR TESTING
+================================================================================
+
+To test Email 2 right now:
+1. Change filter: {{addHours(now; -1)}}
+2. Run scenario manually
+3. Check email inbox
+4. Verify Google Sheets update
+
+Total time: 2 minutes!
+
+================================================================================
+

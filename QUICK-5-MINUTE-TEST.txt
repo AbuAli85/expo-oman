@@ -1,0 +1,161 @@
+================================================================================
+QUICK 5-MINUTE TEST - Complete Email Campaign
+================================================================================
+
+Test the entire system (Email 1 → Email 2 → Email 3) in 5 minutes!
+
+================================================================================
+STEP-BY-STEP TEST (5 Minutes Total)
+================================================================================
+
+MINUTE 1: Setup Test Lead
+--------------------------
+1. Open Google Sheets
+2. Add new row:
+   - Name: Test User
+   - Email: YOUR-EMAIL@example.com (use your real email!)
+   - Phone: +968 12345678
+   - Language: EN (or AR - must match your router filter!)
+   - Status: New (or leave empty)
+   - Leave Email 1/2/3 Date columns empty
+
+MINUTE 2: Test Email 1
+-----------------------
+1. Go to Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click "Run once" (manual execution)
+4. Check your email inbox
+5. Verify:
+   ☐ Email 1 received ✅
+   ☐ Image loads correctly ✅
+   ☐ Check Google Sheets: Status = "Email 1 Sent" ✅
+   ☐ Check Google Sheets: Email 1 Date = today ✅
+
+MINUTE 3: Prepare for Email 2
+-------------------------------
+1. Go back to Google Sheets
+2. Find your test row
+3. Manually change:
+   - Email 1 Date: Set to 4 days ago
+     (Example: If today is Dec 4, set to Nov 30)
+   - Status: Already "Email 1 Sent" (should be set)
+
+MINUTE 4: Test Email 2
+-----------------------
+1. Go to Make.com
+2. Open "Email 2 - Reminder" scenario
+3. Click "Run once" (manual execution)
+4. Check your email inbox
+5. Verify:
+   ☐ Email 2 received ✅
+   ☐ Image loads correctly ✅
+   ☐ Check Google Sheets: Status = "Email 2 Sent" ✅
+   ☐ Check Google Sheets: Email 2 Date = today ✅
+
+MINUTE 5: Test Email 3
+-----------------------
+1. Go back to Google Sheets
+2. Manually change:
+   - Email 2 Date: Set to 5 days ago
+     (Example: If today is Dec 4, set to Nov 29)
+   - Status: Already "Email 2 Sent" (should be set)
+
+2. Go to Make.com
+3. Open "Email 3 - Final Call" scenario
+4. Click "Run once" (manual execution)
+5. Check your email inbox
+6. Verify:
+   ☐ Email 3 received ✅
+   ☐ Image loads correctly ✅
+   ☐ Check Google Sheets: Status = "Campaign Complete" ✅
+   ☐ Check Google Sheets: Email 3 Date = today ✅
+
+================================================================================
+ALTERNATIVE: Use Short Delays (No Manual Date Changes)
+================================================================================
+
+If you don't want to manually change dates:
+
+1. Temporarily modify Email 2 filter:
+   Change: {{addDays(now; -3)}}
+   To: {{addMinutes(now; -5)}}
+   
+2. Temporarily modify Email 3 filter:
+   Change: {{addDays(now; -4)}}
+   To: {{addMinutes(now; -5)}}
+
+3. Test:
+   - Run Email 1 → Wait 5 minutes → Run Email 2 → Wait 5 minutes → Run Email 3
+
+4. After testing, change filters back to days!
+
+================================================================================
+TESTING BOTH LANGUAGES
+================================================================================
+
+Repeat the test with:
+- One lead: Language = "EN" (or "en" - match your filter!)
+- Another lead: Language = "AR" (or "ar" - match your filter!)
+
+Verify each gets the correct language email.
+
+================================================================================
+WHAT TO CHECK IN EACH EMAIL
+================================================================================
+
+Email 1 (Invitation):
+☐ Subject: "You're Invited! UAE Property Expo – Muscat" (EN)
+   OR "أنت مدعو! لمعرض عقارات الإمارات – مسقط" (AR)
+☐ Image loads: https://i.imgur.com/9GWYlQI.jpeg (EN)
+   OR https://i.imgur.com/r0drplC.jpeg (AR)
+☐ Contact info: sales@thesmartpro.io
+☐ Website: www.thesmartpro.io
+☐ CTA button: "Link Coming Soon" (EN) or "الرابط قريباً" (AR)
+
+Email 2 (Reminder):
+☐ Subject: "Reminder: Don't Miss UAE Property Expo – Muscat" (EN)
+   OR "تذكير: لا تفوت معرض عقارات الإمارات – مسقط" (AR)
+☐ Image loads correctly
+☐ Content matches reminder template
+
+Email 3 (Final Call):
+☐ Subject: "⏰ Final Call - UAE Property Expo Starts Soon!" (EN)
+   OR "⏰ النداء الأخير - معرض عقارات الإمارات يبدأ قريباً!" (AR)
+☐ Image loads correctly
+☐ Content matches final call template
+
+================================================================================
+COMMON TESTING ISSUES
+================================================================================
+
+Issue: Email not found by filter
+→ Check date format in Google Sheets
+→ Verify date is actually old enough (4+ days for Email 2, 5+ days for Email 3)
+
+Issue: Wrong language email
+→ Check Language column value matches router filter exactly (case-sensitive!)
+
+Issue: Images not loading
+→ Test Imgur URLs in browser first
+→ Verify URLs are correct in email templates
+
+Issue: Google Sheets not updating
+→ Check row number mapping
+→ Verify column indices are correct
+
+================================================================================
+AFTER TESTING - RESTORE PRODUCTION SETTINGS
+================================================================================
+
+If you changed date filters for testing:
+
+Email 2 scenario:
+- Change back to: {{addDays(now; -3)}}
+
+Email 3 scenario:
+- Change back to: {{addDays(now; -4)}}
+
+Set schedules to run daily (not hourly).
+
+================================================================================
+

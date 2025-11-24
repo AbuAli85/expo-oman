@@ -1,0 +1,106 @@
+================================================================================
+FINAL SOLUTION: Date Filter Workaround
+================================================================================
+
+PROBLEM:
+--------
+Make.com keeps saving the date as hardcoded: "2025-11-21T13:43:32.928Z"
+Even when you enter {{addDays(now; -3)}}, it evaluates and saves the result.
+
+This won't work because:
+- It only works until Nov 21, 2025
+- After that, it stops finding leads
+- It's not dynamic
+
+================================================================================
+SOLUTION: Use Date/Time Module First
+================================================================================
+
+Since Make.com won't keep the expression dynamic in the filter, calculate it separately:
+
+STEP 1: Add Date/Time Module
+-----------------------------
+1. Add a NEW module BEFORE your Google Sheets Filter Rows module
+2. Module type: Date/Time → Set Variable
+3. Variable name: threeDaysAgo
+4. Value: {{addDays(now; -3)}}
+5. Save
+
+STEP 2: Update Filter to Use Variable
+--------------------------------------
+1. Open Module 1 (Google Sheets Filter Rows) - now it's Module 2
+2. Find Filter 2 (Email 1 Date)
+3. Delete the hardcoded date: "2025-11-21T13:43:32.928Z"
+4. Click expression button
+5. Enter: {{threeDaysAgo}} (reference the variable from Step 1)
+6. Save
+
+This way, the date is calculated dynamically each time the scenario runs!
+
+================================================================================
+ALTERNATIVE: Remove Date Filter for Testing
+================================================================================
+
+If you want to test the rest of the scenario first:
+
+1. Remove Filter 2 (date filter) completely
+2. Keep only Filter 1: Status = "Email 1 Sent"
+3. This will find ALL leads with that status
+4. Test that emails send and Google Sheets updates work
+5. Add date filtering back later using the Date/Time module method
+
+================================================================================
+YOUR CURRENT SITUATION
+================================================================================
+
+Your filter shows:
+- Date: "2025-11-21T13:43:32.928Z" (hardcoded)
+- Your lead's Email 1 Date: 2025-11-20T12:47:31.395Z (Nov 20)
+
+Since Nov 20 < Nov 21, it SHOULD match right now.
+But after Nov 21 passes, it won't work anymore!
+
+That's why you need the dynamic solution.
+
+================================================================================
+STEP-BY-STEP IMPLEMENTATION
+================================================================================
+
+1. Add Date/Time → Set Variable module
+   - Name: threeDaysAgo
+   - Value: {{addDays(now; -3)}}
+
+2. Update Google Sheets filter
+   - Filter 2 value: {{threeDaysAgo}}
+   - Operator: time:less (keep as is)
+   - Field Type: date (keep as is)
+
+3. Save and test
+
+4. The date will now be calculated fresh each time!
+
+================================================================================
+FOR PRODUCTION
+================================================================================
+
+Once this works:
+
+1. The date will always be "3 days ago" from whenever the scenario runs
+2. It will work every day automatically
+3. No need to manually update dates
+4. Add Schedule trigger: Run daily at 9:00 AM
+
+================================================================================
+TESTING
+================================================================================
+
+After implementing:
+
+1. Run scenario manually
+2. Check execution log
+3. The threeDaysAgo variable should show today's date minus 3 days
+4. The filter should find leads with Email 1 Date older than that
+5. Emails should send correctly
+
+================================================================================
+

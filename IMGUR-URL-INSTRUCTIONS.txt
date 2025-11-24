@@ -1,0 +1,109 @@
+================================================================================
+HOW TO GET DIRECT IMAGE URLs FROM IMGUR ALBUM
+================================================================================
+
+Your Imgur Album: https://imgur.com/a/joDJmyU
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS
+================================================================================
+
+STEP 1: Open Your Album
+------------------------
+1. Go to: https://imgur.com/a/joDJmyU
+2. You should see your images in the album
+
+STEP 2: Get Direct Image URL for English Poster
+------------------------------------------------
+1. Click on the English poster image (the one for English emails)
+2. The image will open in full view
+3. Right-click on the image
+4. Select "Copy image address" or "Copy image link"
+   OR
+   Look at the browser address bar - it will show something like:
+   https://i.imgur.com/XXXXX.jpeg
+   
+5. Copy this URL (it should start with https://i.imgur.com/)
+
+STEP 3: Get Direct Image URL for Arabic Poster
+------------------------------------------------
+1. Go back to the album
+2. Click on the Arabic poster image
+3. Right-click → "Copy image address"
+4. Copy the direct URL
+
+STEP 4: Update Email Templates
+------------------------------
+1. Open all-email-templates.html
+2. Use Find & Replace (Ctrl+H):
+
+   For English Images:
+   Find: mnt/data/WhatsApp Image 2025-11-22 at 8.21.03 PM.jpeg
+   Replace: [PASTE_YOUR_ENGLISH_IMGUR_URL_HERE]
+   
+   For Arabic Images:
+   Find: mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg
+   Replace: [PASTE_YOUR_ARABIC_IMGUR_URL_HERE]
+
+3. Click "Replace All" for each
+4. Save the file
+
+================================================================================
+WHAT THE URLs SHOULD LOOK LIKE
+================================================================================
+
+Direct Imgur image URLs typically look like:
+- https://i.imgur.com/abc123.jpeg
+- https://i.imgur.com/xyz789.jpg
+- https://i.imgur.com/def456.png
+
+NOT like:
+- https://imgur.com/a/joDJmyU (this is the album, not the image)
+- https://imgur.com/gallery/... (this is a gallery link)
+
+The direct image URL must:
+✅ Start with https://i.imgur.com/
+✅ End with .jpeg, .jpg, or .png
+✅ Be accessible when pasted directly in browser
+
+================================================================================
+QUICK TEST
+================================================================================
+
+After getting the URLs:
+1. Paste the URL in your browser address bar
+2. Press Enter
+3. The image should load directly (not the album page)
+4. If it works → Use this URL in your email templates
+5. If it doesn't → You need the direct image URL, not the album link
+
+================================================================================
+ALTERNATIVE: Get Direct Links from Album Page
+================================================================================
+
+If right-click doesn't work:
+1. Open the album: https://imgur.com/a/joDJmyU
+2. Click on an image to view it full size
+3. Look at the browser's address bar
+4. The URL should change to show the direct image link
+5. Copy that URL
+
+OR
+
+1. Hover over the image in the album
+2. Look for a "..." menu or download icon
+3. Select "Get share links" or "Copy link"
+4. Choose "Direct link" option
+
+================================================================================
+AFTER UPDATING TEMPLATES
+================================================================================
+
+1. Verify all image src start with https://
+2. Search for "mnt/data" - should find nothing
+3. Test by opening HTML in browser
+4. Send test email to yourself
+5. Images should now appear in emails!
+
+================================================================================
+

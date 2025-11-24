@@ -1,0 +1,63 @@
+================================================================================
+IMAGE PATH FIX - IMPORTANT
+================================================================================
+
+The image paths have been updated to use RELATIVE paths so they work locally.
+
+CURRENT FILE STRUCTURE:
+- English poster: images/uae-property-expo-english-poster.jpg.jpeg
+- Arabic poster: mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg
+
+UPDATED PATHS:
+✓ Landing Page (index.html):
+  - English: images/uae-property-expo-english-poster.jpg.jpeg
+  - Arabic: mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg
+
+✓ Email Templates (all-email-templates.html):
+  - English: images/uae-property-expo-english-poster.jpg.jpeg
+  - Arabic: mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg
+
+================================================================================
+FOR EMAIL SENDING (IMPORTANT!)
+================================================================================
+
+⚠️ For actual email sending, images MUST be hosted online (URLs), not local files!
+
+You have two options:
+
+OPTION 1: Host images on your website
+1. Upload both images to: www.thesmartpro.io/images/
+2. Update email templates to use:
+   - https://www.thesmartpro.io/images/uae-property-expo-english-poster.jpg.jpeg
+   - https://www.thesmartpro.io/images/WhatsApp-Image-2025-11-22-at-8.22.49-PM.jpeg
+
+OPTION 2: Use image hosting service
+- Upload to Imgur, Cloudinary, or similar
+- Get direct image URLs
+- Replace paths in email templates
+
+================================================================================
+MISSING ENGLISH POSTER?
+================================================================================
+
+If you have the English poster with the original name:
+"WhatApp Image 2025-11-22 at 8.21.03 PM.jpeg"
+
+You can:
+1. Place it in: mnt/data/WhatsApp Image 2025-11-22 at 8.21.03 PM.jpeg
+2. Or rename the existing file in images/ folder to match
+
+================================================================================
+TESTING
+================================================================================
+
+To test locally:
+1. Open index.html in a web browser
+2. Images should now load correctly
+
+For emails:
+- Test by opening the HTML email templates in a browser
+- For actual sending, use hosted image URLs
+
+================================================================================
+

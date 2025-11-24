@@ -1,0 +1,258 @@
+================================================================================
+MAKE.COM AUTOMATION REVIEW
+UAE Property Expo Email Campaign
+================================================================================
+
+CURRENT STATUS: ✅ Partially Configured
+================================================================================
+
+✅ WHAT YOU HAVE SET UP CORRECTLY:
+-------------------------------------------------------------------------------
+
+1. ✅ Google Sheets Trigger
+   - Watching "leads" sheet
+   - Correct columns: Name, Email, Phone, Language, Status, etc.
+   - Limit: 1 (processes one row at a time)
+
+2. ✅ Router for Language Detection
+   - Routes based on Language column (D)
+   - Route 1: English emails
+   - Route 2: Arabic emails
+
+3. ✅ Email 1 - Invitation (ENGLISH)
+   - Using Resend email service ✅
+   - From: sales@thesmartpro.io ✅
+   - Subject: "You're Invited! UAE Property Expo – Muscat" ✅
+   - HTML template embedded ✅
+   - Image URL: https://i.imgur.com/9GWYlQI.jpeg ✅
+
+4. ✅ Email 1 - Invitation (ARABIC)
+   - Using Resend email service ✅
+   - From: sales@thesmartpro.io ✅
+   - Subject: "أنت مدعو! لمعرض عقارات الإمارات – مسقط" ✅
+   - HTML template embedded ✅
+   - Image URL: https://i.imgur.com/r0drplC.jpeg ✅
+   - RTL formatting correct ✅
+
+================================================================================
+❌ WHAT'S MISSING (Complete the Sequence)
+================================================================================
+
+You currently only have Email 1 (Invitation). You need to add:
+
+1. ❌ Google Sheets Update - Mark Email 1 Sent
+   - Update Status column (E) to "Email 1 Sent"
+   - Update Email 1 Date column (G) with current timestamp
+
+2. ❌ Wait Module - 3 Days
+   - Wait 3 days after Email 1 is sent
+
+3. ❌ Router - Check Language (for Email 2)
+   - Route to English or Arabic Reminder email
+
+4. ❌ Email 2 - Reminder (ENGLISH)
+   - Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+   - Use Reminder email template
+
+5. ❌ Email 2 - Reminder (ARABIC)
+   - Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+   - Use Arabic Reminder email template
+
+6. ❌ Google Sheets Update - Mark Email 2 Sent
+   - Update Status to "Email 2 Sent"
+   - Update Email 2 Date column (H)
+
+7. ❌ Wait Module - 4 Days
+   - Wait 4 days after Email 2
+
+8. ❌ Router - Check Language (for Email 3)
+   - Route to English or Arabic Final Call email
+
+9. ❌ Email 3 - Final Call (ENGLISH)
+   - Subject: "⏰ Final Call - UAE Property Expo Starts Soon!"
+   - Use Final Call email template
+
+10. ❌ Email 3 - Final Call (ARABIC)
+    - Subject: "⏰ النداء الأخير - معرض عقارات الإمارات يبدأ قريباً!"
+    - Use Arabic Final Call email template
+
+11. ❌ Google Sheets Update - Mark Campaign Complete
+    - Update Status to "Campaign Complete"
+    - Update Email 3 Date column (I)
+
+================================================================================
+COMPLETE WORKFLOW STRUCTURE
+================================================================================
+
+Module 1: Google Sheets - Watch Rows
+    ↓
+Module 2: Router (Check Language)
+    ├─→ Route 1 (EN): Email 1 English
+    └─→ Route 2 (AR): Email 1 Arabic
+    ↓
+Module 3: Google Sheets - Update Row (Email 1 Sent)
+    ↓
+Module 4: Wait - 3 Days
+    ↓
+Module 5: Router (Check Language)
+    ├─→ Route 1 (EN): Email 2 English Reminder
+    └─→ Route 2 (AR): Email 2 Arabic Reminder
+    ↓
+Module 6: Google Sheets - Update Row (Email 2 Sent)
+    ↓
+Module 7: Wait - 4 Days
+    ↓
+Module 8: Router (Check Language)
+    ├─→ Route 1 (EN): Email 3 English Final Call
+    └─→ Route 2 (AR): Email 3 Arabic Final Call
+    ↓
+Module 9: Google Sheets - Update Row (Campaign Complete)
+
+================================================================================
+NEXT STEPS TO COMPLETE YOUR AUTOMATION
+================================================================================
+
+STEP 1: Add Google Sheets Update After Email 1
+------------------------------------------------
+1. After your Email 1 modules (both routes)
+2. Add: Google Sheets → Update a Row
+3. Configure:
+   - Spreadsheet: Same as trigger
+   - Sheet: "leads"
+   - Row: {{1.__ROW_NUMBER__}}
+   - Update columns:
+     * Status (E): "Email 1 Sent"
+     * Email 1 Date (G): {{now}}
+
+STEP 2: Add Wait Module
+------------------------
+1. After Google Sheets update
+2. Add: Flow Control → Sleep
+3. Duration: 3 days
+
+STEP 3: Add Email 2 Modules
+----------------------------
+1. Add Router (same as Email 1 router)
+2. Route 1: Add Resend → Send Email (English Reminder)
+   - Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+   - HTML: Copy from all-email-templates.html (English Email 2)
+3. Route 2: Add Resend → Send Email (Arabic Reminder)
+   - Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+   - HTML: Copy from all-email-templates.html (Arabic Email 2)
+
+STEP 4: Add Google Sheets Update After Email 2
+------------------------------------------------
+1. Update Status to "Email 2 Sent"
+2. Update Email 2 Date (H): {{now}}
+
+STEP 5: Add Wait Module (4 Days)
+---------------------------------
+1. Flow Control → Sleep
+2. Duration: 4 days
+
+STEP 6: Add Email 3 Modules
+----------------------------
+1. Add Router
+2. Route 1: English Final Call email
+   - Subject: "⏰ Final Call - UAE Property Expo Starts Soon!"
+   - HTML: Copy from all-email-templates.html (English Email 3)
+3. Route 2: Arabic Final Call email
+   - Subject: "⏰ النداء الأخير - معرض عقارات الإمارات يبدأ قريباً!"
+   - HTML: Copy from all-email-templates.html (Arabic Email 3)
+
+STEP 7: Add Final Google Sheets Update
+---------------------------------------
+1. Update Status to "Campaign Complete"
+2. Update Email 3 Date (I): {{now}}
+
+================================================================================
+EMAIL TEMPLATES TO COPY
+================================================================================
+
+All email templates are in: all-email-templates.html
+
+Find these sections:
+- English Email 2: Lines ~98-172 (Reminder)
+- English Email 3: Lines ~174-244 (Final Call)
+- Arabic Email 2: Lines ~319-393 (Reminder)
+- Arabic Email 3: Lines ~395-465 (Final Call)
+
+Copy the HTML content (between <!DOCTYPE html> and </html>) and paste into
+the "html" field in your Resend email modules.
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+1. ✅ Your Email 1 templates are PERFECT - images are correctly hosted on Imgur
+2. ✅ Language routing is working correctly
+3. ⚠️ Make sure to use the same image URLs in Email 2 and Email 3:
+   - English: https://i.imgur.com/9GWYlQI.jpeg
+   - Arabic: https://i.imgur.com/r0drplC.jpeg
+
+4. ⚠️ For the Wait modules, Make.com will pause the scenario execution.
+   This means the scenario will "sleep" and resume after the wait period.
+
+5. ⚠️ Make sure your Google Sheets has the correct column structure:
+   A: Name
+   B: Email
+   C: Phone
+   D: Language (must be "EN" or "AR")
+   E: Status
+   F: Date Added
+   G: Email 1 Date
+   H: Email 2 Date
+   I: Email 3 Date
+   J: Notes
+
+================================================================================
+TESTING RECOMMENDATIONS
+================================================================================
+
+1. Test with ONE lead first:
+   - Add a test row to your Google Sheets
+   - Set Language to "EN" or "AR"
+   - Watch the scenario execute
+   - Verify Email 1 is sent
+   - Wait 3 days (or reduce wait time for testing)
+   - Verify Email 2 is sent
+   - Wait 4 days (or reduce for testing)
+   - Verify Email 3 is sent
+
+2. Check Google Sheets:
+   - Verify Status column updates correctly
+   - Verify date columns are populated
+
+3. Test both languages:
+   - Test with Language = "EN"
+   - Test with Language = "AR"
+   - Verify correct email template is sent
+
+================================================================================
+QUICK REFERENCE: EMAIL SUBJECTS
+================================================================================
+
+ENGLISH:
+- Email 1: "You're Invited! UAE Property Expo – Muscat"
+- Email 2: "Reminder: Don't Miss UAE Property Expo – Muscat"
+- Email 3: "⏰ Final Call - UAE Property Expo Starts Soon!"
+
+ARABIC:
+- Email 1: "أنت مدعو! لمعرض عقارات الإمارات – مسقط"
+- Email 2: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+- Email 3: "⏰ النداء الأخير - معرض عقارات الإمارات يبدأ قريباً!"
+
+================================================================================
+YOUR AUTOMATION IS 30% COMPLETE
+================================================================================
+
+✅ Email 1 (Invitation) - DONE
+❌ Email 2 (Reminder) - TODO
+❌ Email 3 (Final Call) - TODO
+❌ Wait modules - TODO
+❌ Google Sheets updates - TODO
+
+Follow the steps above to complete your automation!
+
+================================================================================
+

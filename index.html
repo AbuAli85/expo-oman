@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAE Property Expo – Muscat | 26-27 December 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #D4AF37;
+            --red: #C40021;
+            --black: #000000;
+            --white: #FFFFFF;
+            --blue: #1E4168;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--black);
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            width: 100%;
+            position: relative;
+            margin-bottom: 60px;
+        }
+
+        .hero img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Section Styling */
+        .section {
+            background: var(--white);
+            padding: 60px 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            color: var(--blue);
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+            padding-bottom: 15px;
+        }
+
+        .section-content {
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        /* Event Details Box */
+        .event-details {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--black) 100%);
+            color: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px auto;
+            max-width: 800px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .event-details h3 {
+            color: var(--gold);
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .event-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .event-detail-item {
+            text-align: center;
+        }
+
+        .event-detail-item strong {
+            color: var(--gold);
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        /* Why Attend Section */
+        .why-attend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .benefit-card {
+            background: var(--white);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .benefit-card h4 {
+            color: var(--blue);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .benefit-card p {
+            color: #666;
+        }
+
+        /* Contact Section */
+        .contact-info {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            margin: 40px auto;
+            max-width: 800px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .contact-item {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--red);
+        }
+
+        .contact-item strong {
+            color: var(--blue);
+            display: block;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .contact-item a {
+            color: var(--red);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: block;
+            width: 300px;
+            margin: 40px auto;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, var(--red) 0%, #a0001a 100%);
+            color: var(--white);
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(196, 0, 33, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(196, 0, 33, 0.6);
+        }
+
+        /* Divider */
+        .divider {
+            height: 4px;
+            background: linear-gradient(to right, var(--gold), var(--red), var(--blue));
+            margin: 60px 0;
+            border-radius: 2px;
+        }
+
+        /* Arabic Section (RTL) */
+        .arabic-section {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Segoe UI', 'Arial', 'Tahoma', sans-serif;
+        }
+
+        .arabic-section .section-title {
+            text-align: center;
+        }
+
+        .arabic-section .event-details-grid,
+        .arabic-section .why-attend,
+        .arabic-section .contact-grid {
+            direction: rtl;
+        }
+
+        .arabic-section .benefit-card,
+        .arabic-section .contact-item {
+            text-align: center;
+        }
+
+        /* Organizers Section */
+        .organizers {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .organizers p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .organizers strong {
+            color: var(--blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2em;
+            }
+
+            .event-details {
+                padding: 30px 20px;
+            }
+
+            .event-details-grid,
+            .why-attend,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- ENGLISH SECTION -->
+    <div class="hero">
+        <img src="images/uae-property-expo-english-poster.jpg.jpeg" alt="UAE Property Expo Muscat - English">
+    </div>
+
+    <div class="container">
+        <!-- About the Expo -->
+        <section class="section">
+            <h2 class="section-title">About the Expo</h2>
+            <div class="section-content">
+                <p>Join us for the premier UAE Property Expo in Muscat, showcasing the finest real estate opportunities from the United Arab Emirates. This exclusive two-day event brings together leading developers, investors, and property professionals in one prestigious location.</p>
+                <p>Discover luxury properties, investment opportunities, and expert insights into the UAE real estate market. Whether you're looking for your dream home, a smart investment, or business expansion opportunities, this expo is your gateway to premium UAE properties.</p>
+            </div>
+        </section>
+
+        <!-- Event Details -->
+        <section class="section">
+            <div class="event-details">
+                <h3>Event Details</h3>
+                <div class="event-details-grid">
+                    <div class="event-detail-item">
+                        <strong>📅 Dates</strong>
+                        <span>26–27 December 2025</span>
+                    </div>
+                    <div class="event-detail-item">
+                        <strong>📍 Venue</strong>
+                        <span>Grand Hyatt, Muscat</span>
+                    </div>
+                    <div class="event-detail-item">
+                        <strong>⏰ Time</strong>
+                        <span>10:00 AM - 8:00 PM</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Attend -->
+        <section class="section">
+            <h2 class="section-title">Why Attend</h2>
+            <div class="why-attend">
+                <div class="benefit-card">
+                    <h4>🏢 Premium Properties</h4>
+                    <p>Explore exclusive luxury properties and developments from top UAE developers</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>💰 Investment Opportunities</h4>
+                    <p>Discover high-return investment options with expert financial guidance</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🤝 Direct Access</h4>
+                    <p>Meet developers and agents face-to-face for personalized consultations</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>📊 Market Insights</h4>
+                    <p>Gain valuable insights into UAE real estate trends and market analysis</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🎁 Exclusive Offers</h4>
+                    <p>Access special expo-only promotions and financing options</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🌐 Networking</h4>
+                    <p>Connect with industry professionals and fellow investors</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Details -->
+        <section class="section">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="contact-info">
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <strong>UAE Contact</strong>
+                        <a href="tel:+971585312174">+971 58 531 2174</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Oman Contact 1</strong>
+                        <a href="tel:+96897083232">+968 970 83232</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Oman Contact 2</strong>
+                        <a href="tel:+96879665511">+968 796 65511</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Email</strong>
+                        <a href="mailto:sales@uaepropertyexpo.ae">sales@uaepropertyexpo.ae</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Website</strong>
+                        <a href="https://www.uaepropertyexpo.ae" target="_blank">www.uaepropertyexpo.ae</a>
+                    </div>
+                </div>
+                <div class="organizers">
+                    <p><strong>Organized by:</strong> UAE Property Expo • Falcon Eye • Globo</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Register Button -->
+        <a href="#" class="cta-button" onclick="alert('Link Coming Soon'); return false;">Register Now</a>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- ARABIC SECTION -->
+        <div class="hero">
+            <img src="mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg" alt="معرض عقارات الإمارات مسقط - Arabic">
+        </div>
+
+        <!-- About the Expo (Arabic) -->
+        <section class="section arabic-section">
+            <h2 class="section-title">عن المعرض</h2>
+            <div class="section-content">
+                <p>انضم إلينا في معرض عقارات الإمارات الرائد في مسقط، الذي يعرض أفضل الفرص العقارية من دولة الإمارات العربية المتحدة. يجمع هذا الحدث الحصري لمدة يومين بين المطورين الرائدين والمستثمرين والمهنيين العقاريين في موقع واحد متميز.</p>
+                <p>اكتشف العقارات الفاخرة وفرص الاستثمار والرؤى الخبيرة في سوق العقارات الإماراتي. سواء كنت تبحث عن منزل أحلامك أو استثمار ذكي أو فرص التوسع التجاري، هذا المعرض هو بوابتك إلى العقارات الإماراتية المميزة.</p>
+            </div>
+        </section>
+
+        <!-- Event Details (Arabic) -->
+        <section class="section arabic-section">
+            <div class="event-details">
+                <h3>تفاصيل الحدث</h3>
+                <div class="event-details-grid">
+                    <div class="event-detail-item">
+                        <strong>📅 التواريخ</strong>
+                        <span>26–27 ديسمبر 2025</span>
+                    </div>
+                    <div class="event-detail-item">
+                        <strong>📍 المكان</strong>
+                        <span>جراند حياة، مسقط</span>
+                    </div>
+                    <div class="event-detail-item">
+                        <strong>⏰ الوقت</strong>
+                        <span>10:00 صباحاً - 8:00 مساءً</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Attend (Arabic) -->
+        <section class="section arabic-section">
+            <h2 class="section-title">لماذا تحضر</h2>
+            <div class="why-attend">
+                <div class="benefit-card">
+                    <h4>🏢 عقارات مميزة</h4>
+                    <p>استكشف العقارات الفاخرة الحصرية والمشاريع من أفضل مطوري الإمارات</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>💰 فرص الاستثمار</h4>
+                    <p>اكتشف خيارات الاستثمار عالية العائد مع التوجيه المالي الخبير</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🤝 الوصول المباشر</h4>
+                    <p>التقِ بالمطورين والوكلاء وجهاً لوجه للحصول على استشارات مخصصة</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>📊 رؤى السوق</h4>
+                    <p>احصل على رؤى قيمة حول اتجاهات العقارات الإماراتية وتحليل السوق</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🎁 عروض حصرية</h4>
+                    <p>احصل على عروض خاصة للمعرض فقط وخيارات التمويل</p>
+                </div>
+                <div class="benefit-card">
+                    <h4>🌐 التواصل</h4>
+                    <p>تواصل مع المهنيين في الصناعة والمستثمرين الآخرين</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Details (Arabic) -->
+        <section class="section arabic-section">
+            <h2 class="section-title">اتصل بنا</h2>
+            <div class="contact-info">
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <strong>جهة الاتصال - الإمارات</strong>
+                        <a href="tel:+971585312174">+971 58 531 2174</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>جهة الاتصال - عمان 1</strong>
+                        <a href="tel:+96897083232">+968 970 83232</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>جهة الاتصال - عمان 2</strong>
+                        <a href="tel:+96879665511">+968 796 65511</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>البريد الإلكتروني</strong>
+                        <a href="mailto:sales@uaepropertyexpo.ae">sales@uaepropertyexpo.ae</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>الموقع الإلكتروني</strong>
+                        <a href="https://www.uaepropertyexpo.ae" target="_blank">www.uaepropertyexpo.ae</a>
+                    </div>
+                </div>
+                <div class="organizers">
+                    <p><strong>منظم من قبل:</strong> معرض عقارات الإمارات • فالكون آي • جلوبو</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Register Button (Arabic) -->
+        <a href="#" class="cta-button" onclick="alert('الرابط قريباً'); return false;">سجل الآن</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 UAE Property Expo. All rights reserved.</p>
+        <p>Organized by: UAE Property Expo • Falcon Eye • Globo</p>
+        <p><a href="https://www.uaepropertyexpo.ae" target="_blank">www.uaepropertyexpo.ae</a> | <a href="mailto:sales@uaepropertyexpo.ae">sales@uaepropertyexpo.ae</a></p>
+    </footer>
+</body>
+</html>
+

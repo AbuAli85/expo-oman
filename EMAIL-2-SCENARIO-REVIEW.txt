@@ -1,0 +1,142 @@
+================================================================================
+EMAIL 2 SCENARIO REVIEW
+UAE Property Expo - Reminder Email
+================================================================================
+
+CURRENT STATUS: ✅ 95% Complete - One Small Fix Needed
+================================================================================
+
+✅ WHAT'S WORKING PERFECTLY:
+-------------------------------------------------------------------------------
+
+1. ✅ Module 1: Google Sheets Filter Rows
+   - Filter: Status (E) = "Email 1 Sent" ✅
+   - Filter: Email 1 Date (G) > (now - 3 days) ✅
+   - This correctly finds leads who received Email 1 at least 3 days ago
+
+2. ✅ Module 2: Router
+   - Route 1: Language = "en" (English) ✅
+   - Route 2: Language = "ar" (Arabic) ✅
+
+3. ✅ Route 1 (English):
+   - Email module configured correctly ✅
+   - Subject: "Reminder: Don't Miss UAE Property Expo – Muscat" ✅
+   - HTML template correct ✅
+   - Image URL: https://i.imgur.com/9GWYlQI.jpeg ✅
+   - Google Sheets update correct ✅
+
+4. ✅ Route 2 (Arabic):
+   - Email module configured correctly ✅
+   - HTML template correct (RTL) ✅
+   - Image URL: https://i.imgur.com/r0drplC.jpeg ✅
+   - Google Sheets update correct ✅
+
+5. ✅ Both routes update Google Sheets:
+   - Status → "Email 2 Sent" ✅
+   - Email 2 Date (H) → {{now}} ✅
+
+================================================================================
+⚠️ ONE ISSUE TO FIX:
+-------------------------------------------------------------------------------
+
+ARABIC EMAIL SUBJECT IS WRONG!
+
+Current (Route 2, Module 4):
+Subject: "Reminder: Don't Miss UAE Property Expo – Muscat" ❌
+
+Should be:
+Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط" ✅
+
+FIX:
+----
+In Route 2, Module 4 (Arabic Email), change the subject from:
+"Reminder: Don't Miss UAE Property Expo – Muscat"
+
+To:
+"تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After fixing the subject, verify:
+
+☐ Filter finds leads with Status = "Email 1 Sent"
+☐ Filter finds leads where Email 1 Date is at least 3 days old
+☐ Router correctly routes English leads (Language = "en")
+☐ Router correctly routes Arabic leads (Language = "ar")
+☐ English email subject is correct
+☐ Arabic email subject is in Arabic (FIX THIS!)
+☐ Both emails use correct image URLs
+☐ Google Sheets updates correctly after both routes
+☐ Status changes to "Email 2 Sent"
+☐ Email 2 Date is populated
+
+================================================================================
+DATE FILTER NOTE
+================================================================================
+
+Your date filter uses:
+"date:greater" with value "{{sub(now; 3; \"days\")}}"
+
+This means: Email 1 Date > (now - 3 days)
+
+This will find all leads who received Email 1 MORE than 3 days ago.
+This is correct! It ensures the email is sent at least 3 days after Email 1.
+
+Example:
+- If Email 1 was sent on Dec 1
+- And today is Dec 4 or later
+- The filter will find this lead ✅
+
+================================================================================
+LANGUAGE FILTER NOTE
+================================================================================
+
+Your router checks for:
+- Route 1: Language = "en" (lowercase)
+- Route 2: Language = "ar" (lowercase)
+
+Make sure your Google Sheets stores language as:
+- "en" or "EN" for English
+- "ar" or "AR" for Arabic
+
+If your sheets use "EN" and "AR" (uppercase), update the router conditions to match.
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. ✅ Fix Arabic email subject (change to Arabic text)
+2. ✅ Add Schedule trigger (run daily at 9:00 AM)
+3. ✅ Test with a sample lead
+4. ✅ Create Email 3 scenario (similar structure, but filter for "Email 2 Sent" and 4 days)
+
+================================================================================
+SCHEDULE THE SCENARIO
+================================================================================
+
+After fixing the subject, add a Schedule trigger:
+
+1. Go to Scenario Settings
+2. Add Trigger: Schedule
+3. Set to: Every day at 9:00 AM (or your preferred time)
+4. This ensures the scenario runs daily and checks for leads ready for Email 2
+
+================================================================================
+YOUR SCENARIO IS ALMOST PERFECT!
+================================================================================
+
+Just fix the Arabic email subject and add the schedule trigger, and you're done!
+
+The structure is excellent:
+✅ Correct filtering
+✅ Proper routing
+✅ Both email templates
+✅ Google Sheets updates
+✅ Everything connected properly
+
+Great work! 🎉
+
+================================================================================
+

@@ -1,0 +1,152 @@
+================================================================================
+FIX: Hardcoded Date Still Appearing
+================================================================================
+
+PROBLEM:
+--------
+Your filter shows a hardcoded date: "2025-11-21T12:57:06.123Z"
+This means Make.com evaluated {{addHours(now; -1)}} and saved the result as a static date.
+
+This won't work because:
+- It will only find dates before Nov 21, 2025
+- After that date passes, it won't find anything
+- It's not dynamic anymore
+
+================================================================================
+SOLUTION: Force Dynamic Expression
+================================================================================
+
+OPTION 1: Use Expression Button (Recommended)
+----------------------------------------------
+1. In Make.com, go to Module 1 (Google Sheets Filter Rows)
+2. Find the date filter (Email 1 Date)
+3. Click on the value field
+4. DELETE the hardcoded date completely
+5. Click the expression/function button (usually looks like: </> or {})
+6. Make sure you're in "Expression" mode, not "Text" mode
+7. Type: addHours(now; -1)
+   OR
+   Type: {{addHours(now; -1)}}
+8. Save
+
+The key is to make sure Make.com treats it as an EXPRESSION, not a TEXT VALUE.
+
+OPTION 2: Use Date/Time Module First
+-------------------------------------
+If Make.com keeps saving it as a hardcoded date:
+
+1. Add a Date/Time → Set Variable module BEFORE the filter
+2. Variable name: oneHourAgo
+3. Value: {{addHours(now; -1)}}
+4. In the filter, use: {{oneHourAgo}}
+
+This separates the calculation from the filter.
+
+OPTION 3: Use Different Date Function
+--------------------------------------
+Try a different syntax:
+- {{now - 1 hour}}
+- {{subtractHours(now; 1)}}
+- {{addMinutes(now; -60)}}
+
+Check Make.com's documentation for the exact date function syntax.
+
+================================================================================
+CURRENT FILTER (WRONG)
+================================================================================
+
+{
+    "a": "G",
+    "b": "2025-11-21T12:57:06.123Z",  ← Hardcoded date (WRONG!)
+    "o": "time:less"
+}
+
+SHOULD BE:
+----------
+{
+    "a": "G",
+    "b": "{{addHours(now; -1)}}",  ← Dynamic expression (CORRECT!)
+    "o": "time:less"
+}
+
+OR if Make.com doesn't support expressions in filters:
+{
+    "a": "G",
+    "b": "{{oneHourAgo}}",  ← Variable from previous module
+    "o": "time:less"
+}
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Clear the Date Filter
+-------------------------------
+1. Open Module 1 (Google Sheets Filter Rows)
+2. Find Filter 2 (Email 1 Date)
+3. Click on the value field
+4. Select all and DELETE the hardcoded date
+5. Leave it empty for now
+
+STEP 2: Add Date/Time Module (Workaround)
+------------------------------------------
+1. Add a new module BEFORE Module 1:
+   - Module type: Date/Time → Set Variable
+   - Variable name: oneHourAgo
+   - Value: {{addHours(now; -1)}}
+
+STEP 3: Update Filter to Use Variable
+--------------------------------------
+1. Go back to Module 1 (now Module 2)
+2. Find Filter 2 (Email 1 Date)
+3. In the value field, click expression button
+4. Enter: {{oneHourAgo}}
+5. Save
+
+STEP 4: Test
+------------
+1. Run scenario manually
+2. Check if it finds leads
+3. The filter should now use the dynamic date
+
+================================================================================
+ALTERNATIVE: Remove Date Filter for Testing
+================================================================================
+
+If date filtering is causing too many issues, temporarily:
+
+1. Remove Filter 2 (date filter) completely
+2. Keep only Filter 1: Status = "Email 1 Sent"
+3. This will find ALL leads with that status
+4. Test that the rest of the scenario works
+5. Add date filtering back later
+
+This lets you test the email sending and Google Sheets updates without worrying about dates.
+
+================================================================================
+VERIFY IT'S WORKING
+================================================================================
+
+After fixing, the filter should:
+1. Calculate the date dynamically each time
+2. Find leads where Email 1 Date is older than 1 hour ago
+3. Work every day, not just until Nov 21
+
+To verify:
+1. Run scenario today
+2. Check execution log
+3. The date value should be TODAY's date minus 1 hour
+4. Not a hardcoded date from the past
+
+================================================================================
+FOR PRODUCTION
+================================================================================
+
+Once testing works with 1 hour:
+
+1. Change the variable to: {{addDays(now; -3)}}
+2. Or change filter to use: {{threeDaysAgo}} variable
+3. This will find leads who got Email 1 at least 3 days ago
+
+================================================================================
+

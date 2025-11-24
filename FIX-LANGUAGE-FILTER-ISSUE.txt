@@ -1,0 +1,154 @@
+================================================================================
+FIX: Language Filter Not Matching
+================================================================================
+
+PROBLEM:
+--------
+Google Sheets search IS working ✅ (found rows)
+But both email routes show: "The bundle did not pass through the filter" ❌
+
+This means:
+- The lead was found by Google Sheets ✅
+- But the Language value doesn't match the router filters ❌
+
+================================================================================
+ROOT CAUSE
+================================================================================
+
+Your email modules have filters:
+- Module 3 (English): Language = "en" (lowercase)
+- Module 4 (Arabic): Language = "ar" (lowercase)
+
+But your Google Sheets probably has:
+- "EN" (uppercase) ❌
+- "AR" (uppercase) ❌
+
+OR something else entirely!
+
+================================================================================
+SOLUTION: Check and Fix Language Values
+================================================================================
+
+STEP 1: Check Your Google Sheets
+---------------------------------
+1. Open your Google Sheets
+2. Look at column D (Language)
+3. Check the EXACT value for your test lead (Fahad Alamri)
+4. Is it:
+   - "en" or "EN"?
+   - "ar" or "AR"?
+   - Something else?
+
+STEP 2: Update Router Filters to Match
+----------------------------------------
+Once you know the exact value:
+
+If sheets have "EN" and "AR" (uppercase):
+- Module 3 filter: Change "en" to "EN"
+- Module 4 filter: Change "ar" to "AR"
+
+If sheets have "en" and "ar" (lowercase):
+- Keep filters as is, but verify data matches
+
+STEP 3: Alternative - Normalize the Data
+-----------------------------------------
+If you want to handle any case:
+
+1. Add a Set Variable module after Google Sheets search
+2. Variable name: normalizedLanguage
+3. Value: {{lower(1.3)}} (converts to lowercase)
+4. Update router filters to check normalizedLanguage instead
+
+================================================================================
+QUICK DEBUG: See Actual Language Value
+================================================================================
+
+To see what value is actually in the Language column:
+
+1. Add a Set Variable module after Module 1 (Google Sheets Search)
+2. Variable name: debugLanguage
+3. Value: {{1.3}} (Language column D)
+4. Run the scenario
+5. Check execution log - it will show the actual value
+
+This will tell you exactly what's in the Language column!
+
+================================================================================
+IMMEDIATE FIX OPTIONS
+================================================================================
+
+OPTION 1: Fix Google Sheets Data (Easiest)
+-------------------------------------------
+1. Open Google Sheets
+2. Find Fahad Alamri's row
+3. Check column D (Language)
+4. Change it to exactly "ar" (lowercase) if it's "AR"
+5. Save
+6. Run scenario again
+
+OPTION 2: Fix Router Filters
+-----------------------------
+1. Open Module 3 (English Email)
+2. Find the filter condition
+3. Change from "en" to "EN" (if sheets use uppercase)
+4. Open Module 4 (Arabic Email)
+5. Change from "ar" to "AR" (if sheets use uppercase)
+6. Save and test
+
+OPTION 3: Remove Filters Temporarily (For Testing)
+---------------------------------------------------
+1. Remove filters from Module 3 and Module 4
+2. This will send both emails to all leads
+3. Use this only for testing to verify the rest works
+4. Add filters back after fixing
+
+================================================================================
+YOUR CURRENT FILTER CONFIGURATION
+================================================================================
+
+Module 3 (English Email):
+- Filter: {{1.`3`}} = "en" (lowercase)
+
+Module 4 (Arabic Email):
+- Filter: {{1.`3`}} = "ar" (lowercase)
+
+Your lead (Fahad Alamri) has:
+- Language: "ar" (according to earlier data)
+
+But the filter isn't matching! This suggests:
+- The value might be "AR" (uppercase)
+- Or there might be extra spaces
+- Or the column mapping is wrong
+
+================================================================================
+RECOMMENDED FIX
+================================================================================
+
+1. Add Set Variable module to see actual value:
+   - Variable: testLang = {{1.3}}
+   - Run scenario and check log
+
+2. Based on the actual value:
+   - If it's "AR": Change filter to "AR"
+   - If it's "ar": Keep filter as "ar"
+   - If it has spaces: Use trim() function
+
+3. Test again
+
+================================================================================
+ALTERNATIVE: Case-Insensitive Filter
+================================================================================
+
+If you want to handle both cases:
+
+1. Add Set Variable module:
+   - Variable: langLower = {{lower(1.3)}}
+
+2. Update filters to check langLower:
+   - Module 3: langLower = "en"
+   - Module 4: langLower = "ar"
+
+This will work regardless of case in Google Sheets!
+
+================================================================================
+

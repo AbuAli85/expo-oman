@@ -1,0 +1,126 @@
+================================================================================
+IMAGE SETUP GUIDE
+UAE Property Expo – Muscat Marketing Package
+================================================================================
+
+IMPORTANT: You need to add your poster images to make the templates work!
+
+================================================================================
+OPTION 1: For Landing Page (index.html)
+================================================================================
+
+1. Create an "images" folder in the same directory as index.html:
+   expo-oman/
+   ├── index.html
+   ├── images/
+   │   ├── uae-property-expo-english-poster.jpg
+   │   └── uae-property-expo-arabic-poster.jpg
+
+2. Place your images:
+   - English poster → images/uae-property-expo-english-poster.jpg
+   - Arabic poster → images/uae-property-expo-arabic-poster.jpg
+
+3. The landing page will automatically load the images from the "images" folder.
+
+================================================================================
+OPTION 2: For Email Templates (all-email-templates.html)
+================================================================================
+
+⚠️ IMPORTANT: Email clients require images to be hosted online (URL), not local files!
+
+You have two options:
+
+A) HOST IMAGES ONLINE (Recommended):
+   1. Upload your images to your website server:
+      - www.uaepropertyexpo.ae/images/uae-property-expo-english-poster.jpg
+      - www.uaepropertyexpo.ae/images/uae-property-expo-arabic-poster.jpg
+
+   2. The email templates are already configured to use:
+      - https://www.uaepropertyexpo.ae/images/uae-property-expo-english-poster.jpg
+      - https://www.uaepropertyexpo.ae/images/uae-property-expo-arabic-poster.jpg
+
+   3. If your images are hosted elsewhere, update the URLs in all-email-templates.html
+
+B) USE IMAGE HOSTING SERVICE:
+   - Upload to Imgur, Cloudinary, or similar service
+   - Get the direct image URL
+   - Replace the image URLs in all-email-templates.html
+
+================================================================================
+CURRENT IMAGE PATHS IN FILES
+================================================================================
+
+Landing Page (index.html):
+- English: images/uae-property-expo-english-poster.jpg
+- Arabic: images/uae-property-expo-arabic-poster.jpg
+
+Email Templates (all-email-templates.html):
+- English: https://www.uaepropertyexpo.ae/images/uae-property-expo-english-poster.jpg
+- Arabic: https://www.uaepropertyexpo.ae/images/uae-property-expo-arabic-poster.jpg
+
+================================================================================
+QUICK SETUP STEPS
+================================================================================
+
+1. FOR LANDING PAGE:
+   ✓ Create "images" folder
+   ✓ Add your poster images with the names above
+   ✓ Open index.html in browser to test
+
+2. FOR EMAILS:
+   ✓ Upload images to your web server
+   ✓ OR update image URLs in all-email-templates.html to your hosting location
+   ✓ Test by sending a test email to yourself
+
+================================================================================
+ALTERNATIVE: Use Your Original Image Paths
+================================================================================
+
+If you prefer to keep the original paths you specified:
+- /mnt/data/WhatsApp Image 2025-11-22 at 8.21.03 PM.jpeg (English)
+- /mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg (Arabic)
+
+You can search and replace in the files:
+- Find: images/uae-property-expo-english-poster.jpg
+- Replace: [your path]
+
+Or find: https://www.uaepropertyexpo.ae/images/uae-property-expo-english-poster.jpg
+- Replace: [your URL]
+
+================================================================================
+IMAGE SPECIFICATIONS (Recommended)
+================================================================================
+
+For best results:
+- Format: JPG or PNG
+- Width: 600-1200px (for emails, 600px is optimal)
+- File size: Under 200KB for emails (faster loading)
+- Aspect ratio: Match your poster design
+
+================================================================================
+TESTING
+================================================================================
+
+1. Landing Page:
+   - Open index.html in a web browser
+   - Check that both images load correctly
+
+2. Email Templates:
+   - Send test emails to yourself
+   - Check images load in:
+     * Gmail
+     * Outlook
+     * Apple Mail
+     * Mobile email clients
+
+================================================================================
+NEED HELP?
+================================================================================
+
+If you need to update image paths:
+1. Search for "uae-property-expo-english-poster.jpg" in the files
+2. Replace with your actual image path/URL
+3. Do the same for "uae-property-expo-arabic-poster.jpg"
+
+================================================================================
+

@@ -1,0 +1,125 @@
+================================================================================
+EMAIL 2 SCENARIO - FINAL REVIEW
+================================================================================
+
+CURRENT STATUS: ✅ 95% Perfect - Minor Issues to Check
+================================================================================
+
+✅ WHAT'S WORKING CORRECTLY:
+-------------------------------------------------------------------------------
+
+1. ✅ Date Filter
+   - Using: {{addHours(now; -1)}} (1 hour - perfect for testing!)
+   - Operator: time:less ✅
+   - This will find leads who got Email 1 at least 1 hour ago
+
+2. ✅ Status Filter
+   - Filter: Status (E) = "Email 1 Sent" ✅
+
+3. ✅ Router Structure
+   - Route 1: English emails ✅
+   - Route 2: Arabic emails ✅
+
+4. ✅ English Email (Module 3)
+   - Subject: "Reminder: Don't Miss UAE Property Expo – Muscat" ✅
+   - HTML template correct ✅
+   - Image: https://i.imgur.com/9GWYlQI.jpeg ✅
+   - Filter: Language = "en" ✅
+
+5. ✅ Arabic Email (Module 4)
+   - Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط" ✅ (FIXED!)
+   - HTML template correct ✅
+   - Image: https://i.imgur.com/r0drplC.jpeg ✅
+   - Filter: Language = "ar" ✅
+
+6. ✅ Google Sheets Updates
+   - Both routes update Status to "Email 2 Sent" ✅
+   - Both routes update Email 2 Date (H) with {{now}} ✅
+
+================================================================================
+⚠️ POTENTIAL ISSUES TO CHECK:
+-------------------------------------------------------------------------------
+
+ISSUE 1: Email Mapping with Backticks
+---------------------------------------
+Your email modules use: {{1.`1`}} and {{1.`3`}}
+
+The backticks might cause issues. Try:
+- {{1.1}} instead of {{1.`1`}}
+- {{1.3}} instead of {{1.`3`}}
+
+However, if it's working, keep it as is!
+
+ISSUE 2: Router vs Module Filters
+-----------------------------------
+You have filters on the EMAIL MODULES (Module 3 and Module 4), not on the Router.
+
+This is actually fine! It works the same way:
+- Router routes to both paths
+- Each email module has its own filter
+- Only matching emails send
+
+But typically, filters are on the Router routes, not individual modules.
+If it works, it's fine!
+
+================================================================================
+TESTING YOUR SCENARIO
+================================================================================
+
+With your existing lead (Fahad Alamri):
+- Language: "ar" ✅
+- Status: "Email 1 Sent" ✅
+- Email 1 Date: 2025-11-24T12:47:31.395Z (Nov 24)
+
+Since you're using {{addHours(now; -1)}}, the filter will find:
+- Leads where Email 1 Date is older than 1 hour ago
+
+If Email 1 was sent on Nov 24 and today is later, it should work!
+
+RUN THE TEST:
+-------------
+1. Run "Email 2 - Reminder" scenario manually
+2. It should find Fahad Alamri's lead
+3. Route to Arabic email (Language = "ar")
+4. Send Email 2 to: chairman@falconeyegroup.net
+5. Update Google Sheets: Status = "Email 2 Sent"
+
+================================================================================
+AFTER TESTING - RESTORE PRODUCTION SETTINGS
+================================================================================
+
+Once Email 2 works correctly:
+
+1. Change date filter back to: {{addDays(now; -3)}}
+2. Add Schedule trigger: Run daily at 9:00 AM
+3. Test one more time with the 3-day filter
+4. Then it's ready for production!
+
+================================================================================
+NEXT: CREATE EMAIL 3 SCENARIO
+================================================================================
+
+After Email 2 is tested and working:
+
+1. Create "Email 3 - Final Call" scenario
+2. Use same structure as Email 2
+3. Filter: Status = "Email 2 Sent"
+4. Filter: Email 2 Date < {{addDays(now; -4)}}
+5. Add English and Arabic email modules
+6. Update Status to "Campaign Complete"
+
+================================================================================
+YOUR SCENARIO IS READY TO TEST!
+================================================================================
+
+Everything looks correct:
+✅ Filters are set up
+✅ Both language routes configured
+✅ Email templates correct
+✅ Google Sheets updates correct
+✅ Arabic subject is now in Arabic ✅
+
+Just run it and see if it works! 🚀
+
+================================================================================
+

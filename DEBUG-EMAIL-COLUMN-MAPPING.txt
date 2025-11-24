@@ -1,0 +1,140 @@
+================================================================================
+DEBUG: Email Column Mapping Issue
+================================================================================
+
+PROBLEM:
+--------
+The "to" field shows: ["null"] instead of an email address
+This means {{1.1}} (or whatever you're using) is not resolving to the email.
+
+Your Google Sheets has:
+- Column A: Name (Fahad Alamri)
+- Column B: Email (chairman@falconeyegroup.net)
+- Column C: Phone (96895153930)
+- Column D: Language (ar)
+
+================================================================================
+SOLUTION: Find Correct Column Index
+================================================================================
+
+The column mapping might be wrong. Let's debug:
+
+STEP 1: Add Debug Variables
+----------------------------
+1. Add a Set Variable module after Google Sheets Search
+2. Add these variables to see what each column contains:
+   - testCol0 = {{1.0}} (Column A - Name)
+   - testCol1 = {{1.1}} (Column B - Email)
+   - testCol2 = {{1.2}} (Column C - Phone)
+   - testCol3 = {{1.3}} (Column D - Language)
+
+STEP 2: Run and Check
+----------------------
+1. Run the scenario
+2. Check execution log
+3. See which variable contains "chairman@falconeyegroup.net"
+4. That's your email column!
+
+STEP 3: Update Email Modules
+-----------------------------
+1. Use the correct column index in both email modules
+2. If testCol1 has the email → Use {{1.1}}
+3. If testCol2 has the email → Use {{1.2}}
+4. etc.
+
+================================================================================
+COMMON ISSUES
+================================================================================
+
+ISSUE 1: Column Index Off by One
+----------------------------------
+Make.com might use 0-based or 1-based indexing:
+- 0-based: A=0, B=1, C=2, D=3
+- 1-based: A=1, B=2, C=3, D=4
+
+If {{1.1}} is null, try {{1.2}} or {{1.0}}
+
+ISSUE 2: Headers Included in Count
+-----------------------------------
+If "includesHeaders" is true, the first row might be headers:
+- Row 1: Headers (Name, Email, Phone, Language)
+- Row 2: Data (Fahad Alamri, chairman@..., etc.)
+
+This shouldn't affect column indices, but worth checking.
+
+ISSUE 3: Empty Email Field
+--------------------------
+Check if the Email column in Google Sheets actually has data.
+Maybe it's in a different column?
+
+================================================================================
+QUICK FIX TO TRY
+================================================================================
+
+Try these column indices one by one:
+
+Option 1: {{1.1}} (most likely - Column B)
+Option 2: {{1.2}} (Column C - if indexing is different)
+Option 3: {{1.0}} (Column A - if completely wrong)
+Option 4: {{1.3}} (Column D - probably not, but worth trying)
+
+Update the "to" field in Module 3 and test each one.
+
+================================================================================
+YOUR DATA STRUCTURE
+================================================================================
+
+Based on your Google Sheets:
+- Column A (Name): Fahad Alamri
+- Column B (Email): chairman@falconeyegroup.net ← This is what we need!
+- Column C (Phone): 96895153930
+- Column D (Language): ar
+
+In Make.com, this should be:
+- {{1.0}} = Name
+- {{1.1}} = Email ← Should be this!
+- {{1.2}} = Phone
+- {{1.3}} = Language
+
+But if {{1.1}} is null, something is wrong with the mapping.
+
+================================================================================
+STEP-BY-STEP DEBUG
+================================================================================
+
+1. Add Set Variable module after Google Sheets Search
+2. Variables:
+   - name = {{1.0}}
+   - email1 = {{1.1}}
+   - email2 = {{1.2}}
+   - phone = {{1.2}}
+   - lang = {{1.3}}
+
+3. Run scenario
+4. Check execution log
+5. Find which variable has "chairman@falconeyegroup.net"
+6. Use that index in email modules
+
+================================================================================
+ALTERNATIVE: Check Google Sheets Output Directly
+================================================================================
+
+1. Add a Set Variable module right after Google Sheets Search
+2. Variable: allData = {{1}}
+3. Run scenario
+4. Check execution log - it will show ALL column data
+5. Find which index has the email address
+
+================================================================================
+MOST LIKELY FIX
+================================================================================
+
+Based on standard Make.com column mapping:
+- Column B (Email) should be {{1.1}}
+
+But if it's showing null, try:
+- {{1.2}} (maybe Make.com uses 1-based indexing differently)
+- Or check if there's a space/formatting issue in Google Sheets
+
+================================================================================
+

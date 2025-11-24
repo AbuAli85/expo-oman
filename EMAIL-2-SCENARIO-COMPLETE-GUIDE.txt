@@ -1,0 +1,256 @@
+================================================================================
+COMPLETE EMAIL 2 - REMINDER SCENARIO SETUP
+================================================================================
+
+CURRENT STATUS: ✅ Started - Google Sheets Filter module added
+================================================================================
+
+WHAT YOU HAVE:
+-------------------------------------------------------------------------------
+✅ Module 1: Google Sheets → Filter Rows
+   - Spreadsheet: UAE Property Expo
+   - Sheet: leads
+   - Connection: Configured
+
+WHAT YOU NEED TO ADD:
+-------------------------------------------------------------------------------
+
+1. ❌ FILTER CONDITIONS in Module 1
+   You need to filter for:
+   - Status (E/column 4) = "Email 1 Sent"
+   - Email 1 Date (G/column 6) = approximately 3 days ago
+
+2. ❌ Router - Check Language
+   - Route 1: Language (D/column 3) = "EN"
+   - Route 2: Language (D/column 3) = "AR"
+
+3. ❌ Email 2 - English Reminder
+   - Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+   - HTML: Copy from all-email-templates.html
+
+4. ❌ Email 2 - Arabic Reminder
+   - Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+   - HTML: Copy from all-email-templates.html
+
+5. ❌ Google Sheets Update
+   - Update Status (E) to "Email 2 Sent"
+   - Update Email 2 Date (H/column 7) with {{now}}
+
+================================================================================
+STEP-BY-STEP SETUP
+================================================================================
+
+STEP 1: Configure Filter in Module 1
+---------------------------------------
+
+In your Google Sheets Filter Rows module, add these filters:
+
+Filter 1: Status = "Email 1 Sent"
+- Field: Column E (Status)
+- Condition: equals
+- Value: "Email 1 Sent"
+
+Filter 2: Email 1 Date is approximately 3 days ago
+- Field: Column G (Email 1 Date)
+- Condition: is less than (or use date calculation)
+- Value: {{sub(now; 3; "days")}} or similar date function
+
+OR use a simpler approach:
+- Filter: Email 1 Date is less than {{now - 3 days}}
+- This will find all leads who received Email 1 at least 3 days ago
+
+Note: Make.com's date filtering can be tricky. You might need to:
+- Use a formula to calculate "3 days ago"
+- Or filter for dates between "3 days ago" and "4 days ago" to get exactly 3 days
+
+Alternative: Filter for Status = "Email 1 Sent" and process all, then add
+a condition later to check if Email 1 Date is old enough.
+
+
+STEP 2: Add Router Module
+--------------------------
+
+After Module 1 (Filter Rows), add:
+- Module: Flow Control → Router
+
+Route 1 Condition:
+- Field: {{1.3}} (Language column D)
+- Operator: equals
+- Value: "EN"
+
+Route 2 Condition:
+- Field: {{1.3}} (Language column D)
+- Operator: equals
+- Value: "AR"
+
+
+STEP 3: Add Email 2 - English (Route 1)
+----------------------------------------
+
+Module: Resend → Send an Email
+
+Configuration:
+- From: sales@thesmartpro.io
+- To: {{1.1}} (Email column B)
+- Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+- Send Email As: HTML
+- HTML: [Copy from all-email-templates.html - English Email 2, lines 118-192]
+
+The HTML template starts with:
+<!DOCTYPE html>
+<html lang="en">
+...
+and includes the image: https://i.imgur.com/9GWYlQI.jpeg
+
+
+STEP 4: Add Email 2 - Arabic (Route 2)
+---------------------------------------
+
+Module: Resend → Send an Email
+
+Configuration:
+- From: sales@thesmartpro.io
+- To: {{1.1}} (Email column B)
+- Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+- Send Email As: HTML
+- HTML: [Copy from all-email-templates.html - Arabic Email 2, lines 319-393]
+
+The HTML template includes:
+- RTL direction
+- Image: https://i.imgur.com/r0drplC.jpeg
+
+
+STEP 5: Add Google Sheets Update (After Both Routes)
+-----------------------------------------------------
+
+After both email routes, add:
+- Module: Google Sheets → Update a Row
+
+Configuration:
+- Spreadsheet: Same as Module 1
+- Sheet: "leads"
+- Row Number: {{1.__ROW_NUMBER__}}
+- Values:
+  * Column E (Status): "Email 2 Sent"
+  * Column H (Email 2 Date): {{now}}
+
+================================================================================
+COMPLETE SCENARIO STRUCTURE
+================================================================================
+
+Module 1: Google Sheets → Filter Rows
+├─ Filter: Status (E) = "Email 1 Sent"
+└─ Filter: Email 1 Date (G) = 3 days ago (or less than now - 3 days)
+    ↓
+Module 2: Router → Check Language
+├─ Route 1: Language (D) = "EN"
+│   └─ Module 3: Resend → Send Email (English Reminder)
+│       ├─ To: {{1.1}}
+│       ├─ Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+│       └─ HTML: [English Email 2 template]
+│
+└─ Route 2: Language (D) = "AR"
+    └─ Module 4: Resend → Send Email (Arabic Reminder)
+        ├─ To: {{1.1}}
+        ├─ Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+        └─ HTML: [Arabic Email 2 template]
+        ↓
+Module 5: Google Sheets → Update Row (After both routes)
+├─ Row: {{1.__ROW_NUMBER__}}
+├─ Status (E): "Email 2 Sent"
+└─ Email 2 Date (H): {{now}}
+
+================================================================================
+DATE FILTERING TIPS
+================================================================================
+
+For finding leads who received Email 1 exactly 3 days ago:
+
+Option 1: Use Date Range
+-------------------------
+Filter: Email 1 Date (G)
+- Greater than or equal: {{sub(now; 4; "days")}}
+- Less than or equal: {{sub(now; 3; "days")}}
+
+This finds dates between 3-4 days ago (approximately 3 days).
+
+Option 2: Use Less Than
+------------------------
+Filter: Email 1 Date (G)
+- Less than: {{sub(now; 3; "days")}}
+- And: Status (E) = "Email 1 Sent"
+
+This finds all leads who got Email 1 more than 3 days ago.
+
+Option 3: Process All and Filter in Router
+------------------------------------------
+- Filter only for Status = "Email 1 Sent"
+- In router, add condition: Email 1 Date < (now - 3 days)
+- This way you can process multiple leads at once
+
+================================================================================
+EMAIL TEMPLATE LOCATIONS
+================================================================================
+
+English Email 2 (Reminder):
+- File: all-email-templates.html
+- Lines: 118-192
+- Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+- Image: https://i.imgur.com/9GWYlQI.jpeg
+
+Arabic Email 2 (Reminder):
+- File: all-email-templates.html
+- Lines: 319-393
+- Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+- Image: https://i.imgur.com/r0drplC.jpeg
+
+To copy the HTML:
+1. Open all-email-templates.html
+2. Find the section marked "ENGLISH EMAIL 2: REMINDER"
+3. Copy everything between <!DOCTYPE html> and </html>
+4. Paste into Make.com's HTML field
+
+================================================================================
+TESTING YOUR SCENARIO
+================================================================================
+
+1. Add a test row to Google Sheets:
+   - Name: Test User
+   - Email: your-test-email@example.com
+   - Phone: +968 12345678
+   - Language: EN (or AR)
+   - Status: Email 1 Sent
+   - Email 1 Date: 3 days ago (or set to a past date)
+
+2. Run the scenario manually
+3. Check if:
+   - Email 2 is sent correctly
+   - Google Sheets is updated
+   - Status changes to "Email 2 Sent"
+   - Email 2 Date is populated
+
+4. Test both languages (EN and AR)
+
+================================================================================
+SCHEDULE THE SCENARIO
+================================================================================
+
+After completing the scenario:
+
+1. Go to Scenario Settings
+2. Add Trigger: Schedule
+3. Set to run: Every day at 9:00 AM (or your preferred time)
+4. This ensures it checks daily for leads ready for Email 2
+
+================================================================================
+NEXT: CREATE EMAIL 3 SCENARIO
+================================================================================
+
+After Email 2 is complete, create a similar scenario for Email 3:
+- Filter: Status = "Email 2 Sent"
+- Filter: Email 2 Date = 4 days ago
+- Send Email 3 (Final Call)
+- Update Status to "Campaign Complete"
+
+================================================================================
+

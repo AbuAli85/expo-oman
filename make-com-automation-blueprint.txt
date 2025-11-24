@@ -1,0 +1,416 @@
+================================================================================
+MAKE.COM AUTOMATION BLUEPRINT
+UAE Property Expo – Muscat Email Campaign Automation
+================================================================================
+
+WORKFLOW OVERVIEW
+================================================================================
+
+This automation sends a 3-email sequence to new leads from Google Sheets:
+1. Invitation Email (sent immediately)
+2. Reminder Email (sent 3 days after invitation)
+3. Final Call Email (sent 4 days after reminder)
+
+Optional: WhatsApp notification can be added for each email send.
+
+================================================================================
+SCENARIO STRUCTURE
+================================================================================
+
+Scenario Name: "UAE Property Expo - Email Campaign Sequence"
+
+Trigger: Google Sheets - Watch Rows
+Action 1: Send Email 1 (Invitation)
+Action 2: Wait 3 days
+Action 3: Send Email 2 (Reminder)
+Action 4: Wait 4 days
+Action 5: Send Email 3 (Final Call)
+Action 6: Update Lead Status (Optional)
+Action 7: Send WhatsApp Notification (Optional)
+
+================================================================================
+DETAILED MODULE CONFIGURATION
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 1: GOOGLE SHEETS - WATCH ROWS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Trigger
+App: Google Sheets
+Action: Watch Rows
+
+Configuration:
+- Spreadsheet: [Your Google Sheets ID]
+- Sheet: "Leads" (or your sheet name)
+- Watch: New rows only
+- Limit: 1
+
+Output Fields:
+- Name (Column A)
+- Email (Column B)
+- Phone (Column C)
+- Language (Column D) - "EN" or "AR"
+- Status (Column E) - Auto-set to "Invited"
+- Date Added (Column F) - Timestamp
+
+Sample Row Structure:
+| Name          | Email                | Phone          | Language | Status | Date Added        |
+|---------------|----------------------|----------------|----------|--------|-------------------|
+| John Smith    | john@example.com     | +968 12345678  | EN       | New    | 2025-12-01 10:00  |
+| أحمد محمد     | ahmed@example.com    | +968 87654321  | AR       | New    | 2025-12-01 10:05  |
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 2: ROUTER - CHECK LANGUAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Router
+App: Flow Control
+Action: Route
+
+Configuration:
+- Route 1: Language = "EN" → Send English Email 1
+- Route 2: Language = "AR" → Send Arabic Email 1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 3A: SEND EMAIL 1 - ENGLISH INVITATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Email (Gmail/SMTP/Mailgun/SendGrid)
+Action: Send Email
+
+Configuration:
+- To: {{Email}} (from Google Sheets)
+- Subject: "You're Invited! UAE Property Expo – Muscat"
+- HTML Body: [Use English Email 1 Template from all-email-templates.html]
+- From: sales@uaepropertyexpo.ae
+- From Name: UAE Property Expo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 3B: SEND EMAIL 1 - ARABIC INVITATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Email (Gmail/SMTP/Mailgun/SendGrid)
+Action: Send Email
+
+Configuration:
+- To: {{Email}} (from Google Sheets)
+- Subject: "أنت مدعو! معرض عقارات الإمارات – مسقط"
+- HTML Body: [Use Arabic Email 1 Template from all-email-templates.html]
+- From: sales@uaepropertyexpo.ae
+- From Name: معرض عقارات الإمارات
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 4: UPDATE GOOGLE SHEETS - EMAIL 1 SENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Google Sheets
+Action: Update Row
+
+Configuration:
+- Spreadsheet: [Same as Module 1]
+- Sheet: "Leads"
+- Row: {{Row Number}} (from trigger)
+- Status: "Email 1 Sent"
+- Email 1 Sent Date: {{Current Date/Time}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 5: WAIT 3 DAYS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Flow Control
+Action: Sleep
+
+Configuration:
+- Duration: 3 days
+- Unit: Days
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 6: ROUTER - CHECK LANGUAGE (FOR EMAIL 2)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Router
+App: Flow Control
+Action: Route
+
+Configuration:
+- Route 1: Language = "EN" → Send English Email 2
+- Route 2: Language = "AR" → Send Arabic Email 2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 7A: SEND EMAIL 2 - ENGLISH REMINDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Email (Gmail/SMTP/Mailgun/SendGrid)
+Action: Send Email
+
+Configuration:
+- To: {{Email}}
+- Subject: "Reminder: Don't Miss UAE Property Expo – Muscat"
+- HTML Body: [Use English Email 2 Template]
+- From: sales@uaepropertyexpo.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 7B: SEND EMAIL 2 - ARABIC REMINDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Email (Gmail/SMTP/Mailgun/SendGrid)
+Action: Send Email
+
+Configuration:
+- To: {{Email}}
+- Subject: "تذكير: لا تفوت معرض عقارات الإمارات – مسقط"
+- HTML Body: [Use Arabic Email 2 Template]
+- From: sales@uaepropertyexpo.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 8: UPDATE GOOGLE SHEETS - EMAIL 2 SENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Google Sheets
+Action: Update Row
+
+Configuration:
+- Status: "Email 2 Sent"
+- Email 2 Sent Date: {{Current Date/Time}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 9: WAIT 4 DAYS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Flow Control
+Action: Sleep
+
+Configuration:
+- Duration: 4 days
+- Unit: Days
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 10: ROUTER - CHECK LANGUAGE (FOR EMAIL 3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Router
+App: Flow Control
+Action: Route
+
+Configuration:
+- Route 1: Language = "EN" → Send English Email 3
+- Route 2: Language = "AR" → Send Arabic Email 3
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 11A: SEND EMAIL 3 - ENGLISH FINAL CALL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Email (Gmail/SMTP/Mailgun/SendGrid)
+Action: Send Email
+
+Configuration:
+- To: {{Email}}
+- Subject: "⏰ Final Call - UAE Property Expo Starts Soon!"
+- HTML Body: [Use English Email 3 Template]
+- From: sales@uaepropertyexpo.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 11B: SEND EMAIL 3 - ARABIC FINAL CALL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Email (Gmail/SMTP/Mailgun/SendGrid)
+Action: Send Email
+
+Configuration:
+- To: {{Email}}
+- Subject: "⏰ النداء الأخير - معرض عقارات الإمارات يبدأ قريباً!"
+- HTML Body: [Use Arabic Email 3 Template]
+- From: sales@uaepropertyexpo.ae
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 12: UPDATE GOOGLE SHEETS - CAMPAIGN COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: Google Sheets
+Action: Update Row
+
+Configuration:
+- Status: "Campaign Complete"
+- Email 3 Sent Date: {{Current Date/Time}}
+- Campaign Completed Date: {{Current Date/Time}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODULE 13: WHATSAPP NOTIFICATION (OPTIONAL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: Action
+App: WhatsApp Business API / Twilio / Make.com HTTP
+Action: Send WhatsApp Message
+
+Configuration:
+- To: {{Phone}} (from Google Sheets)
+- Message: [Use corresponding WhatsApp message from whatsapp-messages.txt]
+- Language: Based on {{Language}} field
+
+Note: This module can be added after each email send (Modules 3, 7, 11) or only at the end.
+
+================================================================================
+SAMPLE JSON PAYLOAD STRUCTURE
+================================================================================
+
+Example payload from Google Sheets trigger:
+
+{
+  "row": {
+    "rowNumber": 2,
+    "values": {
+      "A": "John Smith",
+      "B": "john.smith@example.com",
+      "C": "+968 1234 5678",
+      "D": "EN",
+      "E": "New",
+      "F": "2025-12-01T10:00:00Z"
+    }
+  },
+  "spreadsheet": {
+    "id": "1a2b3c4d5e6f7g8h9i0j",
+    "name": "UAE Property Expo Leads"
+  },
+  "sheet": {
+    "id": "0",
+    "name": "Leads"
+  }
+}
+
+Example email payload for Module 3A (English Email 1):
+
+{
+  "to": "john.smith@example.com",
+  "subject": "You're Invited! UAE Property Expo – Muscat",
+  "html": "<!DOCTYPE html>...[Full HTML from English Email 1 template]...",
+  "from": "sales@uaepropertyexpo.ae",
+  "fromName": "UAE Property Expo",
+  "replyTo": "sales@uaepropertyexpo.ae"
+}
+
+Example WhatsApp payload for Module 13:
+
+{
+  "to": "+96812345678",
+  "message": "🏢 *UAE Property Expo – Muscat*\n\nYou're invited to the premier real estate event!...",
+  "language": "EN"
+}
+
+Example Google Sheets update payload for Module 4:
+
+{
+  "spreadsheetId": "1a2b3c4d5e6f7g8h9i0j",
+  "sheetId": "0",
+  "row": 2,
+  "updates": {
+    "E": "Email 1 Sent",
+    "G": "2025-12-01T10:01:00Z"
+  }
+}
+
+================================================================================
+GOOGLE SHEETS STRUCTURE RECOMMENDATION
+================================================================================
+
+Recommended column structure for the "Leads" sheet:
+
+| Column | Header        | Type    | Description                          |
+|--------|---------------|---------|--------------------------------------|
+| A      | Name          | Text    | Lead's full name                     |
+| B      | Email         | Email   | Lead's email address                 |
+| C      | Phone         | Text    | Lead's phone number (with country)   |
+| D      | Language      | Text    | "EN" or "AR"                         |
+| E      | Status        | Text    | New/Email 1 Sent/Email 2 Sent/etc.   |
+| F      | Date Added    | Date    | Timestamp when row was added          |
+| G      | Email 1 Date  | Date    | When Email 1 was sent                |
+| H      | Email 2 Date  | Date    | When Email 2 was sent                 |
+| I      | Email 3 Date  | Date    | When Email 3 was sent                 |
+| J      | Notes         | Text    | Additional notes (optional)           |
+
+================================================================================
+AUTOMATION TIMELINE
+================================================================================
+
+Day 0: Lead added to Google Sheets
+  → Email 1 (Invitation) sent immediately
+
+Day 3: 3 days after Email 1
+  → Email 2 (Reminder) sent
+
+Day 7: 4 days after Email 2 (7 days total)
+  → Email 3 (Final Call) sent
+  → Campaign marked as complete
+
+Total Campaign Duration: 7 days per lead
+
+================================================================================
+ERROR HANDLING & BEST PRACTICES
+================================================================================
+
+1. Add Error Handlers:
+   - Wrap each email module in error handler
+   - Log failures to a separate "Errors" sheet
+   - Continue workflow even if one email fails
+
+2. Duplicate Prevention:
+   - Check if email already sent before sending
+   - Use Status column to track progress
+
+3. Unsubscribe Handling:
+   - Add filter to check if lead unsubscribed
+   - Skip email sends for unsubscribed leads
+
+4. Testing:
+   - Test with a single row first
+   - Verify email delivery and formatting
+   - Check RTL rendering for Arabic emails
+
+5. Rate Limiting:
+   - If sending many emails, add delays between sends
+   - Respect email service provider limits
+
+6. Monitoring:
+   - Track open rates (if using email service with analytics)
+   - Monitor bounce rates
+   - Review failed sends regularly
+
+================================================================================
+OPTIONAL ENHANCEMENTS
+================================================================================
+
+1. Add A/B Testing:
+   - Test different subject lines
+   - Test different send times
+
+2. Add Personalization:
+   - Use {{Name}} in email subject/body
+   - Customize based on lead source
+
+3. Add Analytics:
+   - Track email opens/clicks
+   - Update Google Sheets with engagement data
+
+4. Add Conditional Logic:
+   - Skip Email 2/3 if lead already registered
+   - Send different content based on lead type
+
+5. Add Integration with CRM:
+   - Update CRM when emails are sent
+   - Sync lead status across systems
+
+================================================================================
+END OF AUTOMATION BLUEPRINT
+================================================================================
+

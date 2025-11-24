@@ -1,0 +1,98 @@
+================================================================================
+QUICK FIX: Images Not Showing in Emails
+================================================================================
+
+PROBLEM: Email clients CANNOT load local paths like "mnt/data/..."
+SOLUTION: Images MUST be hosted online with https:// URLs
+
+================================================================================
+IMMEDIATE FIX (3 Steps)
+================================================================================
+
+STEP 1: Host Your Images Online
+---------------------------------
+Option A - Your Website:
+  1. Upload images to: www.thesmartpro.io/images/
+  2. Get URLs like:
+     - https://www.thesmartpro.io/images/poster-english.jpeg
+     - https://www.thesmartpro.io/images/poster-arabic.jpeg
+
+Option B - Free Image Hosting (Quick):
+  1. Go to imgur.com
+  2. Upload both poster images
+  3. Right-click each image → "Copy image address"
+  4. You'll get URLs like: https://i.imgur.com/abc123.jpeg
+
+
+STEP 2: Update Email Templates
+-------------------------------
+Open all-email-templates.html and use Find & Replace (Ctrl+H):
+
+REPLACEMENT 1 - English Images:
+   Find: mnt/data/WhatsApp Image 2025-11-22 at 8.21.03 PM.jpeg
+   Replace: [PASTE_YOUR_ENGLISH_IMAGE_URL_HERE]
+   
+   Example: https://www.thesmartpro.io/images/poster-english.jpeg
+
+REPLACEMENT 2 - Arabic Images:
+   Find: mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg
+   Replace: [PASTE_YOUR_ARABIC_IMAGE_URL_HERE]
+   
+   Example: https://www.thesmartpro.io/images/poster-arabic.jpeg
+
+Click "Replace All" for each replacement.
+
+
+STEP 3: Test
+-------------
+1. Send test email to yourself
+2. Check if images load
+3. If yes → Ready to send!
+4. If no → Check URL is accessible in browser
+
+
+================================================================================
+EXAMPLE: What URLs Should Look Like
+================================================================================
+
+❌ WRONG (Won't work in emails):
+   mnt/data/WhatsApp Image 2025-11-22 at 8.21.03 PM.jpeg
+   images/poster.jpg
+   /mnt/data/image.jpeg
+
+✅ CORRECT (Will work in emails):
+   https://www.thesmartpro.io/images/poster-english.jpeg
+   https://i.imgur.com/abc123xyz.jpeg
+   https://res.cloudinary.com/yourname/image/upload/poster.jpg
+
+
+================================================================================
+FASTEST SOLUTION (5 Minutes)
+================================================================================
+
+1. Go to imgur.com (no account needed)
+2. Upload your English poster → Copy image URL
+3. Upload your Arabic poster → Copy image URL
+4. Open all-email-templates.html
+5. Find & Replace:
+   - Replace: mnt/data/WhatsApp Image 2025-11-22 at 8.21.03 PM.jpeg
+   - With: [Your Imgur URL for English]
+   - Replace: mnt/data/WhatsApp Image 2025-11-22 at 8.22.49 PM.jpeg
+   - With: [Your Imgur URL for Arabic]
+6. Save and test!
+
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After updating:
+1. Open all-email-templates.html
+2. Search for "mnt/data" - should find ZERO results
+3. All image src should start with "https://"
+4. Test by opening HTML in browser - images should load
+5. Send test email - images should appear
+
+
+================================================================================
+

@@ -1,0 +1,143 @@
+================================================================================
+FIX: Google Sheets Filter Finding 0 Rows
+================================================================================
+
+PROBLEM:
+--------
+rowCount = 0 means the Google Sheets filter isn't finding any matching rows.
+This is why all columns are null - there's no data to access!
+
+Your filters:
+1. Status (E) = "Email 1 Sent"
+2. Email 1 Date (G) < {{threeDaysAgo}} (from Date/Time module)
+
+================================================================================
+POSSIBLE CAUSES
+================================================================================
+
+CAUSE 1: Date Filter Not Working
+---------------------------------
+The {{threeDaysAgo}} variable might not be working in the filter.
+Or the date comparison isn't matching.
+
+Your lead has:
+- Email 1 Date: 2025-11-20T12:47:31.395Z (Nov 20)
+- threeDaysAgo should be: Nov 21 or later (if today is Nov 24+)
+
+If threeDaysAgo is Nov 21, and Email 1 Date is Nov 20:
+- Nov 20 < Nov 21? YES ✅ Should match!
+
+But if the date format doesn't match, it won't work.
+
+CAUSE 2: Status Value Mismatch
+-------------------------------
+The Status column might not be exactly "Email 1 Sent"
+- Could be "Email 1 Sent " (with trailing space)
+- Could be "email 1 sent" (different case)
+- Could be something else entirely
+
+CAUSE 3: Date Variable Not Resolving
+------------------------------------
+The {{threeDaysAgo}} variable might not be accessible in the filter.
+Make.com filters might not support variables from other modules.
+
+================================================================================
+SOLUTION: Test Filters Separately
+================================================================================
+
+STEP 1: Test Status Filter Only
+---------------------------------
+1. Remove the date filter (Filter 2) temporarily
+2. Keep only: Status (E) = "Email 1 Sent"
+3. Run scenario
+4. Check rowCount
+
+If rowCount > 0 → Status filter works, date filter is the problem
+If rowCount = 0 → Status filter is the problem
+
+STEP 2: Test Date Filter Only
+------------------------------
+1. Remove Status filter (Filter 1) temporarily
+2. Keep only: Email 1 Date (G) < {{threeDaysAgo}}
+3. Run scenario
+4. Check rowCount
+
+If rowCount > 0 → Date filter works, status filter is the problem
+If rowCount = 0 → Date filter is the problem
+
+STEP 3: Check Actual Values
+----------------------------
+1. Add variables to see actual values:
+   - testStatus = Check Google Sheets directly
+   - testEmail1Date = Check Google Sheets directly
+   - testThreeDaysAgo = {{threeDaysAgo}}
+
+2. Compare to see what's different
+
+================================================================================
+MOST LIKELY ISSUE: Date Variable in Filter
+================================================================================
+
+Make.com filters might not support variables from other modules directly.
+The {{threeDaysAgo}} variable might not be accessible in the filter.
+
+SOLUTION: Use Expression in Filter
+-----------------------------------
+Instead of using the variable, try calculating directly in the filter:
+
+1. In the date filter, instead of: {{threeDaysAgo}}
+2. Try: {{addDays(now; -3)}}
+3. Or try: {{sub(now; 259200)}} (3 days in seconds)
+
+But we know Make.com evaluates this and saves it as hardcoded...
+
+ALTERNATIVE: Remove Date Filter for Now
+---------------------------------------
+1. Remove the date filter completely
+2. Keep only: Status = "Email 1 Sent"
+3. This will find ALL leads with that status
+4. Test that the rest works (emails, Google Sheets updates)
+5. Add date filtering back later using a different approach
+
+================================================================================
+QUICK FIX: Test Without Date Filter
+================================================================================
+
+1. Open Module 2 (Google Sheets Search Rows)
+2. Remove Filter 2 (date filter) completely
+3. Keep only Filter 1: Status (E) = "Email 1 Sent"
+4. Save
+5. Run scenario
+6. Check rowCount
+
+If rowCount > 0 now:
+- The date filter was the problem
+- You can test the rest of the scenario
+- Fix date filtering later
+
+If rowCount still = 0:
+- The Status filter is the problem
+- Check the exact value in Google Sheets
+
+================================================================================
+CHECK YOUR DATA
+================================================================================
+
+Verify in Google Sheets:
+- Status column (E): Should be exactly "Email 1 Sent" (no spaces, correct case)
+- Email 1 Date (G): Should be a valid date (2025-11-20T12:47:31.395Z)
+- Make sure there are no formatting issues
+
+================================================================================
+ALTERNATIVE: Use Filter Module Instead
+================================================================================
+
+Instead of filtering in Google Sheets:
+
+1. Get ALL rows with Status = "Email 1 Sent" (no date filter)
+2. Add a Filter module after Google Sheets
+3. Filter by date there: Email 1 Date < {{threeDaysAgo}}
+4. This gives you more control and better debugging
+
+================================================================================
+

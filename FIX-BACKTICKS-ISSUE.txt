@@ -1,0 +1,121 @@
+================================================================================
+FIX: Backticks in Filter Causing Issues
+================================================================================
+
+PROBLEM:
+--------
+Your filters use: {{1.`3`}} with backticks
+This might not be resolving correctly in Make.com!
+
+Your data shows:
+- Language: "ar" (lowercase) ✅ - Should match!
+- Status: "Email 1 Sent" ✅ - Correct!
+- Email 1 Date: Nov 20, 2025 ✅ - Should match if today is Nov 23+
+
+But filters still not matching!
+
+================================================================================
+SOLUTION: Remove Backticks
+================================================================================
+
+Your current filters use backticks:
+- Module 3: {{1.`3`}} = "en"
+- Module 4: {{1.`3`}} = "ar"
+
+CHANGE TO (no backticks):
+- Module 3: {{1.3}} = "en"
+- Module 4: {{1.3}} = "ar"
+
+Also check email mapping:
+- Current: {{1.`1`}} (with backticks)
+- Should be: {{1.1}} (without backticks)
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Fix Module 3 (English Email)
+-------------------------------------
+1. Open Module 3 (Resend - Send an Email)
+2. Find the filter condition
+3. Change: {{1.`3`}} to {{1.3}} (remove backticks)
+4. Keep value as: "en"
+5. Also check "to" field: Change {{1.`1`}} to {{1.1}}
+
+STEP 2: Fix Module 4 (Arabic Email)
+-------------------------------------
+1. Open Module 4 (Resend - Send an Email)
+2. Find the filter condition
+3. Change: {{1.`3`}} to {{1.3}} (remove backticks)
+4. Keep value as: "ar" (this matches your data!)
+5. Also check "to" field: Change {{1.`1`}} to {{1.1}}
+
+STEP 3: Test
+-------------
+1. Save all changes
+2. Run scenario manually
+3. It should now find the lead and send Email 2!
+
+================================================================================
+YOUR DATA ANALYSIS
+================================================================================
+
+From Google Sheets:
+- Name: Fahad Alamri
+- Email: chairman@falconeyegroup.net
+- Language: "ar" (lowercase) ✅
+- Status: "Email 1 Sent" ✅
+- Email 1 Date: 2025-11-20T12:47:31.395Z (Nov 20)
+
+Date Check:
+- If today is Nov 23, 2025 or later → Email 1 Date is 3+ days old ✅
+- Filter should find this lead ✅
+
+Language Check:
+- Language = "ar" (lowercase) ✅
+- Filter checks for "ar" (lowercase) ✅
+- Should match! ✅
+
+The only issue is likely the backticks preventing proper resolution!
+
+================================================================================
+ALTERNATIVE: Check Column Mapping
+================================================================================
+
+If removing backticks doesn't work, verify column mapping:
+
+Column D (Language) should be accessed as:
+- {{1.3}} (if 0-based: A=0, B=1, C=2, D=3)
+- OR {{1.4}} (if 1-based: A=1, B=2, C=3, D=4)
+
+To verify:
+1. Add Set Variable module after Google Sheets search
+2. Variable: testLang = {{1.3}}
+3. Variable: testLangAlt = {{1.4}}
+4. Run scenario and check which one has "ar"
+
+================================================================================
+QUICK TEST
+================================================================================
+
+After fixing backticks:
+
+1. Run scenario manually
+2. Check execution log
+3. Module 4 (Arabic) should now pass the filter ✅
+4. Email 2 should be sent to chairman@falconeyegroup.net ✅
+5. Google Sheets should update: Status = "Email 2 Sent" ✅
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+Try removing the filter entirely (temporarily):
+
+1. Remove filter from Module 4
+2. This will send Arabic email to ALL leads found
+3. If it works, the issue is definitely the filter syntax
+4. Add filter back with correct syntax: {{1.3}} = "ar"
+
+================================================================================
+

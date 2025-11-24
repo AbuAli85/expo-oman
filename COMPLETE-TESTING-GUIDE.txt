@@ -1,0 +1,320 @@
+================================================================================
+COMPLETE TESTING GUIDE
+UAE Property Expo Email Campaign - Full System Test
+================================================================================
+
+GOAL: Test the entire email sequence (Email 1 → Email 2 → Email 3) in real-time
+without waiting 3-4 days between emails.
+
+================================================================================
+TESTING STRATEGY
+================================================================================
+
+OPTION 1: Use Short Delays (Recommended for Testing)
+-----------------------------------------------------
+Temporarily change the date filters to use minutes/hours instead of days.
+
+OPTION 2: Use Past Dates
+-------------------------
+Set Email 1 Date to a past date that's already 3+ days old.
+
+OPTION 3: Manual Date Manipulation
+-----------------------------------
+Manually set dates in Google Sheets to simulate the timeline.
+
+================================================================================
+METHOD 1: QUICK TEST WITH SHORT DELAYS (Easiest)
+================================================================================
+
+STEP 1: Prepare Test Data
+--------------------------
+1. Open your Google Sheets
+2. Add a test row:
+   - Name: Test User
+   - Email: your-email@example.com (use YOUR email for testing)
+   - Phone: +968 12345678
+   - Language: EN (or AR - match your router filter exactly!)
+   - Status: New (or leave empty)
+   - Date Added: (today's date - will auto-populate)
+   - Email 1 Date: (leave empty)
+   - Email 2 Date: (leave empty)
+   - Email 3 Date: (leave empty)
+
+STEP 2: Test Email 1 Scenario
+------------------------------
+1. Run "Email 1 - Invitation" scenario manually
+2. Check:
+   ☐ Email 1 was sent to your test email
+   ☐ Status changed to "Email 1 Sent"
+   ☐ Email 1 Date was populated
+   ☐ Image loaded correctly in email
+   ☐ Correct language email was sent (EN or AR)
+
+STEP 3: Modify Email 2 Scenario for Quick Testing
+-------------------------------------------------
+Temporarily change the date filter in Email 2 scenario:
+
+Current (production):
+- Filter: Email 1 Date < {{addDays(now; -3)}}
+
+For testing (change to):
+- Filter: Email 1 Date < {{addMinutes(now; -5)}}
+  OR
+- Filter: Email 1 Date < {{addHours(now; -1)}}
+
+This will find leads who got Email 1 just 5 minutes (or 1 hour) ago!
+
+STEP 4: Test Email 2 Scenario
+------------------------------
+1. Wait 5 minutes (or 1 hour) after Email 1 was sent
+2. Run "Email 2 - Reminder" scenario manually
+3. Check:
+   ☐ Email 2 was sent
+   ☐ Status changed to "Email 2 Sent"
+   ☐ Email 2 Date was populated
+   ☐ Correct language email was sent
+
+STEP 5: Modify Email 3 Scenario for Quick Testing
+--------------------------------------------------
+Temporarily change the date filter in Email 3 scenario:
+
+For testing:
+- Filter: Email 2 Date < {{addMinutes(now; -5)}}
+  OR
+- Filter: Email 2 Date < {{addHours(now; -1)}}
+
+STEP 6: Test Email 3 Scenario
+------------------------------
+1. Wait 5 minutes (or 1 hour) after Email 2 was sent
+2. Run "Email 3 - Final Call" scenario manually
+3. Check:
+   ☐ Email 3 was sent
+   ☐ Status changed to "Campaign Complete"
+   ☐ Email 3 Date was populated
+
+STEP 7: Restore Production Settings
+------------------------------------
+After testing, change filters back to:
+- Email 2: {{addDays(now; -3)}}
+- Email 3: {{addDays(now; -4)}}
+
+================================================================================
+METHOD 2: USE PAST DATES (No Waiting)
+================================================================================
+
+STEP 1: Create Test Lead with Past Dates
+-----------------------------------------
+1. Add test row to Google Sheets:
+   - Name: Test User
+   - Email: your-email@example.com
+   - Language: EN (or AR)
+   - Status: Email 1 Sent
+   - Email 1 Date: 4 days ago (e.g., if today is Dec 4, use Nov 30)
+   - Email 2 Date: (leave empty)
+
+STEP 2: Test Email 2 Immediately
+---------------------------------
+1. Run "Email 2 - Reminder" scenario
+2. It should find the test lead immediately (Email 1 Date is 4 days old)
+3. Verify Email 2 is sent
+
+STEP 3: Update Test Lead for Email 3
+-------------------------------------
+1. After Email 2 is sent, manually update the test row:
+   - Status: Email 2 Sent
+   - Email 2 Date: 5 days ago (older than 4 days)
+
+STEP 4: Test Email 3 Immediately
+---------------------------------
+1. Run "Email 3 - Final Call" scenario
+2. It should find the test lead immediately
+3. Verify Email 3 is sent
+
+================================================================================
+METHOD 3: COMPLETE END-TO-END TEST (Recommended)
+================================================================================
+
+This tests the FULL flow from start to finish:
+
+PHASE 1: Test Email 1
+---------------------
+1. Add test lead: Language = "EN", Status = "New"
+2. Run Email 1 scenario
+3. Verify:
+   ☐ Email 1 sent
+   ☐ Status = "Email 1 Sent"
+   ☐ Email 1 Date = today's date/time
+
+PHASE 2: Test Email 2 (Quick)
+------------------------------
+1. Manually update test lead in Google Sheets:
+   - Change Email 1 Date to: 4 days ago (or use short delay method)
+2. Run Email 2 scenario
+3. Verify:
+   ☐ Email 2 sent
+   ☐ Status = "Email 2 Sent"
+   ☐ Email 2 Date = today's date/time
+
+PHASE 3: Test Email 3 (Quick)
+------------------------------
+1. Manually update test lead:
+   - Change Email 2 Date to: 5 days ago (or use short delay method)
+2. Run Email 3 scenario
+3. Verify:
+   ☐ Email 3 sent
+   ☐ Status = "Campaign Complete"
+   ☐ Email 3 Date = today's date/time
+
+================================================================================
+TESTING CHECKLIST
+================================================================================
+
+EMAIL 1 TEST:
+☐ New lead added to Google Sheets
+☐ Email 1 scenario triggered (or run manually)
+☐ Correct language email sent (EN or AR based on Language column)
+☐ Email contains correct image (English or Arabic poster)
+☐ Email subject is correct
+☐ Contact information is correct
+☐ Google Sheets updated: Status = "Email 1 Sent"
+☐ Google Sheets updated: Email 1 Date populated
+
+EMAIL 2 TEST:
+☐ Email 2 scenario finds leads with Status = "Email 1 Sent" and Email 1 Date = 3+ days ago
+☐ Correct language email sent
+☐ Email contains correct image
+☐ Email subject is correct (English or Arabic)
+☐ Google Sheets updated: Status = "Email 2 Sent"
+☐ Google Sheets updated: Email 2 Date populated
+
+EMAIL 3 TEST:
+☐ Email 3 scenario finds leads with Status = "Email 2 Sent" and Email 2 Date = 4+ days ago
+☐ Correct language email sent
+☐ Email contains correct image
+☐ Email subject is correct (English or Arabic)
+☐ Google Sheets updated: Status = "Campaign Complete"
+☐ Google Sheets updated: Email 3 Date populated
+
+FULL FLOW TEST:
+☐ Lead receives Email 1 immediately
+☐ Lead receives Email 2 after 3 days (or test delay)
+☐ Lead receives Email 3 after 4 more days (or test delay)
+☐ All emails in correct language
+☐ All images load correctly
+☐ All Google Sheets updates work
+☐ No duplicate emails sent
+
+================================================================================
+QUICK TEST SCRIPT (5 Minutes)
+================================================================================
+
+1. Add test lead to Google Sheets:
+   - Email: your-email@example.com
+   - Language: EN
+   - Status: New
+
+2. Run Email 1 scenario → Check email received ✅
+
+3. In Google Sheets, manually change:
+   - Email 1 Date to: 4 days ago
+   - Status to: Email 1 Sent
+
+4. Run Email 2 scenario → Check email received ✅
+
+5. In Google Sheets, manually change:
+   - Email 2 Date to: 5 days ago
+   - Status to: Email 2 Sent
+
+6. Run Email 3 scenario → Check email received ✅
+
+7. Verify Status = "Campaign Complete" ✅
+
+Total time: ~5 minutes (no waiting!)
+
+================================================================================
+TESTING BOTH LANGUAGES
+================================================================================
+
+Test with TWO leads:
+
+Lead 1 (English):
+- Language: EN
+- Email: your-email@example.com
+- Test all 3 emails
+
+Lead 2 (Arabic):
+- Language: AR
+- Email: your-email@example.com (or different email)
+- Test all 3 emails
+
+Verify:
+☐ English lead gets English emails
+☐ Arabic lead gets Arabic emails
+☐ Images match language (English poster vs Arabic poster)
+☐ RTL formatting works for Arabic emails
+
+================================================================================
+SCHEDULED SCENARIOS TESTING
+================================================================================
+
+After manual testing works, test scheduled scenarios:
+
+EMAIL 2 SCHEDULE TEST:
+-----------------------
+1. Set Email 2 scenario to run every hour (for testing)
+2. Add test lead with Email 1 Date = 1 hour ago
+3. Wait for scheduled run
+4. Verify email is sent automatically
+
+EMAIL 3 SCHEDULE TEST:
+-----------------------
+1. Set Email 3 scenario to run every hour (for testing)
+2. Add test lead with Email 2 Date = 1 hour ago
+3. Wait for scheduled run
+4. Verify email is sent automatically
+
+After testing, change schedules back to daily.
+
+================================================================================
+PRODUCTION READINESS CHECKLIST
+================================================================================
+
+Before going live:
+
+☐ All 3 scenarios tested manually
+☐ Both languages tested (EN and AR)
+☐ Images load correctly in all emails
+☐ Google Sheets updates work correctly
+☐ Date filters use correct delays (3 days, 4 days)
+☐ Scheduled scenarios set to run daily
+☐ Test with real email addresses
+☐ Verify no duplicate sends
+☐ Check spam folders
+☐ Test on mobile email clients
+☐ Verify all contact information is correct
+
+================================================================================
+TROUBLESHOOTING TEST ISSUES
+================================================================================
+
+Issue: Email not found by filter
+- Check date format in Google Sheets
+- Verify date filter is using correct operator
+- Check if date is actually old enough
+
+Issue: Wrong language email sent
+- Verify Language column value matches router filter exactly
+- Check case sensitivity (EN vs en)
+
+Issue: Images not loading
+- Verify Imgur URLs are correct
+- Test URLs in browser
+- Check email client settings
+
+Issue: Google Sheets not updating
+- Verify row number mapping
+- Check column indices
+- Verify connection permissions
+
+================================================================================
+

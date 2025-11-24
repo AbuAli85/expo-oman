@@ -1,0 +1,134 @@
+================================================================================
+FIX: All Columns Showing Null
+================================================================================
+
+PROBLEM:
+--------
+All test columns (testCol0, testCol1, testCol2, testCol3) are showing null
+This means the data from Google Sheets isn't being accessed correctly.
+
+================================================================================
+POSSIBLE CAUSES
+================================================================================
+
+CAUSE 1: Google Sheets Search Returned 0 Rows
+---------------------------------------------
+Even though the module ran, it might not have found any matching rows.
+
+Check:
+- Did the filter actually find rows?
+- Check the execution log for "__IMTLENGTH__" - should be > 0
+
+CAUSE 2: Wrong Module Reference
+---------------------------------
+You're using {{1.0}}, {{1.1}}, etc. which references Module 1.
+But if Google Sheets Search is now Module 2 (after adding Date/Time module),
+you need to use {{2.0}}, {{2.1}}, etc.
+
+CAUSE 3: Data Structure Different
+----------------------------------
+The Google Sheets module might return data in a different structure.
+Maybe it's not using numeric indices (0, 1, 2, 3) but named fields.
+
+================================================================================
+SOLUTION: Check Actual Module Output
+================================================================================
+
+STEP 1: Check Module Number
+----------------------------
+1. Count your modules:
+   - Module 1: Date/Time (Set variable) - threeDaysAgo
+   - Module 2: Google Sheets Search Rows
+   - Module 3: Router
+   - etc.
+
+2. If Google Sheets is Module 2, use {{2.0}}, {{2.1}}, etc. instead of {{1.0}}
+
+STEP 2: Check Module Output Structure
+-------------------------------------
+1. In the Set Variable module, try accessing the data differently:
+   - Try: {{2.0}} (if Google Sheets is Module 2)
+   - Try: {{2.Name}} (if using named fields)
+   - Try: {{2.Email}} (if using named fields)
+   - Try: {{2.`0`}} (with backticks - though we removed these before)
+
+STEP 3: Check If Rows Were Found
+---------------------------------
+1. Add a variable: rowCount = {{2.__IMTLENGTH__}}
+2. Run scenario
+3. Check if rowCount > 0
+4. If 0, the filter isn't finding rows
+
+================================================================================
+MOST LIKELY FIX
+================================================================================
+
+Since you added a Date/Time module BEFORE Google Sheets:
+- Module 1: Date/Time (Set variable)
+- Module 2: Google Sheets Search Rows ← This is your data source!
+
+So you need to use {{2.0}}, {{2.1}}, {{2.2}}, {{2.3}} instead of {{1.0}}, {{1.1}}, etc.
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Update Set Variable Module
+-----------------------------------
+Change all variables to use Module 2:
+- testCol0 = {{2.0}} (was {{1.0}})
+- testCol1 = {{2.1}} (was {{1.1}})
+- testCol2 = {{2.2}} (was {{1.2}})
+- testCol3 = {{2.3}} (was {{1.3}})
+
+STEP 2: Update Email Modules
+-----------------------------
+In Module 3 and Module 4 (Email modules):
+- Change "to" field from {{1.1}} to {{2.1}}
+- Change language filter from {{1.3}} to {{2.3}}
+
+STEP 3: Update Google Sheets Update Module
+-------------------------------------------
+In Module 5 and Module 6 (Update Row modules):
+- Change rowNumber from {{1.__ROW_NUMBER__}} to {{2.__ROW_NUMBER__}}
+
+STEP 4: Test
+------------
+1. Save all changes
+2. Run scenario
+3. Check if testCol1 now shows the email address
+
+================================================================================
+ALTERNATIVE: Check Module Output Directly
+================================================================================
+
+1. In the Set Variable module, add:
+   - allData = {{2}} (to see entire module output)
+   
+2. Run scenario
+3. Check execution log
+4. See the actual structure of the data
+5. Use the correct field names/indices
+
+================================================================================
+VERIFY ROWS WERE FOUND
+================================================================================
+
+Add this variable to check:
+- rowCount = {{2.__IMTLENGTH__}}
+
+If this is 0, the Google Sheets filter isn't finding any rows.
+If this is > 0, rows were found but column mapping is wrong.
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+☐ Google Sheets is Module 2 (after Date/Time module)
+☐ Using {{2.0}}, {{2.1}}, etc. (not {{1.0}})
+☐ Check if {{2.__IMTLENGTH__}} > 0 (rows found)
+☐ Update all references from {{1.x}} to {{2.x}}
+☐ Test again
+
+================================================================================
+

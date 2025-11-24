@@ -1,0 +1,132 @@
+================================================================================
+FIX: Email "to" Field Error
+================================================================================
+
+PROBLEM:
+--------
+Module 3 (English Email) shows:
+[422] The `to` field must be a `string`.
+
+This means the email address isn't being passed correctly as a string.
+
+================================================================================
+ROOT CAUSE
+================================================================================
+
+Your email module is using: {{1.`1`}} with backticks
+This might not be resolving correctly, or the column mapping is wrong.
+
+The "to" field expects:
+- A string: "email@example.com" ✅
+- Or an array of strings: ["email@example.com"] ✅
+
+But it's receiving something else (undefined, object, etc.) ❌
+
+================================================================================
+SOLUTION: Fix Email Mapping
+================================================================================
+
+STEP 1: Check Column Mapping
+-----------------------------
+Column B (Email) should be accessed as:
+- {{1.1}} (if 0-based: A=0, B=1)
+- OR {{1.2}} (if 1-based: A=1, B=2)
+
+STEP 2: Fix Module 3 (English Email)
+-------------------------------------
+1. Open Module 3 (Resend - Send an Email)
+2. Find the "to" field
+3. Current: ["{{1.`1`}}"] (with backticks)
+4. Change to: ["{{1.1}}"] (without backticks)
+
+If that doesn't work, try:
+- ["{{1.2}}"] (if 1-based indexing)
+- Or check what column index actually contains the email
+
+STEP 3: Fix Module 4 (Arabic Email) - Prevent Same Issue
+----------------------------------------------------------
+1. Open Module 4 (Resend - Send an Email)
+2. Find the "to" field
+3. Change: ["{{1.`1`}}"] to ["{{1.1}}"] (remove backticks)
+
+================================================================================
+DEBUG: Find Correct Column Index
+================================================================================
+
+To find which column index has the email:
+
+1. Add a Set Variable module after Google Sheets search
+2. Variables:
+   - testEmail1 = {{1.1}}
+   - testEmail2 = {{1.2}}
+   - testEmail3 = {{1.0}}
+3. Run scenario
+4. Check execution log to see which one contains the email address
+
+Then use the correct index in your email modules.
+
+================================================================================
+COMMON FIXES
+================================================================================
+
+FIX 1: Remove Backticks
+-----------------------
+Change: {{1.`1`}} → {{1.1}}
+
+FIX 2: Check Column Index
+--------------------------
+If {{1.1}} doesn't work, try:
+- {{1.0}} (column A - Name)
+- {{1.2}} (column C - Phone)
+- {{1.1}} (column B - Email) ← Most likely
+
+FIX 3: Ensure Array Format
+--------------------------
+Make sure "to" field is an array:
+- Correct: ["{{1.1}}"]
+- Wrong: "{{1.1}}" (string, not array)
+
+================================================================================
+YOUR CURRENT MAPPING
+================================================================================
+
+Based on your Google Sheets:
+- Column A (Name) = {{1.0}}
+- Column B (Email) = {{1.1}} ← Should be this!
+- Column C (Phone) = {{1.2}}
+- Column D (Language) = {{1.3}}
+
+So the email should be: {{1.1}} (without backticks)
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+1. Open Module 3 (Resend - Send an Email)
+2. Find "to" field in the mapper
+3. Change from: ["{{1.`1`}}"]
+4. To: ["{{1.1}}"] (remove backticks)
+5. Save
+
+6. Do the same for Module 4 (Arabic Email)
+7. Save
+
+8. Run scenario again
+9. Should work now! ✅
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+Try this debugging approach:
+
+1. Add Set Variable module after Google Sheets search
+2. Variable: testEmail = {{1.1}}
+3. Run scenario
+4. Check execution log - does testEmail contain the email address?
+
+If yes → Use {{1.1}} in email modules
+If no → Try {{1.2}} or check column mapping
+
+================================================================================
+

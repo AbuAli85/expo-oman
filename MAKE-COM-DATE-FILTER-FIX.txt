@@ -1,0 +1,153 @@
+================================================================================
+FIX: Date Filter Function Error
+"Function 'sub' not found!"
+================================================================================
+
+PROBLEM:
+--------
+You're using: {{sub(now; 3; "days")}}
+Make.com doesn't have a "sub" function!
+
+SOLUTION:
+---------
+Use Make.com's date functions instead.
+
+================================================================================
+CORRECT DATE FILTER SYNTAX FOR MAKE.COM
+================================================================================
+
+OPTION 1: Use addDays with Negative Number (RECOMMENDED)
+----------------------------------------------------------
+
+In your Google Sheets Filter Rows module, change the date filter:
+
+OLD (Doesn't work):
+"{{sub(now; 3; \"days\")}}"
+
+NEW (Correct):
+"{{addDays(now; -3)}}"
+
+This subtracts 3 days from the current date/time.
+
+Full filter configuration:
+- Field: Email 1 Date (G)
+- Operator: date:greater (or date:less, depending on your logic)
+- Value: {{addDays(now; -3)}}
+
+
+OPTION 2: Use Date/Time Module First
+-------------------------------------
+
+If addDays doesn't work, you can:
+
+1. Add a Date/Time module before the filter
+2. Calculate: {{addDays(now; -3)}}
+3. Store it in a variable
+4. Use that variable in the filter
+
+
+OPTION 3: Use Different Date Comparison
+---------------------------------------
+
+Instead of calculating, you can filter for:
+- Email 1 Date is less than: {{now}}
+- AND add a condition that checks the difference
+
+Or use:
+- Email 1 Date is less than: {{formatDate(addDays(now; -3); "YYYY-MM-DD")}}
+
+
+================================================================================
+YOUR CURRENT FILTER CONFIGURATION
+================================================================================
+
+Current (BROKEN):
+-----------------
+Filter 1: Status (E) = "Email 1 Sent" ✅
+Filter 2: Email 1 Date (G) > {{sub(now; 3; "days")}} ❌
+
+Fixed:
+------
+Filter 1: Status (E) = "Email 1 Sent" ✅
+Filter 2: Email 1 Date (G) > {{addDays(now; -3)}} ✅
+
+OR
+
+Filter 2: Email 1 Date (G) < {{addDays(now; -3)}} 
+(Use "less than" if you want dates older than 3 days ago)
+
+
+================================================================================
+MAKE.COM DATE FUNCTIONS REFERENCE
+================================================================================
+
+To subtract days:
+{{addDays(date; -number)}}
+Example: {{addDays(now; -3)}} = 3 days ago
+
+To add days:
+{{addDays(date; number)}}
+Example: {{addDays(now; 3)}} = 3 days from now
+
+Other useful date functions:
+{{formatDate(date; "format")}} - Format a date
+{{parseDate(dateString; "format")}} - Parse a date string
+{{now}} - Current date/time
+
+
+================================================================================
+ALTERNATIVE: SIMPLER FILTER APPROACH
+================================================================================
+
+If date functions are still causing issues, you can:
+
+1. Filter only for Status = "Email 1 Sent"
+2. Add a Set Variable module to calculate: {{addDays(now; -3)}}
+3. Add a Filter module after that to check:
+   - Email 1 Date < {{variable from step 2}}
+
+This separates the calculation from the filter, which can be more reliable.
+
+
+================================================================================
+QUICK FIX STEPS
+================================================================================
+
+STEP 1: Open your Email 2 scenario
+STEP 2: Go to Module 1 (Google Sheets Filter Rows)
+STEP 3: Find the date filter (Email 1 Date > ...)
+STEP 4: Change the value from:
+   {{sub(now; 3; "days")}}
+   
+   To:
+   {{addDays(now; -3)}}
+
+STEP 5: Save and test
+
+================================================================================
+TESTING THE FIX
+================================================================================
+
+After fixing:
+
+1. Run the scenario manually
+2. Check if it finds leads correctly
+3. Verify the date calculation works
+4. Make sure it only finds leads where Email 1 was sent at least 3 days ago
+
+If it still doesn't work, try:
+- Using "date:less" instead of "date:greater"
+- Or using a Date/Time module to calculate the date first
+
+================================================================================
+FOR EMAIL 3 SCENARIO (When You Create It)
+================================================================================
+
+Use the same approach:
+- Filter: Status = "Email 2 Sent"
+- Filter: Email 2 Date > {{addDays(now; -4)}}
+
+This finds leads who received Email 2 at least 4 days ago.
+
+================================================================================
+

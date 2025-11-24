@@ -1,0 +1,178 @@
+================================================================================
+DEBUG: Filter Finding 0 Rows
+================================================================================
+
+PROBLEM:
+--------
+Google Sheets Filter Rows returned: __IMTLENGTH__: 0
+This means NO leads matched your filter criteria.
+
+Your filters:
+1. Status (E) = "Email 1 Sent"
+2. Email 1 Date (G) < {{addHours(now; -1)}}
+
+================================================================================
+POSSIBLE CAUSES
+================================================================================
+
+CAUSE 1: Date Comparison Issue
+-------------------------------
+The date filter might not be working correctly.
+
+Your lead has:
+- Email 1 Date: 2025-11-24T12:47:31.395Z (Nov 24, 2025)
+
+If today is Nov 24, 2025 and it's been more than 1 hour since 12:47 PM, it should match.
+But if the date comparison isn't working, it won't.
+
+SOLUTION:
+1. Check what the current date/time is
+2. Verify Email 1 Date is actually older than 1 hour
+3. Try using a longer delay: {{addHours(now; -24)}} (24 hours)
+
+CAUSE 2: Status Value Mismatch
+-------------------------------
+The Status column might have a different value than "Email 1 Sent"
+
+Check:
+- Is it exactly "Email 1 Sent" (case-sensitive)?
+- No extra spaces?
+- No different wording?
+
+SOLUTION:
+1. Open Google Sheets
+2. Check the exact value in Status column (E)
+3. Make sure it matches exactly: "Email 1 Sent"
+
+CAUSE 3: Date Format Issue
+--------------------------
+The date format in Google Sheets might not match what Make.com expects.
+
+SOLUTION:
+1. Check the Email 1 Date format in Google Sheets
+2. Make sure it's a proper date/time format
+3. Try changing dateTimeRenderOption to "SERIAL_NUMBER"
+
+CAUSE 4: Filter Logic Issue
+---------------------------
+The "time:less" operator might need to be "date:less" or vice versa.
+
+SOLUTION:
+Try changing the operator:
+- From: "time:less"
+- To: "date:less" or "date:lessThanOrEqual"
+
+================================================================================
+QUICK FIXES TO TRY
+================================================================================
+
+FIX 1: Remove Date Filter Temporarily
+--------------------------------------
+Test with ONLY the Status filter:
+
+Filter 1: Status (E) = "Email 1 Sent"
+(Remove Filter 2 temporarily)
+
+If this finds rows, the date filter is the problem.
+
+FIX 2: Use Longer Time Window
+------------------------------
+Change from 1 hour to 24 hours:
+
+"b": "{{addHours(now; -24)}}"
+
+This gives a bigger window and is more likely to match.
+
+FIX 3: Check Actual Date Values
+---------------------------------
+1. Add a Set Variable module after the filter
+2. Store: {{1.6}} (Email 1 Date column)
+3. Run scenario and check what value is stored
+4. Compare with current date/time
+
+FIX 4: Simplify Date Filter
+---------------------------
+Instead of comparing dates, try:
+- Filter: Email 1 Date is not empty
+- Then add date check in a later module
+
+================================================================================
+STEP-BY-STEP DEBUGGING
+================================================================================
+
+STEP 1: Test Status Filter Only
+--------------------------------
+1. Remove the date filter (Filter 2)
+2. Keep only: Status (E) = "Email 1 Sent"
+3. Run scenario
+4. Check if it finds your lead
+
+If YES → Date filter is the problem
+If NO → Status filter is the problem
+
+STEP 2: Test Date Filter Only
+-------------------------------
+1. Remove Status filter (Filter 1)
+2. Keep only: Email 1 Date (G) < {{addHours(now; -1)}}
+3. Run scenario
+4. Check if it finds your lead
+
+If YES → Status filter is the problem
+If NO → Date filter is the problem
+
+STEP 3: Check Actual Values
+----------------------------
+1. Add Set Variable module after filter
+2. Variables:
+   - testStatus = {{1.4}}
+   - testEmail1Date = {{1.6}}
+3. Run scenario
+4. Check execution log to see actual values
+
+STEP 4: Adjust Based on Results
+-------------------------------
+- If Status doesn't match: Fix the value in Google Sheets
+- If Date doesn't match: Adjust the date filter or use longer window
+
+================================================================================
+RECOMMENDED QUICK FIX
+================================================================================
+
+Try this filter configuration:
+
+Filter 1: Status (E) = "Email 1 Sent"
+Filter 2: Email 1 Date (G) < {{addHours(now; -24)}}
+
+This uses 24 hours instead of 1 hour, which is more likely to match.
+
+OR
+
+Remove the date filter entirely for testing:
+- Just use: Status (E) = "Email 1 Sent"
+- This will find ALL leads with that status
+- You can add date filtering later
+
+================================================================================
+ALTERNATIVE: Use Different Filter Approach
+================================================================================
+
+Instead of filtering in Google Sheets, you can:
+
+1. Get ALL rows with Status = "Email 1 Sent"
+2. Add a Filter module after Google Sheets
+3. Filter by date there (more control)
+
+This gives you better debugging options.
+
+================================================================================
+CHECK YOUR LEAD DATA
+================================================================================
+
+Verify in Google Sheets:
+- Row for Fahad Alamri
+- Column E (Status): Should be exactly "Email 1 Sent"
+- Column G (Email 1 Date): Should be a valid date/time
+- Make sure there are no extra spaces or formatting issues
+
+================================================================================
+

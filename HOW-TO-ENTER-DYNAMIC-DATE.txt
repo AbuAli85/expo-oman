@@ -1,0 +1,136 @@
+================================================================================
+HOW TO ENTER DYNAMIC DATE IN MAKE.COM INTERFACE
+================================================================================
+
+PROBLEM:
+--------
+You're still using a hardcoded date: "2025-11-21T12:22:29.398Z"
+This needs to be replaced with: {{addDays(now; -3)}}
+
+The operator "time:less" is correct! ✅
+But the date value needs to be dynamic.
+
+================================================================================
+HOW TO FIX IN MAKE.COM UI
+================================================================================
+
+STEP 1: Open Your Scenario
+---------------------------
+1. Go to Make.com
+2. Open "Email 2 - Reminder" scenario
+3. Click on Module 1 (Google Sheets - Search/Filter Rows)
+
+STEP 2: Edit the Date Filter
+-----------------------------
+1. Find the filter for "Email 1 Date" (Column G)
+2. Click on the value field (currently shows the hardcoded date)
+3. DELETE the hardcoded date: "2025-11-21T12:22:29.398Z"
+4. Click the mapping/expression button (usually looks like </> or {})
+5. Type or paste: {{addDays(now; -3)}}
+6. Make sure it's NOT in quotes - it should be an expression, not a string
+
+STEP 3: Verify the Operator
+----------------------------
+- Operator should be: "time:less" or "date:less" ✅
+- This is already correct in your configuration!
+
+STEP 4: Save
+------------
+1. Click Save/OK
+2. The filter should now show the expression, not a hardcoded date
+
+================================================================================
+WHAT IT SHOULD LOOK LIKE
+================================================================================
+
+In Make.com's filter interface:
+
+Filter 1:
+- Column: E (Status)
+- Operator: equals
+- Value: "Email 1 Sent" ✅
+
+Filter 2:
+- Column: G (Email 1 Date)
+- Operator: less than (or time:less) ✅
+- Value: {{addDays(now; -3)}} ← This should be an EXPRESSION, not a string!
+
+================================================================================
+COMMON MISTAKES
+================================================================================
+
+❌ WRONG: "{{addDays(now; -3)}}" (with quotes - makes it a string)
+✅ CORRECT: {{addDays(now; -3)}} (without quotes - makes it an expression)
+
+❌ WRONG: "2025-11-21T12:22:29.398Z" (hardcoded date)
+✅ CORRECT: {{addDays(now; -3)}} (dynamic calculation)
+
+❌ WRONG: Typing the date manually
+✅ CORRECT: Using the expression/function button
+
+================================================================================
+IF YOU CAN'T ENTER THE EXPRESSION
+================================================================================
+
+Option 1: Use Date/Time Module First
+-------------------------------------
+1. Add a Date/Time module before the filter
+2. Calculate: {{addDays(now; -3)}}
+3. Store it in a variable (e.g., "threeDaysAgo")
+4. In the filter, use: {{dateTime.threeDaysAgo}}
+
+Option 2: Use Text Parser
+--------------------------
+1. Add a Text Parser module
+2. Parse the date calculation
+3. Use the result in the filter
+
+Option 3: Check Make.com Version
+---------------------------------
+Some versions of Make.com use different syntax:
+- Try: {{now - 3 days}}
+- Or: {{subtractDays(now; 3)}}
+- Or check Make.com's date function documentation
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, when you look at the filter configuration:
+
+✅ GOOD: Value shows as an expression/function
+✅ GOOD: You can see {{addDays(now; -3)}} in the field
+✅ GOOD: It's not a hardcoded date string
+
+❌ BAD: Value shows a specific date like "2025-11-21..."
+❌ BAD: It's in quotes
+❌ BAD: It's a static value
+
+================================================================================
+TESTING
+================================================================================
+
+After fixing:
+
+1. The filter will calculate "3 days ago" every time it runs
+2. It will work on any date, not just Nov 21, 2025
+3. Test by running the scenario - it should find leads automatically
+4. Check the execution log to see what date it's using
+
+================================================================================
+ALTERNATIVE: IF EXPRESSION DOESN'T WORK
+================================================================================
+
+If {{addDays(now; -3)}} doesn't work in the filter field, try:
+
+1. Use a Set Variable module first:
+   - Variable name: threeDaysAgo
+   - Value: {{addDays(now; -3)}}
+
+2. Then in the filter:
+   - Value: {{threeDaysAgo}}
+
+This separates the calculation from the filter, which sometimes works better.
+
+================================================================================
+

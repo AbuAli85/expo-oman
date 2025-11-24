@@ -1,0 +1,115 @@
+================================================================================
+FIX: Date Filter Using Hardcoded Date
+================================================================================
+
+PROBLEM:
+--------
+Your filter is using a hardcoded date:
+"2025-11-21T12:16:21.072Z"
+
+This means it will ONLY find leads where Email 1 Date is after Nov 21, 2025.
+After that date passes, the filter won't work anymore!
+
+SOLUTION:
+---------
+Use a dynamic date calculation that always calculates "3 days ago" from today.
+
+================================================================================
+CORRECT FILTER CONFIGURATION
+================================================================================
+
+Filter 1: Status (E) = "Email 1 Sent" ✅
+Filter 2: Email 1 Date (G) > {{addDays(now; -3)}} ✅
+
+This will:
+- Always calculate "3 days ago" from the current date/time
+- Work every day, automatically
+- Find leads who received Email 1 at least 3 days ago
+
+================================================================================
+HOW TO FIX IN MAKE.COM
+================================================================================
+
+STEP 1: Open Module 1 (Google Sheets Filter Rows)
+STEP 2: Find the filter for Email 1 Date (G)
+STEP 3: Change the value from:
+   "2025-11-21T12:16:21.072Z"
+   
+   To:
+   {{addDays(now; -3)}}
+
+STEP 4: Make sure the operator is "date:greater" (or "date:less" depending on logic)
+
+STEP 5: Save
+
+================================================================================
+UNDERSTANDING THE LOGIC
+================================================================================
+
+If you want to find leads who received Email 1 AT LEAST 3 days ago:
+
+Option A: Email 1 Date < (now - 3 days)
+- Operator: date:less
+- Value: {{addDays(now; -3)}}
+- Meaning: Email 1 Date is older than 3 days ago
+
+Option B: Email 1 Date > (now - 3 days)  
+- Operator: date:greater
+- Value: {{addDays(now; -3)}}
+- Meaning: Email 1 Date is more recent than 3 days ago (WRONG for your use case!)
+
+For your use case (find leads who got Email 1 at least 3 days ago):
+- Use: date:less
+- Value: {{addDays(now; -3)}}
+
+OR
+
+- Use: date:lessThanOrEqual  
+- Value: {{addDays(now; -3)}}
+
+This finds all dates that are 3 days old or older.
+
+================================================================================
+RECOMMENDED FILTER CONFIGURATION
+================================================================================
+
+Filter 1:
+- Column: E (Status)
+- Operator: text:equal
+- Value: "Email 1 Sent"
+
+Filter 2:
+- Column: G (Email 1 Date)
+- Operator: date:less (or date:lessThanOrEqual)
+- Value: {{addDays(now; -3)}}
+
+This will find:
+- All leads with Status = "Email 1 Sent"
+- AND Email 1 Date is at least 3 days old
+
+================================================================================
+TESTING
+================================================================================
+
+After fixing:
+
+1. The filter should work every day
+2. It will automatically find leads ready for Email 2
+3. No need to update the date manually
+4. Test with a lead that has Email 1 Date = 3+ days ago
+
+================================================================================
+ALTERNATIVE: Date Range Filter (More Precise)
+================================================================================
+
+If you want to be more precise (exactly 3 days, not "3 days or more"):
+
+Filter 2a: Email 1 Date >= (now - 4 days)
+Filter 2b: Email 1 Date <= (now - 3 days)
+
+This finds leads where Email 1 was sent between 3-4 days ago.
+
+But for your use case, "at least 3 days ago" is probably fine.
+
+================================================================================
+

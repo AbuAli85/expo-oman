@@ -1,0 +1,154 @@
+================================================================================
+FINAL FIX: Replace Hardcoded Date with Dynamic Calculation
+================================================================================
+
+CURRENT PROBLEM:
+----------------
+Your filter uses a hardcoded date:
+"2025-11-21T12:19:39.543Z"
+
+This will stop working after that date passes!
+
+SOLUTION:
+---------
+Replace with dynamic date calculation that always calculates "3 days ago"
+
+================================================================================
+CORRECT FILTER CONFIGURATION
+================================================================================
+
+Filter 1:
+- Column: E (Status)
+- Operator: text:equal
+- Value: "Email 1 Sent"
+
+Filter 2:
+- Column: G (Email 1 Date)
+- Operator: time:less (or date:less)
+- Value: {{addDays(now; -3)}}
+
+CHANGE THIS:
+------------
+OLD: "b": "2025-11-21T12:19:39.543Z"
+NEW: "b": "{{addDays(now; -3)}}"
+
+Also change operator from "time:greater" to "time:less" (or "date:less")
+
+Why "less"?
+-----------
+If Email 1 Date is LESS than (now - 3 days), it means the email was sent MORE than 3 days ago.
+
+Example:
+- Today: Dec 4, 2025
+- 3 days ago: Dec 1, 2025
+- Email 1 Date: Nov 30, 2025 (4 days ago)
+- Is Nov 30 < Dec 1? YES ✅ (Email was sent more than 3 days ago)
+
+================================================================================
+STEP-BY-STEP FIX IN MAKE.COM
+================================================================================
+
+STEP 1: Open Module 1 (Google Sheets Search/Filter Rows)
+STEP 2: Find Filter 2 (Email 1 Date filter)
+STEP 3: Change the "b" (value) field:
+   FROM: "2025-11-21T12:19:39.543Z"
+   TO: {{addDays(now; -3)}}
+
+STEP 4: Change the operator if needed:
+   FROM: "time:greater"
+   TO: "time:less" (or "date:less")
+
+STEP 5: Save the module
+STEP 6: Test the scenario
+
+================================================================================
+COMPLETE FILTER JSON (For Reference)
+================================================================================
+
+{
+    "from": "drive",
+    "filter": [
+        [
+            {
+                "a": "E",
+                "b": "Email 1 Sent",
+                "o": "text:equal"
+            },
+            {
+                "a": "G",
+                "b": "{{addDays(now; -3)}}",
+                "o": "time:less"
+            }
+        ]
+    ],
+    "sheetId": "leads",
+    "sortOrder": "asc",
+    "spreadsheetId": "1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+    "tableFirstRow": "A1:CZ1",
+    "includesHeaders": true,
+    "valueRenderOption": "FORMATTED_VALUE",
+    "dateTimeRenderOption": "FORMATTED_STRING"
+}
+
+KEY CHANGES:
+------------
+1. "b": "2025-11-21T12:19:39.543Z" → "b": "{{addDays(now; -3)}}"
+2. "o": "time:greater" → "o": "time:less"
+
+================================================================================
+WHY "time:less" INSTEAD OF "time:greater"?
+================================================================================
+
+You want to find leads where Email 1 was sent AT LEAST 3 days ago.
+
+This means: Email 1 Date < (now - 3 days)
+
+Example:
+- Now: Dec 4, 2025, 12:00 PM
+- 3 days ago: Dec 1, 2025, 12:00 PM
+- Email 1 Date: Nov 30, 2025 (4 days ago)
+
+Check: Is Nov 30 < Dec 1? YES ✅
+Result: This lead should receive Email 2 ✅
+
+If you use "time:greater":
+- Check: Is Nov 30 > Dec 1? NO ❌
+- Result: Lead won't be found ❌
+
+So use "time:less" to find dates OLDER than 3 days ago.
+
+================================================================================
+ALTERNATIVE OPERATORS
+================================================================================
+
+If "time:less" doesn't work, try:
+- "date:less"
+- "date:lessThanOrEqual"
+- "time:lessThanOrEqual"
+
+All of these will find dates that are 3+ days old.
+
+================================================================================
+TESTING
+================================================================================
+
+After fixing:
+
+1. The filter will work every day automatically
+2. It will find leads where Email 1 Date is at least 3 days old
+3. No need to manually update dates
+4. Test with a lead that has Email 1 Date = 3+ days ago
+
+================================================================================
+FOR EMAIL 3 SCENARIO
+================================================================================
+
+When you create Email 3, use the same approach:
+
+Filter 1: Status (E) = "Email 2 Sent"
+Filter 2: Email 2 Date (H) < {{addDays(now; -4)}}
+
+This finds leads who received Email 2 at least 4 days ago.
+
+================================================================================
+
