@@ -1,0 +1,26 @@
+{
+  "drive": "drive",
+  "searchMethod": "select",
+  "limit": 1,
+  "sheetName": "leads",
+  "spreadsheetId": "1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+  "spreadsheetPath": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+  "rowWithHeaders": "A1:J1",
+  "tableContainsHeaders": true,
+  "valueRenderOption": "FORMATTED_VALUE",
+  "dateTimeRenderOption": "FORMATTED_STRING",
+  "columnMappings": {
+    "A": "Name",
+    "B": "Email",
+    "C": "Phone",
+    "D": "Language",
+    "E": "Status",
+    "F": "Date Added",
+    "G": "Email 1 Date",
+    "H": "Email 2 Date",
+    "I": "Email 3 Date",
+    "J": "Notes"
+  },
+  "mappings": {}
+}
+
