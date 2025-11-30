@@ -1,0 +1,83 @@
+================================================================================
+QUICK SETUP: ACCEPT/REJECT WORKFLOW
+15-Minute Implementation
+================================================================================
+
+Add Accept/Reject functionality to your email automation.
+
+================================================================================
+STEP 1: CREATE WEBHOOK SCENARIO (5 minutes)
+================================================================================
+
+1. Create NEW scenario: "Handle Expo Response"
+2. Add trigger: Webhooks → Custom webhook
+3. Method: GET
+4. Copy webhook URL (you'll use this in emails)
+
+================================================================================
+STEP 2: UPDATE EMAIL BUTTONS (5 minutes)
+================================================================================
+
+In Module 3 (English Email) and Module 4 (Arabic Email):
+
+Replace the "Register Now" button with TWO buttons:
+
+ACCEPT BUTTON:
+--------------
+```html
+<a href="https://hook.eu2.make.com/YOUR_WEBHOOK_ID?email={{8.email}}&name={{8.name}}&response=accept" 
+   style="...">
+   ✅ Yes, I'll Attend
+</a>
+```
+
+REJECT BUTTON:
+---------------
+```html
+<a href="https://hook.eu2.make.com/YOUR_WEBHOOK_ID?email={{8.email}}&name={{8.name}}&response=reject" 
+   style="...">
+   ❌ No, I Cannot Attend
+</a>
+```
+
+Replace YOUR_WEBHOOK_ID with your actual webhook ID.
+
+================================================================================
+STEP 3: CONFIGURE WEBHOOK HANDLER (5 minutes)
+================================================================================
+
+In "Handle Expo Response" scenario:
+
+1. Add Router
+   - Route 1: {{query.response}} = "accept"
+   - Route 2: {{query.response}} = "reject"
+
+2. Route 1 (Accept):
+   - Update Google Sheets: Response = "Accepted"
+   - Send agreement email
+
+3. Route 2 (Reject):
+   - Update Google Sheets: Response = "Rejected"
+   - Send thank you email
+
+================================================================================
+STEP 4: UPDATE GOOGLE SHEETS (2 minutes)
+================================================================================
+
+Add new columns:
+- Column K: Response
+- Column L: Response Date
+
+================================================================================
+DONE!
+================================================================================
+
+Now when clients click buttons in email:
+- Accept → Updates Sheets + Sends agreement
+- Reject → Updates Sheets + Sends thank you
+
+================================================================================
+
+
+
+

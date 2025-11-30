@@ -1,0 +1,59 @@
+================================================================================
+QUICK FIX: ROW NUMBER IN UPDATE ROW
+================================================================================
+
+PROBLEM: "Row number*" field in Update Row module
+
+SOLUTION: Use "Search Rows" mode instead!
+
+================================================================================
+QUICK FIX (2 MINUTES)
+================================================================================
+
+STEP 1: Open Update Row Module
+-------------------------------
+Click on Module 4 or Module 6
+
+STEP 2: Change Mode
+-------------------
+1. Find "Mode" or "Search Method"
+2. Change from "Select" to "Search Rows"
+3. This allows finding row by email
+
+STEP 3: Add Search Filter
+--------------------------
+1. Find "Search Filter" section
+2. Add:
+   - Column: Email (or index 1)
+   - Operator: equals
+   - Value: {{2.email}}
+
+STEP 4: Configure Values
+-------------------------
+1. Values to Update:
+   - Column K: "Accepted" (or "Rejected")
+   - Column L: {{now}}
+   - Column M: {{2.comments}}
+
+STEP 5: Row Number Field
+-------------------------
+LEAVE EMPTY - Not needed with Search Rows mode!
+
+STEP 6: Save
+------------
+Save module
+
+================================================================================
+DONE!
+================================================================================
+
+With "Search Rows" mode:
+✅ Finds row automatically by email
+✅ No need to specify row number
+✅ Updates the correct row
+
+================================================================================
+
+
+
+

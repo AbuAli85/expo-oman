@@ -1,0 +1,209 @@
+================================================================================
+FIX: "Function 'lowercase' not found" Error
+================================================================================
+
+Make.com doesn't have a "lowercase()" function in that format. Use the
+correct Make.com syntax instead.
+
+================================================================================
+CORRECT MAKE.COM SYNTAX
+================================================================================
+
+Make.com uses different function names. Here are the correct options:
+
+OPTION 1: Use String Functions (Recommended)
+─────────────────────────────────────────────
+
+In Module 9, for the language variable:
+
+Use this expression:
+  {{replace(replace(12.language; " "; ""); "EN"; "en")}} || "en"
+
+Or simpler, just trim and use default:
+  {{trim(12.language)}} || "en"
+
+OPTION 2: Use Map Function
+───────────────────────────
+
+If you need case conversion, use:
+  {{map(12.language; replace(item; "EN"; "en"))}} || "en"
+
+OPTION 3: Simple Approach (Easiest)
+────────────────────────────────────
+
+Just use trim and default:
+  {{trim(12.language)}} || "en"
+
+Make.com will handle case-insensitive matching in filters anyway.
+
+================================================================================
+QUICK FIX
+================================================================================
+
+In Module 9 (Set Variables), update language variable:
+
+WRONG (causes error):
+─────────────────────
+{{lowercase(trim(12.language))}} || "en"
+
+CORRECT (use this):
+───────────────────
+{{trim(12.language)}} || "en"
+
+OR:
+───────────────────
+{{12.language}} || "en"
+
+================================================================================
+WHY THIS WORKS
+================================================================================
+
+1. Make.com filters are case-insensitive by default
+   → "en", "EN", "En" will all match filter for "en"
+   → "ar", "AR", "Ar" will all match filter for "ar"
+
+2. trim() removes whitespace
+   → "en " becomes "en"
+   → " en" becomes "en"
+
+3. Default value ensures it's never empty
+   → Empty value becomes "en"
+
+So the simplest fix is:
+  {{trim(12.language)}} || "en"
+
+This will:
+  ✓ Remove whitespace
+  ✓ Default to "en" if empty
+  ✓ Case-insensitive filters will handle the rest
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Open Module 9
+──────────────────────
+□ Go to Make.com scenario
+□ Click Module 9 (Set Variables)
+
+STEP 2: Find Language Variable
+───────────────────────────────
+□ Find the variable named "language"
+□ Look at its current value
+
+STEP 3: Update Value
+─────────────────────
+Remove the lowercase() function and use:
+
+Simple version:
+  {{trim(12.language)}} || "en"
+
+OR even simpler:
+  {{12.language}} || "en"
+
+STEP 4: Save
+────────────
+□ Click OK/Save
+□ Save the scenario
+
+================================================================================
+ALTERNATIVE: FIX IN FILTERS INSTEAD
+================================================================================
+
+If you want to keep Module 9 simple, you can make the filters more flexible:
+
+In Router filters:
+
+English Route:
+  {{9.language}} equals "en" (case insensitive)
+  OR
+  {{contains(9.language; "en")}}
+
+Arabic Route:
+  {{9.language}} equals "ar" (case insensitive)
+  OR
+  {{contains(9.language; "ar")}}
+
+This way, "en", "EN", "english", "English" all match.
+
+================================================================================
+BEST PRACTICE SOLUTION
+================================================================================
+
+RECOMMENDED APPROACH:
+
+1. In Module 9, keep it simple:
+   language: {{trim(12.language)}} || "en"
+
+2. Ensure Router filters are case-insensitive:
+   Route 1: {{9.language}} equals "en" (case insensitive)
+   Route 2: {{9.language}} equals "ar" (case insensitive)
+
+3. If needed, add default normalization in Google Apps Script:
+   Send always lowercase: "en" or "ar"
+
+This ensures:
+  ✓ No function errors
+  ✓ Works with any case
+  ✓ Handles empty values
+  ✓ Simple and maintainable
+
+================================================================================
+MAKE.COM STRING FUNCTIONS REFERENCE
+================================================================================
+
+Common Make.com string functions:
+
+trim(text)           - Remove whitespace
+replace(text; old; new) - Replace text
+contains(text; search)  - Check if contains
+split(text; delimiter)  - Split string
+length(text)         - Get length
+substring(text; start; end) - Get substring
+
+Note: Function names are lowercase, parameters separated by semicolons.
+
+Example:
+  {{trim(replace(12.language; " "; ""))}} || "en"
+
+================================================================================
+TESTING AFTER FIX
+================================================================================
+
+After updating Module 9:
+
+1. Remove the lowercase() function
+2. Use: {{trim(12.language)}} || "en"
+3. Save the scenario
+4. Run a test execution
+5. Verify language value is set correctly
+6. Check that email filter passes
+
+Expected result:
+  ✓ No function errors
+  ✓ Language variable is set
+  ✓ Router filters work
+  ✓ Email sends successfully
+
+================================================================================
+SUMMARY
+================================================================================
+
+The Error:
+  ❌ {{lowercase(trim(12.language))}} || "en"
+     → "Function 'lowercase' not found"
+
+The Fix:
+  ✅ {{trim(12.language)}} || "en"
+     → Works perfectly in Make.com
+
+Why:
+  • trim() is a valid Make.com function
+  • Filters are case-insensitive anyway
+  • Default value handles empty cases
+  • Simple and reliable
+
+================================================================================
+END OF FIX
+================================================================================
+

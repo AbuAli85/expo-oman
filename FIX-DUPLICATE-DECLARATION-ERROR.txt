@@ -1,0 +1,230 @@
+================================================================================
+FIX: "Identifier 'WEBHOOK_URL' has already been declared" Error
+================================================================================
+
+This error occurs when the same variable is declared multiple times. This usually
+happens if you pasted the script more than once in Apps Script.
+
+================================================================================
+QUICK FIX (Choose One Method)
+================================================================================
+
+METHOD 1: Delete All and Paste Fresh (Recommended)
+───────────────────────────────────────────────────
+
+Step 1: Delete All Code
+  □ Open Apps Script editor
+  □ Select ALL code (Ctrl+A or Cmd+A)
+  □ Delete it (Delete or Backspace)
+  □ The editor should be completely empty
+
+Step 2: Check for Multiple Files
+  □ Look in the left sidebar for file tabs
+  □ If you see multiple files (like "Code.gs", "Untitled.gs", etc.):
+     → Click on each file
+     → Delete all content from each
+     → Or delete the extra files entirely
+  □ You should only have ONE file with the script
+
+Step 3: Paste Fresh Code
+  □ Open GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js
+  □ Copy the ENTIRE script (Ctrl+A then Ctrl+C)
+  □ Paste into Apps Script editor (Ctrl+V)
+  □ Verify there's only ONE declaration of WEBHOOK_URL
+
+Step 4: Save
+  □ Click File → Save (or Ctrl+S)
+  □ Name your project: "Make.com Webhook Trigger"
+
+Step 5: Verify
+  □ Look for WEBHOOK_URL in the script (Ctrl+F)
+  □ There should be only ONE occurrence
+  □ The line should be:
+     const WEBHOOK_URL = 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u';
+
+
+METHOD 2: Clean Up Existing Code
+──────────────────────────────────
+
+Step 1: Find Duplicates
+  □ Press Ctrl+F (or Cmd+F on Mac)
+  □ Search for: WEBHOOK_URL
+  □ See how many times it appears
+  □ If it appears more than once, you have duplicates
+
+Step 2: Remove Duplicates
+  □ Keep only the FIRST declaration (around line 22)
+  □ Delete any other declarations
+  □ Make sure all code between functions is clean
+  □ Remove any duplicate function definitions too
+
+Step 3: Save and Test
+  □ Save the script
+  □ Try running testWebhook() function
+  □ Check if error is gone
+
+
+METHOD 3: Start Fresh Project
+──────────────────────────────
+
+Step 1: Create New Project
+  □ Go to script.google.com
+  □ Click "New Project"
+  □ Name it: "Make.com Webhook Trigger"
+
+Step 2: Paste Clean Code
+  □ Open GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js
+  □ Copy ALL code
+  □ Paste into the new project
+
+Step 3: Save and Set Up
+  □ File → Save
+  □ Go back to your Google Sheet
+  □ Extensions → Apps Script
+  □ You'll need to copy the script to the sheet's Apps Script editor
+
+================================================================================
+CHECKLIST: Verify Your Script is Clean
+================================================================================
+
+□ Only ONE file in the Apps Script project (or only ONE file has code)
+□ WEBHOOK_URL appears exactly ONCE in the script
+□ SHEET_NAME appears exactly ONCE
+□ COLUMN_MAPPING appears exactly ONCE
+□ No duplicate function definitions
+□ All code is in proper structure (no broken pieces)
+
+================================================================================
+COMMON CAUSES
+================================================================================
+
+1. PASTED SCRIPT TWICE
+   → Solution: Delete all, paste once
+
+2. MULTIPLE FILES IN PROJECT
+   → Solution: Delete extra files, keep only one
+
+3. ACCIDENTAL DUPLICATION
+   → Solution: Search for duplicates, remove extras
+
+4. MERGED TWO VERSIONS
+   → Solution: Start fresh with clean copy
+
+================================================================================
+STEP-BY-STEP CLEAN INSTALLATION
+================================================================================
+
+1. Open Google Sheet
+   □ Open the sheet where form responses go
+
+2. Open Apps Script
+   □ Extensions → Apps Script
+
+3. Clear Everything
+   □ If there's existing code, select all (Ctrl+A)
+   □ Delete it completely
+   □ If multiple file tabs exist, delete content from all
+
+4. Get Clean Script
+   □ Open GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js from your computer
+   □ Select ALL (Ctrl+A)
+   □ Copy (Ctrl+C)
+
+5. Paste Clean Script
+   □ Go back to Apps Script editor
+   □ Paste (Ctrl+V)
+   □ Verify it looks correct
+
+6. Update Configuration
+   □ Update SHEET_NAME if needed (line 25)
+   □ Verify WEBHOOK_URL is correct (line 22)
+
+7. Save
+   □ File → Save (or Ctrl+S)
+   □ Name: "Make.com Webhook Trigger"
+
+8. Verify No Errors
+   □ Check for red error indicators
+   □ No syntax errors should appear
+   □ WEBHOOK_URL should only appear once
+
+9. Test
+   □ Select function: testWebhook
+   □ Click Run
+   □ Check logs - should work without errors
+
+================================================================================
+VERIFICATION COMMANDS
+================================================================================
+
+In Apps Script Editor, use Find (Ctrl+F) to search for:
+
+1. Search: "const WEBHOOK_URL"
+   → Should find exactly ONE result
+
+2. Search: "const SHEET_NAME"
+   → Should find exactly ONE result
+
+3. Search: "function onFormSubmit"
+   → Should find exactly ONE result
+
+4. Search: "function testWebhook"
+   → Should find exactly ONE result
+
+If any of these appear more than once, you have duplicates!
+
+================================================================================
+IF ERROR PERSISTS
+================================================================================
+
+1. COMPLETE CLEANUP:
+   □ Close Apps Script editor
+   □ Reopen Apps Script
+   □ Delete ALL files in the project
+   □ Create new file
+   □ Paste fresh code
+
+2. CHECK FOR HIDDEN CHARACTERS:
+   □ Sometimes copy/paste can bring hidden characters
+   □ Try typing WEBHOOK_URL declaration manually:
+      const WEBHOOK_URL = 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u';
+
+3. VERIFY FILE STRUCTURE:
+   □ Make sure you're editing the correct file
+   □ Check file name in Apps Script editor
+   □ Only edit "Code.gs" or your main file
+
+4. CHECK SYNTAX:
+   □ Ensure all brackets match: { }
+   □ Ensure all parentheses match: ( )
+   □ No missing semicolons or commas
+
+================================================================================
+QUICK COPY-PASTE SOLUTION
+================================================================================
+
+If you just want to fix it quickly:
+
+1. Delete EVERYTHING in Apps Script editor
+
+2. Copy and paste this clean version of just the configuration section:
+
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+
+// Your Make.com webhook URL
+const WEBHOOK_URL = 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u';
+
+// Sheet name (update if your sheet has a different name)
+const SHEET_NAME = 'Form Responses 1'; // Change to your actual sheet name
+
+3. Then paste the rest of the script from GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js
+   (starting from // COLUMN MAPPING section)
+
+4. Save and test
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

@@ -1,0 +1,266 @@
+================================================================================
+WEBHOOK SCRIPT UPDATED FOR YOUR SHEET STRUCTURE
+================================================================================
+
+The Google Apps Script has been updated to match your exact sheet structure
+based on the data you provided.
+
+================================================================================
+YOUR SHEET STRUCTURE
+================================================================================
+
+Header Row:
+Name | Email | Phone | Language | Status | Date Added | Email 1 Date | 
+Email 2 Date | Email 3 Date | Notes | Response | Response Date | Comments
+
+Sample Data:
+Row 1: fahad alamri | chairman@falconeyegroup.net | (empty) | en
+Row 2: faahd alamri | luxsess2001@hotmail.com | (empty) | en
+
+================================================================================
+SCRIPT UPDATES MADE
+================================================================================
+
+✅ Updated column mappings to match your sheet structure
+✅ Added support for Phone, Status, Response, Response Date fields
+✅ Added diagnostic function to help verify column structure
+✅ Updated webhook payload to include all relevant fields
+✅ Added backward compatibility (Response maps to Attendance)
+
+================================================================================
+IMPORTANT: COLUMN NUMBERING
+================================================================================
+
+Google Forms automatically adds a "Timestamp" column as Column A when
+responses are submitted. This means:
+
+ACTUAL COLUMN STRUCTURE:
+───────────────────────────────────────────────────────────────
+Column A: Timestamp        (Auto-added by Google Forms)
+Column B: Name             (Your header starts here)
+Column C: Email            
+Column D: Phone            
+Column E: Language         
+Column F: Status           
+Column G: Date Added       
+Column H: Email 1 Date     
+Column I: Email 2 Date     
+Column J: Email 3 Date     
+Column K: Notes            
+Column L: Response         (Contains attendance response)
+Column M: Response Date    
+Column N: Comments         
+
+If your sheet doesn't have a timestamp column (custom sheet, not from Forms),
+then Name would be Column A instead of Column B.
+
+The script is configured assuming Column A is Timestamp (standard for Forms).
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+STEP 1: VERIFY YOUR COLUMN STRUCTURE
+─────────────────────────────────────
+1. Open your Google Sheet
+2. Open Apps Script: Extensions → Apps Script
+3. Paste the updated script (GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js)
+4. Update SHEET_NAME if needed (default: "Form Responses 1")
+5. Run the diagnostic function:
+   - Select function: "diagnoseSheetStructure"
+   - Click Run (▶️)
+   - Check logs (View → Logs)
+   - Verify column mappings match your sheet
+
+STEP 2: ADJUST COLUMN MAPPING IF NEEDED
+────────────────────────────────────────
+If the diagnostic shows incorrect mappings:
+
+1. Check which column contains which data
+2. Update COLUMN_MAPPING object in the script:
+   - Column numbers are 1-based (1 = A, 2 = B, etc.)
+   - Update the numbers to match your actual columns
+
+Example: If Name is in Column A (not B):
+  NAME: 1,  // Instead of NAME: 2
+
+STEP 3: TEST THE WEBHOOK
+─────────────────────────
+1. Run testWebhook() function
+2. Check logs for success/error
+3. Check Make.com for new execution
+4. Verify data received matches your sheet structure
+
+STEP 4: INSTALL THE TRIGGER
+────────────────────────────
+1. Click clock icon (⏰) in Apps Script
+2. Click "+ Add Trigger"
+3. Configure:
+   - Function: onFormSubmit
+   - Event source: From form
+   - Event type: On form submit
+4. Save and authorize
+
+STEP 5: TEST WITH REAL FORM
+────────────────────────────
+1. Submit a test form response
+2. Check Make.com execution (should be instant)
+3. Verify all data fields are received correctly
+4. Check sheet for any issues
+
+================================================================================
+WEBHOOK DATA PAYLOAD
+================================================================================
+
+The script sends this data structure to Make.com:
+
+{
+  "timestamp": "2025-01-15T10:30:00.000Z",  // From Column A (Timestamp)
+  "name": "fahad alamri",                    // From Column B (Name)
+  "email": "chairman@falconeyegroup.net",    // From Column C (Email) - lowercased
+  "phone": "",                               // From Column D (Phone)
+  "language": "en",                          // From Column E (Language)
+  "status": "",                              // From Column F (Status)
+  "attendance": "...",                       // From Column L (Response)
+  "response": "...",                         // From Column L (same as attendance)
+  "responseDate": "...",                     // From Column M (Response Date)
+  "comments": ""                             // From Column N (Comments)
+}
+
+Note: "attendance" field is mapped from "response" for backward compatibility
+with existing Make.com scenarios.
+
+================================================================================
+MAKE.COM SCENARIO MAPPING
+================================================================================
+
+In your Make.com scenario, map the webhook data like this:
+
+After webhook module → Set Multiple Variables:
+
+Variable Name          | Webhook Field
+───────────────────────┼──────────────────────────────
+recipientEmail         | {{webhook.email}}
+recipientName          | {{webhook.name}}
+recipientPhone         | {{webhook.phone}}
+recipientLanguage      | {{webhook.language}}
+attendance             | {{webhook.attendance}} OR {{webhook.response}}
+response               | {{webhook.response}}
+responseDate           | {{webhook.responseDate}}
+comments               | {{webhook.comments}}
+invitationDate         | {{webhook.timestamp}}
+
+================================================================================
+DIAGNOSTIC FUNCTIONS
+================================================================================
+
+The script includes helpful diagnostic functions:
+
+1. diagnoseSheetStructure()
+   - Shows your exact sheet structure
+   - Lists all columns and headers
+   - Shows sample data rows
+   - Verifies column mappings
+   - Identifies potential issues
+
+   How to use:
+   □ Select function: "diagnoseSheetStructure"
+   □ Click Run (▶️)
+   □ View → Logs to see results
+
+2. testWebhook()
+   - Tests webhook connection
+   - Sends sample data
+   - Checks for errors
+   - Verifies Make.com receives data
+
+   How to use:
+   □ Select function: "testWebhook"
+   □ Click Run (▶️)
+   □ Check logs and Make.com execution
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Wrong data in Make.com
+──────────────────────────────
+Solution:
+1. Run diagnoseSheetStructure() to see actual columns
+2. Compare with COLUMN_MAPPING in script
+3. Update column numbers if needed
+4. Re-test
+
+ISSUE: Column A is Name (not Timestamp)
+────────────────────────────────────────
+Solution:
+Update COLUMN_MAPPING:
+  TIMESTAMP: 1,  // Use Date Added or leave as is
+  NAME: 1,       // Name is in Column A
+  EMAIL: 2,      // Email is in Column B
+  // Adjust all other columns accordingly
+
+ISSUE: Missing fields in webhook
+─────────────────────────────────
+Solution:
+1. Check if column exists in your sheet
+2. Verify column number in COLUMN_MAPPING
+3. Check getFormData() function includes the field
+4. Verify field is in sendToWebhook() payload
+
+ISSUE: Webhook not triggering
+──────────────────────────────
+Solution:
+1. Verify trigger is installed (Apps Script → Triggers)
+2. Check trigger is "Active"
+3. Verify script is authorized
+4. Check logs for errors
+5. Test webhook URL manually
+
+================================================================================
+FILES UPDATED
+================================================================================
+
+✅ GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js
+   - Updated column mappings
+   - Added diagnostic function
+   - Enhanced data extraction
+   - Added phone, status, response fields
+
+✅ COLUMN-MAPPING-EXPLANATION.txt
+   - Detailed explanation of column structure
+   - How to verify your mappings
+   - Troubleshooting guide
+
+✅ WEBHOOK-SCRIPT-UPDATED-SUMMARY.txt (this file)
+   - Quick reference for updates
+   - Next steps guide
+   - Troubleshooting tips
+
+================================================================================
+QUICK START CHECKLIST
+================================================================================
+
+□ Script pasted into Apps Script editor
+□ SHEET_NAME updated to match your sheet
+□ Run diagnoseSheetStructure() to verify columns
+□ Adjust COLUMN_MAPPING if needed
+□ Run testWebhook() to test connection
+□ Install trigger (onFormSubmit, From form, On form submit)
+□ Authorize script
+□ Submit test form response
+□ Verify Make.com receives data correctly
+□ Update Make.com scenario to use webhook data
+
+================================================================================
+SUPPORT
+================================================================================
+
+For detailed setup instructions: WEBHOOK-SETUP-GUIDE.txt
+For column mapping details: COLUMN-MAPPING-EXPLANATION.txt
+For workflow improvements: EMAIL-1-INVITATION-WORKFLOW-IMPROVEMENTS.txt
+
+================================================================================
+END OF SUMMARY
+================================================================================
+

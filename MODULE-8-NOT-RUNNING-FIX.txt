@@ -1,0 +1,211 @@
+================================================================================
+FIX: MODULE 8 NOT RUNNING AFTER MODULE 1
+Most Common Issue - Quick Fix
+================================================================================
+
+PROBLEM:
+--------
+Module 1 runs successfully
+Module 8 doesn't run or shows no details
+
+THIS MEANS:
+----------
+Module 8 is either:
+1. Not connected to Module 1
+2. Has configuration errors
+3. Is being skipped
+
+================================================================================
+IMMEDIATE FIX: CHECK CONNECTION
+================================================================================
+
+STEP 1: Visual Check
+--------------------
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Look at the flow diagram
+
+QUESTION: Do you see a line from Module 1 to Module 8?
+
+IF NO LINE:
+-----------
+→ Modules are NOT connected
+→ Go to STEP 2
+
+IF YES LINE:
+------------
+→ Modules ARE connected
+→ Go to STEP 3
+
+================================================================================
+STEP 2: CONNECT MODULE 1 TO MODULE 8
+================================================================================
+
+METHOD 1: Drag Connection
+-------------------------
+1. Hover over Module 1 (Google Sheets)
+2. You should see a small circle or dot on the right side
+3. Click and drag from that dot
+4. Drag to Module 8 (Set Variables)
+5. Release - connection should appear
+6. Save scenario
+
+METHOD 2: Use Module Settings
+-------------------------------
+1. Click on Module 8 (Set Variables)
+2. Look for "Input" or "Connection" option
+3. Click on it
+4. Select "Module 1" or "Google Sheets Watch Rows"
+5. Save Module 8
+
+METHOD 3: Re-add Module 8
+--------------------------
+1. Delete Module 8 (right-click → Delete)
+2. Add new "Set Variables" module
+3. Make.com should automatically connect it to Module 1
+4. If not, manually connect (Method 1 or 2)
+5. Configure variables:
+   - name: {{1.0}}
+   - email: {{1.1}}
+   - language: {{1.3}}
+6. Save
+
+================================================================================
+STEP 3: CHECK MODULE 8 CONFIGURATION
+================================================================================
+
+1. Open Module 8 (Set Variables)
+
+2. Check Variable "name":
+   Current: {{1.`0`}} or "1.0" or empty?
+   Should be: {{1.0}}
+   Fix: Change to {{1.0}} (no backticks, no quotes)
+
+3. Check Variable "email":
+   Current: {{1.`1`}} or "1.1" or empty?
+   Should be: {{1.1}}
+   Fix: Change to {{1.1}} (no backticks, no quotes)
+
+4. Check Variable "language":
+   Current: {{1.`3`}} or "1.3" or empty?
+   Should be: {{1.3}}
+   Fix: Change to {{1.3}} (no backticks, no quotes)
+
+5. Save Module 8
+
+================================================================================
+STEP 4: TEST MODULE 8
+================================================================================
+
+1. Save all changes
+2. Make sure scenario is ON
+3. Add test lead to Google Sheets:
+   - Name: Test
+   - Email: test@example.com
+   - Language: en
+
+4. Wait 30 seconds
+
+5. Check execution history:
+   - Click latest execution
+   - Click Module 1: Should show data ✅
+   - Click Module 8: Should show variables ✅
+
+IF MODULE 8 STILL NOT RUNNING:
+------------------------------
+→ Check for error messages in Module 8
+→ Try "Run once" on Module 8 (if available)
+→ Check if Module 1 output is correct
+
+================================================================================
+STEP 5: VERIFY MODULE 1 OUTPUT FORMAT
+================================================================================
+
+Module 8 needs Module 1 to output data in this format:
+
+Module 1 should output:
+- 0: Name (from Column A)
+- 1: Email (from Column B)
+- 3: Language (from Column D)
+
+To check:
+1. Click on Module 1 in execution history
+2. What data does it show?
+3. Are columns 0, 1, 3 populated?
+
+IF MODULE 1 OUTPUT IS EMPTY:
+-----------------------------
+→ Problem is with Module 1, not Module 8
+→ Check Google Sheets connection
+→ Check spreadsheet ID
+→ Check if lead data exists
+
+IF MODULE 1 OUTPUT HAS DATA:
+-----------------------------
+→ Module 1 is working
+→ Problem is Module 8 connection or configuration
+→ Go back to Step 2 or 3
+
+================================================================================
+QUICK DIAGNOSTIC TEST
+================================================================================
+
+Test if Module 8 can access Module 1 data:
+
+1. Open Module 8
+2. For "name" variable, try mapping:
+   - Click mapping button (</>)
+   - Select: 1. Name (or 1.0)
+   - Save
+3. Run scenario
+4. Check if Module 8 "name" variable has value
+
+IF IT WORKS:
+------------
+→ Connection is OK
+→ Fix other variables (email, language)
+
+IF IT DOESN'T WORK:
+-------------------
+→ Connection is broken
+→ Reconnect modules (Step 2)
+
+================================================================================
+ALTERNATIVE: USE DIRECT REFERENCES
+================================================================================
+
+If Module 8 keeps failing, skip it and use direct references:
+
+Instead of:
+- Module 8 → {{8.email}}
+
+Use directly:
+- Module 3 "To" field: {{1.1}}
+- Module 3 Subject: {{1.0}}, You're Invited...
+- Module 3 Filter: {{1.3}} = "en"
+
+This bypasses Module 8 entirely.
+
+BUT: This means you need to update all modules to use {{1.x}} instead of {{8.x}}
+
+================================================================================
+FINAL CHECKLIST
+================================================================================
+
+Before testing:
+
+□ Module 1 → Module 8: Connected? (visual line exists?)
+□ Module 8 variable "name": {{1.0}} (no backticks)?
+□ Module 8 variable "email": {{1.1}} (no backticks)?
+□ Module 8 variable "language": {{1.3}} (no backticks)?
+□ Module 8 saved?
+□ Scenario is ON?
+□ Test lead in Google Sheets?
+
+If all checked, Module 8 should run!
+
+================================================================================
+
+
+
+

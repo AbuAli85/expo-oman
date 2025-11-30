@@ -1,0 +1,114 @@
+================================================================================
+QUICK FIX: EMAIL SAYS "Dear Yes, I'll attend,"
+================================================================================
+
+Your email template shows:
+  ❌ "Dear Yes, I'll attend,"
+
+Should be:
+  ✅ "Dear [Name],"
+
+The template is using attendance value instead of name!
+
+================================================================================
+IMMEDIATE FIX
+================================================================================
+
+In ALL email modules (16, 17, 19, 20), find this line in the HTML:
+
+FIND:
+  Dear Yes, I'll attend,
+
+REPLACE WITH:
+  Dear {{2.name}},
+
+OR (with fallback if name is empty):
+  Dear {{2.name || "Guest"}},
+
+================================================================================
+STEP-BY-STEP
+================================================================================
+
+STEP 1: Open Email Module 16
+──────────────────────────────
+1. Open scenario in Make.com
+2. Click Module 16 (Agreement Email - Update Path)
+3. Find "HTML Content" field
+
+STEP 2: Find and Replace
+──────────────────────────
+1. In HTML Content, search for: "Dear Yes, I'll attend,"
+2. Replace with: "Dear {{2.name}},"
+3. Or use: "Dear {{2.name || "Guest"}},"
+4. Save module
+
+STEP 3: Repeat for Other Email Modules
+────────────────────────────────────────
+1. Module 17 (Thank You Email - Update Path)
+2. Module 19 (Agreement Email - Add Path)
+3. Module 20 (Thank You Email - Add Path)
+
+Fix the same line in each!
+
+================================================================================
+WHAT YOU'RE REPLACING
+================================================================================
+
+FIND THIS:
+───────────────────────────────────────────────────────────
+<p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+    Dear Yes, I'll attend,
+</p>
+
+REPLACE WITH:
+───────────────────────────────────────────────────────────
+<p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+    Dear {{2.name}},
+</p>
+
+OR WITH FALLBACK:
+───────────────────────────────────────────────────────────
+<p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+    Dear {{2.name || "Guest"}},
+</p>
+
+================================================================================
+IF NAME VARIABLE IS NULL
+================================================================================
+
+If Module 2 shows name = null:
+
+1. Fix Module 2 name mapping first
+2. Use Make.com field selector to find correct field ID
+3. Update name variable mapping
+4. Then update email templates
+
+With fallback value, email will show "Dear Guest," if name is empty.
+
+================================================================================
+CHECKLIST
+================================================================================
+
+□ Open Module 16 → Find "Dear Yes, I'll attend,"
+□ Replace with "Dear {{2.name}},"
+□ Open Module 17 → Fix same
+□ Open Module 19 → Fix same
+□ Open Module 20 → Fix same
+□ Save all modules
+□ Test email - should show correct name!
+
+================================================================================
+EXPECTED RESULT
+================================================================================
+
+After fixing, email should show:
+  ✅ "Dear fahad alamri,"
+
+NOT:
+  ❌ "Dear Yes, I'll attend,"
+
+================================================================================
+END
+================================================================================
+
+

@@ -1,0 +1,91 @@
+================================================================================
+QUICK DEBUG: SCENARIO NOT WORKING
+5-Minute Checklist
+================================================================================
+
+CHECK THESE IN ORDER:
+
+1. SCENARIO STATUS (30 sec)
+   □ Is "Handle Expo Form Responses" ON? (green toggle)
+   → If OFF: Turn it ON
+
+2. EXECUTION HISTORY (1 min)
+   □ Go to "Execution history"
+   □ Do you see ANY executions?
+   → If NO: Scenario not triggering (check Module 1)
+   → If YES: Click on latest execution
+
+3. MODULE 1 (30 sec)
+   □ Does it show form response?
+   → If NO: Form not connected or not submitting
+
+4. MODULE 4 (30 sec)
+   □ email: Has value?
+   □ attendance: Has value?
+   → If NO: Check Module 1 output
+
+5. MODULE 2 (30 sec)
+   □ Does it route to Route 1 or Route 2?
+   → If NO: Check router filters
+
+6. MODULE 8/9 (1 min)
+   □ Does it find a row? (shows __ROW_NUMBER__)
+   → If NO: Email not in Google Sheets or doesn't match
+
+7. MODULE 3/5 (30 sec)
+   □ Does it update successfully?
+   → If NO: Check row number and columns
+
+8. GOOGLE SHEETS (30 sec)
+   □ Response column updated?
+   → If NO: Check Module 3/5 execution
+
+================================================================================
+MOST COMMON ISSUES
+================================================================================
+
+ISSUE 1: Scenario is OFF
+→ Fix: Turn it ON
+
+ISSUE 2: Email not in Google Sheets
+→ Fix: Add email to sheet first
+
+ISSUE 3: Router filter doesn't match
+→ Fix: Check attendance value matches filter exactly
+
+ISSUE 4: "To" field format wrong
+→ Fix: Change to [{"value": "{{4.email}}"}]
+
+================================================================================
+QUICK FIXES
+================================================================================
+
+IF NO EXECUTIONS:
+→ Turn scenario ON
+→ Submit form again
+→ Wait 30 seconds
+
+IF EXECUTION FAILS AT MODULE 4:
+→ Check Module 1: Is respondentEmail present?
+→ If not: User not logged in or email collection disabled
+
+IF EXECUTION FAILS AT ROUTER:
+→ Check Module 4: What is attendance value?
+→ Update router filter to match
+
+IF EXECUTION FAILS AT MODULE 8/9:
+→ Check: Does email exist in Google Sheets?
+→ Check: Email format matches exactly?
+
+IF EXECUTION FAILS AT MODULE 3/5:
+→ Check: Row number is valid?
+→ Check: Columns K, L, M exist?
+
+IF EXECUTION FAILS AT MODULE 6/7:
+→ Fix "To" field: [{"value": "{{4.email}}"}]
+
+================================================================================
+
+
+
+

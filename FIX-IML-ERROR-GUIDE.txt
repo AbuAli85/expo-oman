@@ -1,0 +1,88 @@
+================================================================================
+FIX FOR IML PARSING ERROR
+================================================================================
+
+PROBLEM:
+--------
+The error "Invalid IML for parameter... Operator on end of an expression" occurs
+because Make.com's IML parser cannot handle complex nested if() statements with
+very long HTML strings containing many escaped quotes.
+
+SOLUTION:
+---------
+Instead of using if() statements in the HTML field, we'll add routers after the
+array aggregators to split by attendance response. This creates separate email
+modules for "Yes, I'll attend" and "No, I cannot attend" responses.
+
+NEW STRUCTURE:
+-------------
+
+Route 1 (Update Existing Row):
+  1. Update Row
+  2. Array Aggregator
+  3. Router (by attendance) ← NEW
+     ├─ Route 1A: "Yes, I'll attend"
+     │  └─ Send Agreement Email
+     └─ Route 1B: "No, I cannot attend"
+        └─ Send Thank You Email
+
+Route 2 (Add New Row):
+  1. Add Row
+  2. Array Aggregator
+  3. Router (by attendance) ← NEW
+     ├─ Route 2A: "Yes, I'll attend"
+     │  └─ Send Agreement Email
+     └─ Route 2B: "No, I cannot attend"
+        └─ Send Thank You Email
+
+IMPLEMENTATION STEPS:
+---------------------
+
+1. After Module 8 (Array Aggregator in Route 1):
+   - Add Router (id: 13)
+   - Filter Route 1A: {{2.attendance}} equals "Yes, I'll attend"
+   - Filter Route 1B: {{2.attendance}} equals "No, I cannot attend"
+   
+2. In Route 1A:
+   - Add Resend → Send Email (id: 14)
+   - Subject: "Agreement - UAE Property Expo"
+   - HTML: Use AGREEMENT-EMAIL-TEMPLATE.html (replace {{4.name}} with {{2.name}})
+   
+3. In Route 1B:
+   - Add Resend → Send Email (id: 15)
+   - Subject: "Thank You - UAE Property Expo"
+   - HTML: Use THANK-YOU-EMAIL-TEMPLATE.html (replace {{4.name}} with {{2.name}})
+
+4. After Module 11 (Array Aggregator in Route 2):
+   - Add Router (id: 16)
+   - Filter Route 2A: {{2.attendance}} equals "Yes, I'll attend"
+   - Filter Route 2B: {{2.attendance}} equals "No, I cannot attend"
+   
+5. In Route 2A:
+   - Add Resend → Send Email (id: 17)
+   - Subject: "Agreement - UAE Property Expo"
+   - HTML: Use AGREEMENT-EMAIL-TEMPLATE.html (replace {{4.name}} with {{2.name}})
+   
+6. In Route 2B:
+   - Add Resend → Send Email (id: 18)
+   - Subject: "Thank You - UAE Property Expo"
+   - HTML: Use THANK-YOU-EMAIL-TEMPLATE.html (replace {{4.name}} with {{2.name}})
+
+BENEFITS:
+---------
+✅ No complex if() statements
+✅ Cleaner, more maintainable code
+✅ Easier to modify email templates
+✅ Better error handling per route
+✅ No IML parsing errors
+
+ALTERNATIVE (If you prefer to keep current structure):
+-------------------------------------------------------
+You can also use Make.com's "Set Variable" module to store the HTML template
+in a variable first, then reference that variable in the email module. This
+avoids the nested if() statement.
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

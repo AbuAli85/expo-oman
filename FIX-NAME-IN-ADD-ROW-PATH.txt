@@ -1,0 +1,270 @@
+================================================================================
+PROBLEM: NO NAME SHOWING IN EMAIL - ADD ROW PATH
+================================================================================
+
+Your email is going through the "Add Row" path because:
+  • Email not found in existing sheet rows
+  • Router 6 goes to Route 2 (Add Row)
+  • Module 10 adds new row
+  • Module 18 routes to email
+  • But name is not available!
+
+This means the form response doesn't include the name field, OR
+the name variable is still null in Module 2.
+
+================================================================================
+UNDERSTANDING THE FLOW
+================================================================================
+
+When email is NOT found in sheet:
+  Module 1 (Form Response) 
+    ↓
+  Module 2 (Set Variables) ← name might be null here
+    ↓
+  Module 11 (Search Rows) → Email NOT found
+    ↓
+  Module 6 Router → Route 2 (Email Not Found)
+    ↓
+  Module 10 (Add Row) ← Adds new row without name
+    ↓
+  Module 18 Router → Routes by attendance
+    ↓
+  Module 19 or 20 (Send Email) ← Uses {{2.name}} which is null/empty
+
+Result: Email shows "Dear Yes, I'll attend," because name is empty.
+
+================================================================================
+WHY NAME MIGHT BE NULL
+================================================================================
+
+OPTION 1: Form Response Doesn't Include Name
+──────────────────────────────────────────────
+Your response form might only ask for:
+  • Email
+  • Attendance (Yes/No)
+  • Comments
+
+It doesn't ask for name again (since you already have it from invitation).
+
+SOLUTION: Get name from existing sheet row if email found.
+
+OPTION 2: Name Field Mapping is Wrong
+────────────────────────────────────────
+Module 2 name variable mapping is incorrect:
+  name: {{1.answers.WRONG_FIELD_ID.textAnswers.answers[0].value}}
+
+SOLUTION: Fix field ID mapping or handle empty name.
+
+OPTION 3: Response Form Has Different Structure
+─────────────────────────────────────────────────
+The response form fields are different from invitation form,
+so the field IDs don't match.
+
+SOLUTION: Map the correct field or use fallback.
+
+================================================================================
+SOLUTIONS
+================================================================================
+
+SOLUTION 1: Get Name from Sheet (RECOMMENDED)
+────────────────────────────────────────────────
+
+If email exists in sheet, get name from the sheet row:
+
+STEP 1: After Module 11 (Search Rows)
+────────────────────────────────────────
+If email found, name is in the search results:
+  {{11.Name}} or {{11[0].Name}}
+
+STEP 2: Set Name Variable
+───────────────────────────
+Add a Set Variables module after Module 12 (Array Aggregator):
+
+Module 5.5 (New Set Variables):
+  • name: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+  
+This means:
+  • If row exists → Use name from sheet (12.array[0].Name)
+  • If row doesn't exist → Use name from form (2.name, might be empty)
+
+STEP 3: Use This Name in Emails
+──────────────────────────────────
+In email templates, use:
+  Dear {{5.name || 2.name || "Guest"}},
+
+SOLUTION 2: Fix Module 2 Name Mapping
+────────────────────────────────────────
+
+If the form actually includes name, fix the mapping:
+
+1. Check Module 1 output
+2. Find field ID with name value
+3. Update Module 2:
+   name: {{1.answers.CORRECT_FIELD_ID.textAnswers.answers[0].value}}
+
+SOLUTION 3: Use Email Prefix as Fallback
+──────────────────────────────────────────
+
+If name is always empty, extract from email:
+
+In Module 2 or email template:
+  name: {{2.name || split(2.email; "@")[0] || "Guest"}}
+
+This uses email username if name is empty.
+
+SOLUTION 4: Accept Empty Name (Simplest)
+──────────────────────────────────────────
+
+Just use a generic greeting:
+
+In email templates:
+  Dear {{2.name || "Valued Guest"}},
+
+OR:
+  Thank you for your response!  (No name needed)
+
+================================================================================
+RECOMMENDED APPROACH
+================================================================================
+
+OPTION A: Get Name from Sheet (Best)
+───────────────────────────────────────
+
+Add after Module 12 (Array Aggregator):
+
+Module 2.5 (Set Variables):
+  Variables:
+    • actualName: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name || split(2.email; "@")[0])}}
+
+Then in emails use:
+  Dear {{2.actualName}},
+
+OPTION B: Update Module 2 to Handle Empty Name
+──────────────────────────────────────────────────
+
+In Module 2, set name with fallback:
+
+Current:
+  name: {{1.answers.FIELD_ID.textAnswers.answers[0].value}}
+
+Updated:
+  name: {{1.answers.FIELD_ID.textAnswers.answers[0].value || ""}}
+
+Then in emails use:
+  Dear {{2.name || "Guest"}},
+
+OPTION C: Generic Greeting (Simplest)
+────────────────────────────────────────
+
+In email templates, don't use name:
+
+Change:
+  Dear {{2.name}},
+
+To:
+  Thank you for your response!
+
+OR:
+  Dear Valued Guest,
+
+================================================================================
+QUICK FIX: UPDATE EMAIL TEMPLATE
+================================================================================
+
+For now, use a generic greeting that doesn't need name:
+
+FIND:
+  Dear {{2.name}},
+
+REPLACE WITH:
+  Thank you for your response!
+
+OR:
+  Dear Valued Guest,
+
+This works immediately without fixing name variable.
+
+================================================================================
+STEP-BY-STEP: GET NAME FROM SHEET
+================================================================================
+
+STEP 1: Check Module 12 Output
+────────────────────────────────
+After Module 12 (Array Aggregator), check what data is available:
+  • Does it include Name field from sheet?
+  • What is the field name? (Name, name, etc.)
+
+STEP 2: Add Set Variables After Module 12
+───────────────────────────────────────────
+Add Module 12.5 (Set Variables) after Module 12:
+
+Variables:
+  • sheetName: {{if(12.length > 0; 12.array[0].Name; "")}}
+
+STEP 3: Update Module 5
+─────────────────────────
+In Module 5 (Set Variables), add:
+  • actualName: {{5.sheetName || 2.name || "Guest"}}
+
+STEP 4: Update Email Templates
+────────────────────────────────
+Use:
+  Dear {{5.actualName}},
+
+================================================================================
+DEBUGGING
+================================================================================
+
+To understand what's happening:
+
+1. Check Module 2 output - what is name value?
+2. Check Module 11 output - was email found?
+3. Check Module 12 output - what data is available?
+4. Check if name is in form response at all
+
+================================================================================
+RECOMMENDED QUICK FIX
+================================================================================
+
+IMMEDIATE FIX (Works Now):
+───────────────────────────
+
+In all email modules (16, 17, 19, 20), change:
+
+FROM:
+  Dear {{2.name}},
+
+TO:
+  Thank you for your response!
+
+OR:
+  Dear Valued Guest,
+
+This removes dependency on name variable.
+
+PROPER FIX (Best Solution):
+────────────────────────────
+
+1. Add Module 2.5 after Module 12:
+   • actualName: {{if(12.length > 0; 12.array[0].Name; "Guest")}}
+
+2. Update email templates:
+   Dear {{2.actualName}},
+
+================================================================================
+CHECKLIST
+================================================================================
+
+□ Understand: Email going through Add Row path
+□ Check Module 2 output - name value?
+□ Check if name exists in form response
+□ Choose solution:
+  • Quick fix: Generic greeting
+  • Proper fix: Get name from sheet
+□ Update email templates
+□ Test
+
+================================================================================
+END OF GUIDE
+================================================================================
+

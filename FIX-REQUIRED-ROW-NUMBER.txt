@@ -1,0 +1,262 @@
+================================================================================
+FIX: ROW NUMBER REQUIRED - CANNOT REMOVE
+Two Solutions
+================================================================================
+
+PROBLEM:
+--------
+"Row number*" field is required and cannot be removed
+This happens when Mode is set to "select"
+
+SOLUTION 1: CHANGE TO "SEARCH" MODE (RECOMMENDED)
+================================================================================
+
+If "search" mode is available:
+
+STEP 1: Change Mode
+-------------------
+1. Open Module 3 (or Module 5)
+2. Find "Mode" or "Search Method" field
+3. Change from "select" to "search"
+4. The "Row number" field should disappear
+5. "Search Filter" field should appear instead
+
+STEP 2: Add Search Filter
+--------------------------
+1. Find "Search Filter" or "Filters" section
+2. Add filter:
+   - Column: Email (or index 1)
+   - Operator: equals
+   - Value: {{4.email}}
+3. Save
+
+================================================================================
+SOLUTION 2: USE SEARCH ROWS MODULE FIRST (IF SEARCH MODE NOT AVAILABLE)
+================================================================================
+
+If "search" mode is not available in Update Row, use this approach:
+
+STEP 1: Add Search Rows Module
+-------------------------------
+1. Before Update Row module, add: Google Sheets → Search Rows
+2. Configure:
+   - Spreadsheet: Your leads sheet
+   - Sheet: leads
+   - Search Filter: Email (Column 1) = {{4.email}}
+   - Limit: 1
+
+STEP 2: Update Update Row Module
+---------------------------------
+1. Open Update Row module
+2. Keep Mode: "select" (since search mode not available)
+3. Row Number: {{searchResult.__ROW_NUMBER__}}
+   - This uses the row number from Search Rows module
+4. Values: Response, Response Date, Comments
+5. Save
+
+FLOW:
+-----
+Module 1: Google Forms Watch Responses
+Module 4: Set Variables
+Module 2: Router
+  Route 1:
+    Module 2.1: Search Rows (find by email)
+    Module 3: Update Row (use row number from Search Rows)
+    Module 6: Send Email
+  Route 2:
+    Module 2.2: Search Rows (find by email)
+    Module 5: Update Row (use row number from Search Rows)
+    Module 7: Send Email
+
+================================================================================
+SOLUTION 3: CHECK IF "SEARCH" IS AVAILABLE (DETAILED)
+================================================================================
+
+STEP 1: Check Mode Options
+----------------------------
+1. Open Update Row module
+2. Click on "Mode" or "Search Method" dropdown
+3. Look for these options:
+   - "Select" (requires row number)
+   - "Search Rows" or "Search" (allows filters)
+   - "From All"
+   - "Map"
+
+IF "Search Rows" or "Search" is available:
+→ Use Solution 1
+
+IF NOT available:
+→ Use Solution 2 (Search Rows module first)
+
+================================================================================
+ALTERNATIVE: UPDATE ROWS (PLURAL) MODULE
+================================================================================
+
+If Update Row doesn't support search, try Update Rows (plural):
+
+1. Delete Update Row module
+2. Add: Google Sheets → Update Rows (plural)
+3. This module supports filters directly
+4. Configure:
+   - Filter: Email = {{4.email}}
+   - Values: Response, Response Date, Comments
+5. Save
+
+================================================================================
+QUICK FIX: SOLUTION 2 (MOST RELIABLE)
+================================================================================
+
+Since you can't remove row number field, use Search Rows first:
+
+ROUTE 1 (Accept):
+------------------
+1. Add: Google Sheets → Search Rows
+   - Search Filter: Email = {{4.email}}
+   - Limit: 1
+2. Update Module 3:
+   - Mode: "select" (keep as is)
+   - Row Number: {{searchResult.__ROW_NUMBER__}}
+   - Values: Response="Accepted", Date, Comments
+3. Module 6: Send Email (fix "to" field format)
+
+ROUTE 2 (Reject):
+------------------
+1. Add: Google Sheets → Search Rows
+   - Search Filter: Email = {{4.email}}
+   - Limit: 1
+2. Update Module 5:
+   - Mode: "select" (keep as is)
+   - Row Number: {{searchResult.__ROW_NUMBER__}}
+   - Values: Response="Rejected", Date, Comments
+3. Module 7: Send Email (fix "to" field format)
+
+================================================================================
+STEP-BY-STEP: SOLUTION 2 (SEARCH ROWS FIRST)
+================================================================================
+
+ROUTE 1 FIX:
+------------
+
+STEP 1: Add Search Rows Module
+-------------------------------
+1. In Route 1, before Module 3, add: Google Sheets → Search Rows
+2. Configure:
+   - Spreadsheet: Your leads sheet
+   - Sheet: leads
+   - Search Filter:
+     * Column: Email (or index 1)
+     * Operator: equals
+     * Value: {{4.email}}
+   - Limit: 1
+3. Save
+
+STEP 2: Update Module 3
+------------------------
+1. Open Module 3
+2. Keep Mode: "select"
+3. Row Number: {{searchResult.__ROW_NUMBER__}}
+   - This comes from Search Rows module output
+4. Values:
+   - "10": "Accepted"
+   - "11": "{{now}}"
+   - "12": "{{4.comments}}"
+   - Remove: "1": "{{4.email}}" (not needed)
+5. Save
+
+STEP 3: Fix Module 6
+--------------------
+1. Open Module 6
+2. "To" field: Change to [{"value": "{{4.email}}"}]
+3. Add HTML content
+4. Save
+
+ROUTE 2 FIX:
+------------
+
+STEP 1: Add Search Rows Module
+-------------------------------
+1. In Route 2, before Module 5, add: Google Sheets → Search Rows
+2. Same configuration as Route 1
+3. Save
+
+STEP 2: Update Module 5
+------------------------
+1. Open Module 5
+2. Keep Mode: "select"
+3. Row Number: {{searchResult.__ROW_NUMBER__}}
+4. Values:
+   - "10": "Rejected"
+   - "11": "{{now}}"
+   - "12": "{{4.comments}}"
+5. Save
+
+STEP 3: Fix Module 7
+--------------------
+1. Open Module 7
+2. "To" field: Change to [{"value": "{{4.email}}"}]
+3. Add HTML content
+4. Save
+
+================================================================================
+UPDATED FLOW STRUCTURE (SOLUTION 2)
+================================================================================
+
+MODULE 1: Google Forms Watch Responses
+MODULE 4: Set Variables
+MODULE 2: Router
+
+ROUTE 1 (Accept):
+------------------
+Module 2.1: Search Rows (find by email)
+  ↓
+Module 3: Update Row
+  - Row Number: {{searchResult.__ROW_NUMBER__}}
+  - Values: Response="Accepted", Date, Comments
+  ↓
+Module 6: Send Agreement Email
+
+ROUTE 2 (Reject):
+------------------
+Module 2.2: Search Rows (find by email)
+  ↓
+Module 5: Update Row
+  - Row Number: {{searchResult.__ROW_NUMBER__}}
+  - Values: Response="Rejected", Date, Comments
+  ↓
+Module 7: Send Thank You Email
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After applying Solution 2:
+
+□ Route 1: Has Search Rows module before Update Row
+□ Module 3: Row Number = {{searchResult.__ROW_NUMBER__}}
+□ Module 3: Removed "1": "{{4.email}}" from values
+□ Module 6: "To" = [{"value": "{{4.email}}"}]
+□ Route 2: Has Search Rows module before Update Row
+□ Module 5: Row Number = {{searchResult.__ROW_NUMBER__}}
+□ Module 7: "To" = [{"value": "{{4.email}}"}]
+□ All modules saved
+
+================================================================================
+WHY THIS WORKS
+================================================================================
+
+PROBLEM:
+--------
+Update Row in "select" mode requires row number
+But we don't know the row number - we only know the email
+
+SOLUTION:
+---------
+1. Search Rows finds the row by email
+2. Returns: {{searchResult.__ROW_NUMBER__}}
+3. Update Row uses that row number
+4. Updates the correct row!
+
+This is a two-step process but it works perfectly!
+
+================================================================================
+

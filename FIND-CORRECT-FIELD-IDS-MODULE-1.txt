@@ -1,0 +1,221 @@
+================================================================================
+STEP-BY-STEP: FIND CORRECT FIELD IDs FROM MODULE 1
+================================================================================
+
+Your sheet shows: "Yes, I'll attend" was submitted
+But Module 2 shows: attendance = null
+
+This means the field ID in Module 2 is wrong. Let's find the correct one!
+
+================================================================================
+STEP 1: OPEN THE EXECUTION IN MAKE.COM
+================================================================================
+
+1. Open Make.com
+2. Go to your "Handle Expo Form Responses - Improved" scenario
+3. Click on the execution history (or the failed execution)
+4. Click on the specific execution you want to debug
+
+================================================================================
+STEP 2: VIEW MODULE 1 OUTPUT
+================================================================================
+
+1. In the execution details, find Module 1 (Google Forms - Watch Responses)
+2. Click on Module 1
+3. Click "Output" or "Data" tab
+4. You'll see the raw JSON data from Google Forms
+
+================================================================================
+STEP 3: FIND THE ANSWERS STRUCTURE
+================================================================================
+
+In Module 1 output, look for a structure like this:
+
+{
+  "respondentEmail": "chairman@falconeyegroup.net",
+  "answers": {
+    "FIELD_ID_1": {
+      "questionId": "...",
+      "textAnswers": {
+        "answers": [{"value": "Some Value"}]
+      }
+    },
+    "FIELD_ID_2": {
+      "questionId": "...",
+      "textAnswers": {
+        "answers": [{"value": "Yes, I'll attend"}]
+      }
+    },
+    "FIELD_ID_3": {
+      "questionId": "...",
+      "textAnswers": {
+        "answers": [{"value": "Some Comments"}]
+      }
+    }
+  }
+}
+
+================================================================================
+STEP 4: IDENTIFY WHICH FIELD ID HAS WHICH VALUE
+================================================================================
+
+Look through the "answers" object and find:
+
+✅ FIELD ID that contains: "Yes, I'll attend" (or your attendance value)
+   → This is the attendance field ID
+
+✅ FIELD ID that contains: Name value (if present)
+   → This is the name field ID
+
+✅ FIELD ID that contains: Comments value (if present)
+   → This is the comments field ID
+
+✅ FIELD ID that might be empty or null
+   → Note these too
+
+================================================================================
+STEP 5: NOTE THE CORRECT FIELD IDs
+================================================================================
+
+Write down the field IDs you found:
+
+Attendance Field ID: _______________________________
+  (The one containing "Yes, I'll attend")
+
+Name Field ID: _______________________________
+  (The one containing the name, if any)
+
+Comments Field ID: _______________________________
+  (The one containing comments, if any)
+
+================================================================================
+STEP 6: UPDATE MODULE 2
+================================================================================
+
+Go back to your scenario editor and update Module 2:
+
+FOR ATTENDANCE:
+───────────────
+Current (WRONG):
+  attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+
+Replace with (CORRECT):
+  attendance: {{1.answers.YOUR_FIELD_ID.textAnswers.answers[0].value}}
+  
+  (Replace YOUR_FIELD_ID with the actual field ID from Step 5)
+
+FOR NAME:
+─────────
+Current (WRONG):
+  name: {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+
+Replace with (CORRECT):
+  name: {{1.answers.YOUR_FIELD_ID.textAnswers.answers[0].value}}
+  
+  (Replace YOUR_FIELD_ID with the actual field ID from Step 5)
+
+FOR COMMENTS:
+─────────────
+Current (WRONG):
+  comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+Replace with (CORRECT):
+  comments: {{1.answers.YOUR_FIELD_ID.textAnswers.answers[0].value}}
+  
+  (Replace YOUR_FIELD_ID with the actual field ID from Step 5)
+
+================================================================================
+ALTERNATIVE: USE MAKE.COM FIELD SELECTOR (EASIER!)
+================================================================================
+
+Instead of typing field IDs manually, use Make.com's field selector:
+
+STEP 1: Open Module 2 in scenario editor
+STEP 2: For each variable (name, attendance, comments):
+
+  a. Click on the value field
+  b. Click the "Map" icon (field selector)
+  c. A popup will show Module 1 output structure
+  d. Expand "answers" in the popup
+  e. Browse through the field IDs
+  f. Find the one that shows the correct value
+  g. Click on it
+  h. Make.com will auto-fill the correct path!
+
+This is much easier than typing field IDs manually!
+
+================================================================================
+WHAT MODULE 1 OUTPUT MIGHT LOOK LIKE
+================================================================================
+
+Example structure:
+
+{
+  "responseId": "some-id",
+  "respondentEmail": "chairman@falconeyegroup.net",
+  "answers": {
+    "a1b2c3d4": {
+      "questionId": "name",
+      "textAnswers": {
+        "answers": [{"value": "fahad alamri"}]
+      }
+    },
+    "e5f6g7h8": {
+      "questionId": "attendance",
+      "textAnswers": {
+        "answers": [{"value": "Yes, I'll attend"}]
+      }
+    },
+    "i9j0k1l2": {
+      "questionId": "comments",
+      "textAnswers": {
+        "answers": [{"value": ""}]
+      }
+    }
+  }
+}
+
+In this example:
+  • Name field ID: a1b2c3d4
+  • Attendance field ID: e5f6g7h8 (contains "Yes, I'll attend")
+  • Comments field ID: i9j0k1l2
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Open execution → Module 1
+□ View output data
+□ Find "answers" object
+□ Identify field ID with "Yes, I'll attend"
+□ Identify field ID with name (if exists)
+□ Identify field ID with comments (if exists)
+□ Update Module 2 with correct field IDs
+□ Test again
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+IF YOU DON'T SEE "answers" in Module 1:
+─────────────────────────────────────────
+→ The form response might have a different structure
+→ Check if it's named differently (e.g., "formResponses", "responses")
+→ Look for any object containing field data
+
+IF FIELD ID IS NOT VISIBLE:
+─────────────────────────────
+→ Try expanding all objects in the output
+→ Field IDs are usually visible at the top level of "answers"
+→ They might be long alphanumeric strings
+
+IF VALUE IS IN DIFFERENT FORMAT:
+──────────────────────────────────
+→ Check if it's not "textAnswers" but "choiceAnswers" or other type
+→ The path might be: {{1.answers.FIELD_ID.choiceAnswers.answers[0].value}}
+→ Adapt the path based on what you see
+
+================================================================================
+END OF GUIDE
+================================================================================
+

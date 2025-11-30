@@ -1,0 +1,172 @@
+================================================================================
+FIX: "No bundles were generated" - Missing Add Row Path
+================================================================================
+
+Your Filter Rows module (13 or 14) isn't finding the email in the sheet.
+This means the email is NEW and doesn't exist yet.
+
+Your current workflow:
+  Email → Filter Rows → Update Row
+
+Problem: If email doesn't exist, Filter Rows returns no bundles,
+and Update Row can't run. But there's NO path to ADD the new email!
+
+================================================================================
+THE PROBLEM
+================================================================================
+
+CURRENT WORKFLOW:
+─────────────────
+Module 12: Webhook (receives form data)
+Module 9: Set Variables
+Module 2: Router (by language)
+  ├─ Route 1: Module 3 (Email EN) → Module 13 (Filter Rows) → Module 5 (Update Row)
+  └─ Route 2: Module 4 (Email AR) → Module 14 (Filter Rows) → Module 7 (Update Row)
+
+ISSUE:
+──────
+• If email EXISTS in sheet → Filter Rows finds it → Update Row runs ✅
+• If email DOESN'T exist → Filter Rows finds nothing → No bundles → Update Row fails ❌
+
+Missing: Path to ADD new email to sheet when it doesn't exist!
+
+================================================================================
+THE SOLUTION: ADD ROUTER TO CHECK IF EMAIL EXISTS
+================================================================================
+
+We need to add logic to:
+1. Check if email exists in sheet
+2. If exists → Update existing row
+3. If not exists → Add new row
+
+OPTION 1: Add Search Before Email (RECOMMENDED)
+─────────────────────────────────────────────────
+
+Add this flow BEFORE the email sends:
+
+Module 12: Webhook
+Module 9: Set Variables
+Module SEARCH: Filter Rows (search for email)
+Module ROUTER: Check if email exists
+  ├─ Route 1: Email EXISTS → Send Email → Update Row
+  └─ Route 2: Email NOT EXISTS → Send Email → Add Row
+
+OPTION 2: Handle No Results from Filter Rows (SIMPLER)
+─────────────────────────────────────────────────────────
+
+Add Router after Filter Rows:
+
+Module 13/14: Filter Rows
+Module ROUTER: Check if rows found
+  ├─ Route 1: Rows found → Update Row
+  └─ Route 2: No rows → Add Row
+
+================================================================================
+STEP-BY-STEP FIX: OPTION 2 (SIMPLER)
+================================================================================
+
+STEP 1: Add Set Variables After Filter Rows
+──────────────────────────────────────────────
+
+After Module 13 (Filter Rows), add:
+
+Module 15 (Set Variables):
+  • rowFound: {{if(13.__IMTLENGTH__ > 0; "true"; "false")}}
+  • rowNumber: {{if(13.__IMTLENGTH__ > 0; 13.__ROW_NUMBER__; "")}}
+
+This checks if Filter Rows found any results.
+
+STEP 2: Add Router After Set Variables
+─────────────────────────────────────────
+
+Add Router after Module 15:
+
+Module 16 (Router):
+  Route 1: rowFound = "true" → Go to Module 5 (Update Row)
+  Route 2: rowFound = "false" → Go to Module 17 (Add Row)
+
+STEP 3: Add Add Row Module
+────────────────────────────
+
+Add Module 17 (Add Row) for Route 2:
+
+Module 17: Google Sheets → Add Row
+  • Spreadsheet: Your leads sheet
+  • Sheet: "leads"
+  • Values:
+    - Column 0 (Name): {{9.name}}
+    - Column 1 (Email): {{9.email}}
+    - Column 3 (Language): {{9.language}}
+    - Column 4 (Status): "Email 1 Sent"
+    - Column 6 (Email 1 Date): {{now}}
+
+STEP 4: Repeat for Arabic Route
+─────────────────────────────────
+
+Do the same for Route 2 (Arabic):
+  • Add Set Variables after Module 14
+  • Add Router
+  • Add Add Row module
+
+================================================================================
+QUICKER FIX: Just Handle No Results
+================================================================================
+
+If you want a simpler fix, just add conditional logic:
+
+AFTER Module 13 (Filter Rows):
+───────────────────────────────
+
+Add Router:
+  Route 1: {{13.__IMTLENGTH__}} > 0 → Module 5 (Update Row)
+  Route 2: {{13.__IMTLENGTH__}} = 0 → Module 17 (Add Row)
+
+Add Module 17 (Add Row) with same values as Update Row.
+
+This handles the case when email doesn't exist.
+
+================================================================================
+COMPLETE WORKFLOW STRUCTURE (AFTER FIX)
+================================================================================
+
+Module 12: Webhook
+Module 9: Set Variables
+Module 2: Router (by language)
+  ├─ Route 1 (EN):
+  │     Module 3: Send Email (EN)
+  │     Module 13: Filter Rows (search email)
+  │     Module 18: Router (check if found)
+  │       ├─ Route 1: Found → Module 5: Update Row
+  │       └─ Route 2: Not Found → Module 17: Add Row
+  │
+  └─ Route 2 (AR):
+        Module 4: Send Email (AR)
+        Module 14: Filter Rows (search email)
+        Module 19: Router (check if found)
+          ├─ Route 1: Found → Module 7: Update Row
+          └─ Route 2: Not Found → Module 20: Add Row
+
+================================================================================
+IMMEDIATE ACTION
+================================================================================
+
+For your current execution showing "no bundles":
+
+The email "chairman@falconeyegroup.net" doesn't exist in your sheet,
+so Filter Rows finds nothing.
+
+QUICK FIX:
+───────────
+1. Manually add this email to your sheet first
+2. Then re-run the scenario
+3. Filter Rows will find it
+4. Update Row will run
+
+PROPER FIX:
+────────────
+Add the "Add Row" path as described above so new emails are added automatically.
+
+================================================================================
+END
+================================================================================
+

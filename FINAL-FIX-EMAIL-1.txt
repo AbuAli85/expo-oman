@@ -1,0 +1,181 @@
+================================================================================
+FINAL FIX FOR EMAIL 1
+Based on Your Current Configuration
+================================================================================
+
+I've analyzed your updated configuration. Good news: Filters are now on email modules!
+But there's still ONE critical issue preventing emails from sending.
+
+================================================================================
+ISSUE FOUND: WRONG "TO" FIELD FORMAT
+================================================================================
+
+CURRENT (WRONG):
+----------------
+Module 3 (English): "to": ["{{8.email}}"]
+Module 4 (Arabic): "to": ["{{8.email}}"]
+
+PROBLEM:
+--------
+Resend API expects an array of objects with "value" property, not array of strings.
+
+FIX:
+----
+Module 3: "to": [{"value": "{{8.email}}"}]
+Module 4: "to": [{"value": "{{8.email}}"}]
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+FIX MODULE 3 (English Email):
+------------------------------
+
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click Module 3 (Resend - Send an Email)
+4. Click "To" field
+5. DELETE current value: ["{{8.email}}"]
+6. Click "Add item" button
+7. Select "Object" (not "Text")
+8. In the object, you'll see a "value" field
+9. Map: {{8.email}}
+10. Should now show: [{"value": "{{8.email}}"}]
+11. Save
+
+FIX MODULE 4 (Arabic Email):
+-----------------------------
+
+1. Click Module 4 (Resend - Send an Email)
+2. Repeat steps 4-11 above
+3. Save
+
+================================================================================
+OPTIONAL: REMOVE BACKTICKS FROM MODULE 8
+================================================================================
+
+Module 8 still has backticks:
+- language: {{1.`3`}}
+- email: {{1.`1`}}
+- name: {{1.`0`}}
+
+RECOMMENDED FIX:
+----------------
+1. Open Module 8 (Set Variables)
+2. For "language" variable:
+   - Change: {{1.`3`}}
+   - To: {{1.3}}
+3. For "email" variable:
+   - Change: {{1.`1`}}
+   - To: {{1.1}}
+4. For "name" variable:
+   - Change: {{1.`0`}}
+   - To: {{1.0}}
+5. Save
+
+This is optional but recommended for consistency.
+
+================================================================================
+WHAT'S CORRECT IN YOUR CONFIG
+================================================================================
+
+✅ Module 1 (Watch Rows): Correct
+✅ Module 8 (Set Variables): Good approach
+✅ Module 2 (Router): Correct (filters on email modules is fine)
+✅ Module 3 Filter: {{8.language}} = "en" ✅
+✅ Module 4 Filter: {{8.language}} = "ar" ✅
+✅ Module 3/4 HTML: Using {{8.name}} correctly ✅
+✅ Module 5/7 (Update Row): Correct ✅
+
+❌ Module 3 "To" field: Wrong format
+❌ Module 4 "To" field: Wrong format
+
+================================================================================
+AFTER FIXING
+================================================================================
+
+1. Save all changes
+2. Make sure scenario is ON (green toggle)
+3. Import your CSV or add lead to Google Sheets
+4. Wait 15 seconds
+5. Check execution logs
+6. Email should send!
+
+EXPECTED RESULT:
+----------------
+- Lead with Language = "en" → Gets English email only
+- Lead with Language = "ar" → Gets Arabic email only
+- No duplicate emails ✅
+- Email sends successfully ✅
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+After fixing, verify:
+
+□ Module 3 "To" field: [{"value": "{{8.email}}"}]
+□ Module 4 "To" field: [{"value": "{{8.email}}"}]
+□ Module 8: No backticks (optional but recommended)
+□ Scenario is ON
+□ Lead in Google Sheets with Language = "en" or "ar"
+
+================================================================================
+TEST
+================================================================================
+
+Test with your CSV lead:
+- Name: fahad alamri
+- Email: luxsess2001@hotmail.com
+- Language: en
+
+After fixing "To" field:
+1. Import CSV to Google Sheets
+2. Wait 15 seconds
+3. Check:
+   □ Execution appears in Make.com
+   □ Execution shows SUCCESS
+   □ Email sent to luxsess2001@hotmail.com
+   □ Google Sheets updated: Status = "Email 1 Sent"
+
+================================================================================
+STILL NOT WORKING?
+================================================================================
+
+If you've fixed the "To" field and it still doesn't work:
+
+1. CHECK EXECUTION LOGS:
+   - What error message?
+   - Which module failed?
+
+2. VERIFY "TO" FIELD:
+   - Open Module 3
+   - Does "To" field show: [{"value": "{{8.email}}"}]
+   - If not, fix it again
+
+3. TEST MODULE 3 MANUALLY:
+   - Click "Run once" on Module 3
+   - Does email send?
+   - If error, what is it?
+
+4. CHECK MODULE 8 OUTPUT:
+   - Run scenario
+   - Check Module 8 output
+   - Does "email" variable have value?
+   - Does "language" variable have value?
+
+================================================================================
+SUMMARY
+================================================================================
+
+YOUR CONFIG IS ALMOST PERFECT!
+
+Only ONE fix needed:
+- Change "To" field from ["{{8.email}}"] to [{"value": "{{8.email}}"}]
+
+In both Module 3 and Module 4.
+
+After this fix, Email 1 will work! 🎉
+
+================================================================================
+

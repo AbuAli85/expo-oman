@@ -1,0 +1,48 @@
+================================================================================
+QUICK FIX FROM SCREENSHOT
+5-Minute Solution
+================================================================================
+
+WHAT TO DO NOW:
+--------------
+
+1. IN THE MODAL (2 min)
+   □ Click "Watch Responses" (top option)
+   □ Click "Continue"
+   □ Select Google account connection
+   □ Select form: "UAE Property Expo - Response"
+   □ Click "OK"
+
+2. SAVE SCENARIO (30 sec)
+   □ Click "Save" button
+   □ Wait for confirmation
+
+3. TURN ON (30 sec)
+   □ Check toggle switch (bottom bar or top)
+   □ Turn it ON (green)
+   □ Wait 30 seconds
+
+4. TEST (1 min)
+   □ Click "Run once" button (bottom bar)
+   □ OR submit new form response
+   □ Wait 1-2 minutes
+
+5. CHECK (1 min)
+   □ Click "Execution history"
+   □ Should see execution
+   □ Check which module it reaches
+
+================================================================================
+MOST IMPORTANT:
+--------------
+
+1. Configure the modal (select "Watch Responses")
+2. Save scenario
+3. Turn scenario ON
+4. Test with "Run once" or new form submission
+
+================================================================================
+
+
+
+

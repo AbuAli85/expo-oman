@@ -1,0 +1,241 @@
+================================================================================
+DEBUG: ATTENDANCE FILTER NOT MATCHING
+================================================================================
+
+Your execution shows:
+  ❌ Email 19: "bundle did not pass through the filter"
+  ❌ Email 20: "bundle did not pass through the filter"
+
+This means the attendance value doesn't match either:
+  • "Yes, I'll attend"
+  • "No, I cannot attend"
+
+================================================================================
+WHAT HAPPENED IN YOUR EXECUTION
+================================================================================
+
+✅ WORKING:
+  • Form trigger received response
+  • Variables set correctly
+  • Email not found in sheet → New row added correctly
+
+❌ ISSUES:
+  • Module 7 (Update Row) filter failed → Expected (email doesn't exist)
+  • Module 19 (Email) filter failed → Attendance value doesn't match
+  • Module 20 (Email) filter failed → Attendance value doesn't match
+
+Result: NO EMAIL SENT because neither attendance filter matched.
+
+================================================================================
+THE PROBLEM
+================================================================================
+
+Your email modules have filters:
+  Module 19: {{2.attendance}} equals "Yes, I'll attend"
+  Module 20: {{2.attendance}} equals "No, I cannot attend"
+
+But the actual attendance value from the form doesn't match either of these
+exact strings. Possible reasons:
+  1. Different wording in the form
+  2. Extra spaces or characters
+  3. Case sensitivity
+  4. Value is empty or null
+
+================================================================================
+HOW TO DEBUG
+================================================================================
+
+STEP 1: Check Module 2 Output
+───────────────────────────────
+1. Open the execution in Make.com
+2. Click Module 2 (Set Variables)
+3. View the output data
+4. Check the "attendance" variable value
+5. Note the EXACT value (spaces, case, punctuation)
+
+STEP 2: Check Form Response
+─────────────────────────────
+1. Check the actual Google Form
+2. See what the attendance question options are
+3. Compare with the filter values
+4. Note any differences
+
+STEP 3: Verify Mapping
+───────────────────────
+1. In Module 2, check the attendance mapping:
+   attendance = {{1.answers.677abd25.textAnswers.answers[0].value}}
+2. Verify this maps to the correct form field
+3. Check if the value is extracted correctly
+
+================================================================================
+COMMON ISSUES
+================================================================================
+
+ISSUE 1: Form Options Don't Match Filter Values
+─────────────────────────────────────────────────
+Form has: "Yes, I will attend"
+Filter checks: "Yes, I'll attend"
+→ Mismatch! Won't match.
+
+Fix: Update filters to match exact form values OR normalize in Module 2.
+
+ISSUE 2: Extra Spaces
+──────────────────────
+Form value: "Yes, I'll attend " (trailing space)
+Filter checks: "Yes, I'll attend" (no space)
+→ Won't match due to trailing space.
+
+Fix: Trim the value in Module 2:
+  attendance: {{trim(1.answers.677abd25.textAnswers.answers[0].value)}}
+
+ISSUE 3: Case Sensitivity
+──────────────────────────
+Form value: "YES, I'LL ATTEND" (uppercase)
+Filter checks: "Yes, I'll attend" (mixed case)
+→ Won't match if case-sensitive.
+
+Fix: Make filters case-insensitive OR normalize to lowercase in Module 2.
+
+ISSUE 4: Empty Value
+─────────────────────
+Form value: (empty or null)
+Filter checks: "Yes, I'll attend"
+→ Won't match empty value.
+
+Fix: Check if form question is required, verify mapping.
+
+================================================================================
+QUICK FIX OPTIONS
+================================================================================
+
+OPTION 1: Check Actual Attendance Value (First)
+─────────────────────────────────────────────────
+
+1. In Make.com execution, click Module 2
+2. View output data
+3. Check "attendance" value
+4. Note exact wording
+5. Update filters to match EXACTLY
+
+OPTION 2: Normalize in Module 2
+─────────────────────────────────
+
+Update Module 2 to normalize attendance:
+
+Current:
+  attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+
+Better:
+  attendance: {{trim(1.answers.677abd25.textAnswers.answers[0].value)}} || ""
+
+This removes whitespace and ensures it's a string.
+
+OPTION 3: Update Filter Values
+─────────────────────────────────
+
+After checking actual value, update filters:
+
+Module 19:
+  If actual value is "Yes, I will attend":
+    Filter: {{2.attendance}} equals "Yes, I will attend"
+
+Module 20:
+  If actual value is "No, I cannot attend":
+    Filter: {{2.attendance}} equals "No, I cannot attend"
+
+Use EXACT values from form!
+
+OPTION 4: Make Filters More Flexible
+──────────────────────────────────────
+
+Use case-insensitive matching:
+  {{2.attendance}} equals "Yes, I'll attend" (case insensitive)
+
+Or use "contains" instead of "equals":
+  {{2.attendance}} contains "Yes"
+  {{2.attendance}} contains "No"
+
+================================================================================
+STEP-BY-STEP DEBUGGING
+================================================================================
+
+STEP 1: Check Execution Output
+────────────────────────────────
+1. Open the failed execution in Make.com
+2. Click Module 2 (Set Variables)
+3. Look at output data
+4. Find "attendance" variable
+5. Write down the EXACT value
+
+STEP 2: Check Google Form
+───────────────────────────
+1. Open your Google Form
+2. Find the attendance question
+3. Check the exact option text:
+   • Option 1: ?
+   • Option 2: ?
+4. Compare with Module 2 output
+
+STEP 3: Fix Filters
+────────────────────
+1. Update Module 19 filter to match EXACT value
+2. Update Module 20 filter to match EXACT value
+3. OR normalize value in Module 2
+4. Save and test
+
+================================================================================
+EXPECTED VALUES
+================================================================================
+
+Check what your form actually uses:
+
+Common variations:
+  • "Yes, I'll attend"
+  • "Yes, I will attend"
+  • "I'll attend"
+  • "Yes"
+  • "No, I cannot attend"
+  • "No, I can't attend"
+  • "No"
+  • "Cannot attend"
+
+The filter MUST match the EXACT value from the form, including:
+  • Exact wording
+  • Capitalization
+  • Punctuation
+  • Spaces
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Check Module 2 output - what is attendance value?
+□ Check Google Form - what are the actual option texts?
+□ Compare form values with filter values
+□ Do they match exactly?
+□ Are there extra spaces?
+□ Is case different?
+□ Update filters OR normalize value in Module 2
+
+================================================================================
+LIKELY CAUSE
+================================================================================
+
+Most likely, your form uses different wording than the filters expect.
+
+For example:
+  Form: "Yes, I will attend"
+  Filter: "Yes, I'll attend"
+  → Won't match!
+
+OR:
+  Form: "I'll attend"
+  Filter: "Yes, I'll attend"
+  → Won't match!
+
+Check your form to see what it actually says!
+
+================================================================================
+END OF DEBUG GUIDE
+================================================================================
+

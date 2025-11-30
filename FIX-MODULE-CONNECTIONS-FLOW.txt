@@ -1,0 +1,277 @@
+================================================================================
+FIX: ONLY MODULE 1 RUNNING - MODULES NOT CONNECTED
+Complete Flow Fix Guide
+================================================================================
+
+PROBLEM:
+--------
+Module 1 (Google Sheets) runs successfully
+But Module 8 and other modules don't run or show details
+
+ROOT CAUSE:
+-----------
+Modules are not properly connected in the flow
+OR Module 8 has errors preventing execution
+
+================================================================================
+STEP 1: CHECK MODULE CONNECTIONS (VISUAL)
+================================================================================
+
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Look at the visual flow diagram
+
+CHECK CONNECTIONS:
+------------------
+□ Module 1 → Module 8: Is there a line connecting them?
+□ Module 8 → Module 2: Is there a line connecting them?
+□ Module 2 → Module 3: Is there a line connecting Route 1?
+□ Module 2 → Module 4: Is there a line connecting Route 2?
+□ Module 3 → Module 5: Is there a line connecting them?
+□ Module 4 → Module 7: Is there a line connecting them?
+
+IF NO CONNECTION LINES:
+-----------------------
+→ Modules are not connected
+→ Click and drag from Module 1 output to Module 8 input
+→ Connect all modules in sequence
+
+================================================================================
+STEP 2: VERIFY MODULE 8 IS CONNECTED TO MODULE 1
+================================================================================
+
+1. Click on Module 8 (Set Variables)
+2. Check the input connection
+3. It should show: "Connected to Module 1"
+
+IF NOT CONNECTED:
+-----------------
+1. Click on Module 8
+2. Look for "Input" or "Connection" option
+3. Select "Module 1" as input source
+4. OR drag a line from Module 1 to Module 8
+
+IF CONNECTED BUT NOT RUNNING:
+-----------------------------
+→ Check Module 8 configuration (see Step 3)
+
+================================================================================
+STEP 3: FIX MODULE 8 (SET VARIABLES) CONFIGURATION
+================================================================================
+
+1. Open Module 8 (Set Variables)
+
+2. Check Variable 1: "name"
+   - Value should be: {{1.0}}
+   - NOT: {{1.`0`}} (no backticks!)
+   - NOT: "1.0" (no quotes!)
+
+3. Check Variable 2: "email"
+   - Value should be: {{1.1}}
+   - NOT: {{1.`1`}} (no backticks!)
+   - NOT: "1.1" (no quotes!)
+
+4. Check Variable 3: "language"
+   - Value should be: {{1.3}}
+   - NOT: {{1.`3`}} (no backticks!)
+   - NOT: "1.3" (no quotes!)
+
+5. Check "Variable lifetime" or "Scope":
+   - Should be: "One cycle" or "Roundtrip"
+   - NOT: "Execution" (might cause issues)
+
+6. Save Module 8
+
+================================================================================
+STEP 4: TEST MODULE 8 OUTPUT
+================================================================================
+
+1. Go to execution history
+2. Click on latest execution
+3. Click on Module 1
+4. Note the data it shows (especially columns 0, 1, 3)
+
+5. Click on Module 8
+6. What does it show?
+
+IF MODULE 8 SHOWS NO DATA:
+--------------------------
+→ Module 8 is not running
+→ Check connection (Step 2)
+→ Check configuration (Step 3)
+
+IF MODULE 8 SHOWS DATA BUT VARIABLES ARE EMPTY:
+-----------------------------------------------
+→ Variables are not mapped correctly
+→ Fix variable mappings (Step 3)
+
+IF MODULE 8 SHOWS DATA WITH VALUES:
+------------------------------------
+→ Module 8 is working!
+→ Problem is in next modules (Step 5)
+
+================================================================================
+STEP 5: CHECK MODULE 2 (ROUTER) CONNECTION
+================================================================================
+
+1. Open Module 2 (Router)
+
+2. Check input connection:
+   - Should be connected to Module 8
+   - Should show: "Connected to Module 8"
+
+3. Check routes:
+   - Route 1: Should connect to Module 3
+   - Route 2: Should connect to Module 4
+
+IF NOT CONNECTED:
+-----------------
+1. Click on Module 2
+2. Connect input to Module 8
+3. Connect Route 1 to Module 3
+4. Connect Route 2 to Module 4
+
+================================================================================
+STEP 6: CHECK ROUTER FILTERS
+================================================================================
+
+1. Open Module 2 (Router)
+
+2. Route 1 (English):
+   - Click on Route 1
+   - Does it have a filter?
+   - Filter should be: {{8.language}} = "en"
+   - If no filter, ADD IT!
+
+3. Route 2 (Arabic):
+   - Click on Route 2
+   - Does it have a filter?
+   - Filter should be: {{8.language}} = "ar"
+   - If no filter, ADD IT!
+
+4. Save Module 2
+
+================================================================================
+STEP 7: VERIFY COMPLETE FLOW
+================================================================================
+
+The flow should be:
+
+Module 1 (Google Sheets Watch Rows)
+    ↓
+Module 8 (Set Variables)
+    ↓
+Module 2 (Router)
+    ├─ Route 1 → Module 3 (English Email) → Module 5 (Update Row)
+    └─ Route 2 → Module 4 (Arabic Email) → Module 7 (Update Row)
+
+CHECK EACH CONNECTION:
+----------------------
+□ Module 1 → Module 8: Connected?
+□ Module 8 → Module 2: Connected?
+□ Module 2 Route 1 → Module 3: Connected?
+□ Module 2 Route 2 → Module 4: Connected?
+□ Module 3 → Module 5: Connected?
+□ Module 4 → Module 7: Connected?
+
+IF ANY NOT CONNECTED:
+---------------------
+→ Connect them by dragging lines between modules
+→ OR use the connection dropdown in each module
+
+================================================================================
+STEP 8: REBUILD CONNECTIONS (IF NEEDED)
+================================================================================
+
+If connections are broken, rebuild them:
+
+1. Delete Module 8 (temporarily)
+2. Add new "Set Variables" module
+3. Connect Module 1 output to new Module 8 input
+4. Configure Module 8:
+   - name: {{1.0}}
+   - email: {{1.1}}
+   - language: {{1.3}}
+5. Connect Module 8 to Module 2
+6. Save
+
+OR:
+
+1. Click on Module 8
+2. Look for "Reconnect" or "Change input" option
+3. Select Module 1 as input
+4. Save
+
+================================================================================
+STEP 9: TEST THE FLOW
+================================================================================
+
+1. Save all changes
+2. Make sure scenario is ON
+3. Add test lead to Google Sheets:
+   - Name: Flow Test
+   - Email: your-email@example.com
+   - Language: en
+
+4. Wait 30 seconds
+
+5. Check execution history:
+   □ Module 1: Should show data ✅
+   □ Module 8: Should show variables with values ✅
+   □ Module 2: Should route to Route 1 ✅
+   □ Module 3: Should send email ✅
+   □ Module 5: Should update row ✅
+
+IF MODULE 8 STILL NOT RUNNING:
+------------------------------
+→ Check Module 8 error messages
+→ Check if Module 1 output is correct
+→ Try reconnecting modules
+
+================================================================================
+COMMON ISSUES AND FIXES
+================================================================================
+
+ISSUE 1: Module 8 not connected
+--------------------------------
+SYMPTOM: Module 8 doesn't run
+FIX: Connect Module 1 output to Module 8 input
+
+ISSUE 2: Module 8 variables wrong format
+----------------------------------------
+SYMPTOM: Module 8 runs but variables are empty
+FIX: Use {{1.0}}, {{1.1}}, {{1.3}} (no backticks, no quotes)
+
+ISSUE 3: Router not connected
+-----------------------------
+SYMPTOM: Router doesn't route
+FIX: Connect Module 8 to Module 2, Module 2 routes to Modules 3 & 4
+
+ISSUE 4: Router has no filters
+------------------------------
+SYMPTOM: Both emails sent to everyone
+FIX: Add filters: {{8.language}} = "en" and "ar"
+
+ISSUE 5: Modules disconnected after save
+----------------------------------------
+SYMPTOM: Connections disappear
+FIX: Reconnect and save again, check for errors
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Module 1 → Module 8: Connected?
+□ Module 8 variables: {{1.0}}, {{1.1}}, {{1.3}} (no backticks)?
+□ Module 8 → Module 2: Connected?
+□ Module 2 Route 1: Filter {{8.language}} = "en"?
+□ Module 2 Route 2: Filter {{8.language}} = "ar"?
+□ Module 2 → Module 3: Connected?
+□ Module 2 → Module 4: Connected?
+□ Module 3 → Module 5: Connected?
+□ Module 4 → Module 7: Connected?
+□ Scenario is ON?
+□ All modules saved?
+
+================================================================================
+

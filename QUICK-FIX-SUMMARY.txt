@@ -1,0 +1,149 @@
+================================================================================
+QUICK FIX SUMMARY - 5 Issues to Fix
+================================================================================
+
+Based on your scenario JSON, here are the EXACT fixes needed:
+
+================================================================================
+FIX #1: MODULE 2 - Attendance Variable (CRITICAL)
+================================================================================
+
+❌ CURRENT (WRONG):
+   {{1.answers.`677abd25`.textAnswers.answers[].value}}
+
+✅ CHANGE TO:
+   {{1.answers.677abd25.textAnswers.answers[0].value}}
+
+Changes:
+- Remove backticks: `677abd25` → 677abd25
+- Add array index: answers[] → answers[0]
+
+Time: 1 minute
+
+================================================================================
+FIX #2: MODULE 2 - Name Variable (IMPORTANT)
+================================================================================
+
+❌ CURRENT (May not exist in your form):
+   {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+
+✅ CHANGE TO (Extract from email):
+   {{split(1.respondentEmail; "@")[0]}}
+
+This extracts "chairman" from "chairman@falconeyegroup.net"
+
+Time: 1 minute
+
+================================================================================
+FIX #3: MODULE 2 - Comments Variable (IMPORTANT)
+================================================================================
+
+❌ CURRENT (May not exist in your form):
+   {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+✅ CHANGE TO (Empty string):
+   ""
+
+Since your form doesn't collect comments
+
+Time: 1 minute
+
+================================================================================
+FIX #4: MODULE 5 - rowNumber Variable (CRITICAL)
+================================================================================
+
+❌ CURRENT (WRONG):
+   {{12.array[0].__IMTINDEX__}}
+
+✅ CHANGE TO:
+   {{12.array[0].__ROW_NUMBER__}}
+
+Changes:
+- __IMTINDEX__ → __ROW_NUMBER__
+
+Time: 1 minute
+
+================================================================================
+FIX #5: MODULE 7 - Update Row Mode (CRITICAL)
+================================================================================
+
+❌ CURRENT:
+   "mode": "select"
+   "rowNumber": "{{5.rowNumber}}"
+
+This will cause "missing rowNumber" error.
+
+✅ CHANGE TO (Option A - Recommended):
+   Change mode to "fromAll" or "Search Rows"
+   Add Search Filter: Column B (Email) = {{2.email}}
+   Remove "rowNumber" field
+
+✅ OR (Option B - Alternative):
+   Keep as is but ensure Module 5 is fixed first
+
+Time: 5 minutes
+
+================================================================================
+TOTAL TIME: ~10 minutes to fix all issues
+================================================================================
+
+================================================================================
+COMPLETE FIXED MODULE 2
+================================================================================
+
+After fixes, Module 2 should be:
+
+Variables:
+┌─────────────────────────────────────────────────────────────┐
+│ email:      {{1.respondentEmail}}                          │
+│ name:       {{split(1.respondentEmail; "@")[0]}}          │
+│ attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}│
+│ comments:   ""                                             │
+└─────────────────────────────────────────────────────────────┘
+
+================================================================================
+COMPLETE FIXED MODULE 5
+================================================================================
+
+After fix, Module 5 should be:
+
+Variables:
+┌─────────────────────────────────────────────────────────────┐
+│ rowNumber:  {{12.array[0].__ROW_NUMBER__}}                │
+│ rowExists:  {{if(12.length > 0; "true"; "false")}}        │
+└─────────────────────────────────────────────────────────────┘
+
+================================================================================
+WHAT'S ALREADY CORRECT ✅
+================================================================================
+
+✅ Module 23: displayName syntax is correct
+✅ Module 22: Removed (good!)
+✅ Email modules: Configured correctly
+✅ Router logic: Correct
+
+================================================================================
+ACTION PLAN
+================================================================================
+
+1. Fix Module 2 (3 fixes - 3 minutes)
+   → Fix attendance syntax
+   → Fix name extraction
+   → Fix comments empty
+
+2. Fix Module 5 (1 fix - 1 minute)
+   → Fix rowNumber field
+
+3. Fix Module 7 (1 fix - 5 minutes)
+   → Change to Search Rows mode
+
+4. Test workflow (5 minutes)
+   → Submit test form
+   → Verify no errors
+
+Total: ~15 minutes to complete all fixes!
+
+================================================================================
+END
+================================================================================
+

@@ -1,0 +1,165 @@
+================================================================================
+VISUAL GUIDE: FIX "TO" FIELD IN MAKE.COM UI
+Step-by-Step with Exact Clicks
+================================================================================
+
+This guide shows you EXACTLY how to fix the "To" field in Make.com's UI.
+
+================================================================================
+SCENARIO: YOU SEE "To Array" FIELD
+================================================================================
+
+STEP 1: Open Module 3
+---------------------
+1. Click Module 3 (Resend - Send an Email)
+
+STEP 2: Find "To" Field
+------------------------
+1. Scroll down to find "To" field
+2. You should see: "To Array" (not just "To")
+3. Click on "To Array"
+
+STEP 3: Check Current Value
+----------------------------
+You'll see something like:
+┌─────────────────────────┐
+│ To Array                │
+│ ┌─────────────────────┐  │
+│ │ Item 1             │  │
+│ │   value: 8. email  │  │ ← This is WRONG
+│ └─────────────────────┘  │
+└─────────────────────────┘
+
+STEP 4: Fix the Value
+----------------------
+1. Click on "Item 1" (the object inside To Array)
+2. You'll see a "value" field
+3. Click on the "value" field
+4. DELETE everything in it (currently shows "8. email")
+5. Now click the mapping button (looks like </> or {})
+6. Select: 8. email (from the dropdown)
+7. OR manually type: {{8.email}}
+8. Make sure it shows: {{8.email}} (with curly braces)
+
+STEP 5: Verify
+--------------
+After fixing, it should look like:
+┌─────────────────────────┐
+│ To Array                │
+│ ┌─────────────────────┐  │
+│ │ Item 1             │  │
+│ │   value: {{8.email}}│  │ ← This is CORRECT
+│ └─────────────────────┘  │
+└─────────────────────────┘
+
+STEP 6: Save
+------------
+1. Click "OK" or "Save"
+2. Save the module
+
+================================================================================
+SCENARIO: YOU SEE JUST "To" FIELD (NOT "To Array")
+================================================================================
+
+STEP 1: Open Module 3
+---------------------
+1. Click Module 3
+
+STEP 2: Find "To" Field
+------------------------
+1. Scroll to "To" field
+2. If it shows just "To" (not "To Array"), it might be a different format
+
+STEP 3: Check Current Value
+----------------------------
+Click on "To" field - what does it show?
+□ {{8.email}}
+□ "8. email"
+□ 8. email
+□ Something else?
+
+STEP 4: Fix It
+--------------
+1. Click on "To" field
+2. Delete current value
+3. Click mapping button (</> or {})
+4. Select: 8. email
+5. OR type: {{8.email}}
+6. Should show: {{8.email}}
+
+STEP 5: Save
+------------
+1. Click "OK"
+2. Save module
+
+================================================================================
+IF YOU CAN'T FIND THE MAPPING BUTTON
+================================================================================
+
+OPTION 1: Manual Type
+---------------------
+1. Click on "value" field (or "To" field)
+2. Delete everything
+3. Type exactly: {{8.email}}
+4. Make sure curly braces are included
+5. Save
+
+OPTION 2: Use Direct Reference
+-------------------------------
+If {{8.email}} doesn't work, try:
+1. "value" field: {{1.1}}
+2. This directly uses Email column from Google Sheets
+3. Save
+
+================================================================================
+VERIFY IT'S CORRECT
+================================================================================
+
+After fixing, check:
+
+1. Click "To" field again
+2. What does it show?
+
+CORRECT:
+--------
+- {{8.email}} (with curly braces)
+- OR [{"value": "{{8.email}}"}]
+
+WRONG:
+------
+- "8. email" (just label, no curly braces)
+- 8. email (no quotes, no curly braces)
+- {{8. email}} (space before email)
+
+================================================================================
+DO THE SAME FOR MODULE 4
+================================================================================
+
+1. Open Module 4 (Arabic Email)
+2. Repeat all steps above
+3. Save Module 4
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+IF "To" field is grayed out:
+----------------------------
+→ Make sure Module 8 is connected
+→ Check that router is routing correctly
+
+IF you can't type in the field:
+--------------------------------
+→ Click the mapping button (</>)
+→ Select from dropdown
+
+IF {{8.email}} shows as empty:
+------------------------------
+→ Check Module 8 is setting variables correctly
+→ Check Module 8 has no backticks: {{1.1}} not {{1.`1`}}
+
+================================================================================
+
+
+
+

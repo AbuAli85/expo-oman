@@ -1,0 +1,88 @@
+================================================================================
+QUICK FIX: MAKE.COM SCENARIO REFERENCE ERRORS
+================================================================================
+
+CRITICAL FIXES NEEDED - Quick Reference
+
+================================================================================
+FIX 1: MODULE 9 (SET VARIABLES)
+================================================================================
+
+CHANGE THESE VALUES:
+
+Current (WRONG):           →  New (CORRECT):
+─────────────────────────     ─────────────────────
+{{10.`0`}}                →  {{12.name}}
+{{10.`1`}}                →  {{12.email}}
+{{10.`3`}}                →  {{12.language}}
+
+HOW TO FIX:
+1. Open Make.com scenario
+2. Click Module 9 (Set Variables)
+3. Find each variable mapping
+4. Replace the old references with new ones above
+5. Save
+
+================================================================================
+FIX 2: MODULE 5 (UPDATE ROW - ENGLISH ROUTE)
+================================================================================
+
+CHANGE:
+
+Current (WRONG):
+─────────────────
+Row number: {{10.__ROW_NUMBER__}}
+
+OPTION A - Add Search Module (Recommended):
+───────────────────────────────────────────
+1. Add "Google Sheets → Search Rows" BEFORE Module 5
+2. Search by Email = {{9.email}}
+3. In Module 5, use: {{searchRow.rowNumber}}
+
+OPTION B - Direct Fix:
+──────────────────────
+Change Module 5 to use email-based update:
+- Use "Search by" mode
+- Match Email column to {{9.email}}
+
+================================================================================
+FIX 3: MODULE 7 (UPDATE ROW - ARABIC ROUTE)
+================================================================================
+
+Same as Module 5 - fix the row number reference.
+
+Current (WRONG):
+─────────────────
+Row number: {{10.__ROW_NUMBER__}}
+
+Use same fix approach as Module 5.
+
+================================================================================
+MODULE MAPPING REFERENCE
+================================================================================
+
+Module 12 = Webhook (receives data)
+Module 9 = Set Variables (maps webhook data)
+Module 2 = Router (routes by language)
+Module 3 = Email (English)
+Module 4 = Email (Arabic)
+Module 5 = Update Sheet (English route)
+Module 7 = Update Sheet (Arabic route)
+
+Data flows:
+  Module 12 → Module 9 → Module 2 → Modules 3/4 → Modules 5/7
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, verify:
+□ No error messages in scenario
+□ All module references are valid
+□ Variables map from Module 12 (not Module 10)
+□ Row numbers are properly referenced
+
+================================================================================
+END OF QUICK FIX
+================================================================================
+

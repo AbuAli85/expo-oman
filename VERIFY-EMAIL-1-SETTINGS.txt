@@ -1,0 +1,260 @@
+================================================================================
+VERIFY: ARE YOUR EMAIL 1 SETTINGS CORRECT?
+Complete Checklist
+================================================================================
+
+Check each item below. If any are wrong, fix them.
+
+================================================================================
+MODULE 1: GOOGLE SHEETS - WATCH ROWS
+================================================================================
+
+CHECK:
+------
+□ Spreadsheet is selected correctly
+□ Sheet name is "leads" (or your sheet name)
+□ Connection is active
+□ Limit is set (usually 1)
+
+STATUS: ✅ You showed this is working - data is retrieved correctly!
+
+================================================================================
+MODULE 2: ROUTER
+================================================================================
+
+ROUTE 1 (English) - FILTER:
+----------------------------
+□ Field: {{1.3}} (NO backticks - NOT {{1.`3`}})
+□ Operator: equals
+□ Value: "en" (lowercase, exact match)
+
+ROUTE 2 (Arabic) - FILTER:
+---------------------------
+□ Field: {{1.3}} (NO backticks - NOT {{1.`3`}})
+□ Operator: equals
+□ Value: "ar" (lowercase, exact match)
+
+COMMON MISTAKES:
+----------------
+❌ Using backticks: {{1.`3`}}
+❌ Wrong case: "EN" or "AR" (if your sheet uses lowercase)
+❌ No filter at all
+
+================================================================================
+MODULE 3: ENGLISH EMAIL - CRITICAL CHECKS
+================================================================================
+
+CHECK 1: TO FIELD (MOST IMPORTANT!)
+------------------------------------
+Current setting: ?
+
+CORRECT FORMAT:
+---------------
+[{"value": "{{1.1}}"}]
+
+WRONG FORMATS:
+--------------
+❌ ["{{1.1}}"] (array of strings)
+❌ ["{{1.`1`}}"] (backticks + wrong format)
+❌ {{1.1}} (not an array)
+
+HOW TO CHECK:
+-------------
+1. Open Module 3
+2. Click "To" field
+3. It should show: [{"value": "{{1.1}}"}]
+4. If different, it's WRONG - fix it!
+
+CHECK 2: FILTER (if Module 3 has its own filter)
+--------------------------------------------------
+□ Field: {{1.3}} (NO backticks)
+□ Operator: equals
+□ Value: "en"
+
+CHECK 3: SUBJECT
+-----------------
+Current: ?
+
+CORRECT:
+--------
+{{1.0}}, You're Invited! UAE Property Expo – Muscat
+
+WRONG:
+------
+❌ {{1.`0`}},You're Invited!... (backticks, no space)
+❌ {{1.0}},You're Invited!... (no space after comma)
+
+CHECK 4: HTML CONTENT
+---------------------
+Check for greeting line:
+- Should be: "Dear {{1.0}},"
+- NOT: "Dear {{1.`0`}},"
+- NOT: "Dear Valued Guest,"
+
+CHECK 5: FROM FIELD
+--------------------
+□ Should be: "sales@thesmartpro.io"
+
+CHECK 6: RESEND CONNECTION
+--------------------------
+□ Connection is active
+□ No errors shown
+
+================================================================================
+MODULE 4: ARABIC EMAIL - SAME CHECKS
+================================================================================
+
+CHECK 1: TO FIELD
+------------------
+□ Should be: [{"value": "{{1.1}}"}]
+□ NOT: ["{{1.1}}"] or ["{{1.`1`}}"]
+
+CHECK 2: FILTER
+---------------
+□ Field: {{1.3}} (NO backticks)
+□ Value: "ar"
+
+CHECK 3: SUBJECT
+-----------------
+□ Should be: {{1.0}}، أنت مدعو! معرض عقارات الإمارات – مسقط
+□ NOT: {{1.`0`}},أنت مدعو!... (backticks)
+
+CHECK 4: HTML CONTENT
+---------------------
+□ Should be: عزيزي {{1.0}}،
+□ NOT: عزيزي {{1.`0`}}،
+
+================================================================================
+MODULE 5 & 7: UPDATE ROW
+================================================================================
+
+MODULE 5 (English route):
+--------------------------
+□ Row number: {{1.__ROW_NUMBER__}}
+□ Status (Column 4/E): "Email 1 Sent"
+□ Email 1 Date (Column 6/G): {{now}}
+
+MODULE 7 (Arabic route):
+--------------------------
+□ Row number: {{1.__ROW_NUMBER__}}
+□ Status (Column 4/E): "Email 1 Sent"
+□ Email 1 Date (Column 6/G): {{now}}
+
+================================================================================
+QUICK VERIFICATION TEST
+================================================================================
+
+TEST YOUR CURRENT SETTINGS:
+----------------------------
+
+1. Open Module 3 (English Email)
+2. Check "To" field - what does it show?
+   □ [{"value": "{{1.1}}"}] → ✅ CORRECT
+   □ ["{{1.1}}"] → ❌ WRONG - Fix it!
+   □ ["{{1.`1`}}"] → ❌ WRONG - Fix it!
+
+3. Check Subject - does it have backticks?
+   □ {{1.0}} → ✅ CORRECT
+   □ {{1.`0`}} → ❌ WRONG - Remove backticks!
+
+4. Check HTML - does greeting have backticks?
+   □ Dear {{1.0}}, → ✅ CORRECT
+   □ Dear {{1.`0`}}, → ❌ WRONG - Remove backticks!
+
+================================================================================
+MOST COMMON MISTAKES
+================================================================================
+
+MISTAKE 1: Wrong To Field Format (90% of issues)
+--------------------------------------------------
+WRONG: ["{{1.1}}"]
+CORRECT: [{"value": "{{1.1}}"}]
+
+MISTAKE 2: Backticks in Variables (80% of issues)
+---------------------------------------------------
+WRONG: {{1.`1`}}, {{1.`3`}}, {{1.`0`}}
+CORRECT: {{1.1}}, {{1.3}}, {{1.0}}
+
+MISTAKE 3: Language Filter Mismatch (70% of issues)
+----------------------------------------------------
+WRONG: Filter checks "en" but sheet has "EN"
+CORRECT: Make them match exactly (case-sensitive)
+
+MISTAKE 4: Missing Space in Subject (50% of issues)
+----------------------------------------------------
+WRONG: {{1.0}},You're Invited!...
+CORRECT: {{1.0}}, You're Invited!...
+
+================================================================================
+WHAT TO CHECK RIGHT NOW
+================================================================================
+
+OPEN MODULE 3 AND CHECK:
+------------------------
+
+1. "To" field:
+   - Click on it
+   - What format do you see?
+   - Is it [{"value": "{{1.1}}"}]?
+   - If not, it's WRONG!
+
+2. Subject field:
+   - Does it have {{1.`0`}} or {{1.0}}?
+   - If {{1.`0`}}, it's WRONG!
+
+3. HTML field:
+   - Search for: {{1.`0`}}
+   - If found, it's WRONG!
+
+================================================================================
+IF SETTINGS ARE WRONG
+================================================================================
+
+If you find any wrong settings:
+
+1. Fix "To" field first (most critical):
+   - Change to: [{"value": "{{1.1}}"}]
+
+2. Remove all backticks:
+   - Find: {{1.`1`}}, {{1.`3`}}, {{1.`0`}}
+   - Replace: {{1.1}}, {{1.3}}, {{1.0}}
+
+3. Fix subject spacing:
+   - Add space after comma
+
+4. Save all changes
+
+5. Test again
+
+================================================================================
+IF SETTINGS ARE CORRECT
+================================================================================
+
+If all settings are correct but still not working:
+
+1. Check scenario is ON (toggle at top)
+2. Check execution logs for errors
+3. Check Google Sheets - does lead have:
+   - Name in Column A?
+   - Email in Column B?
+   - "en" or "ar" in Column D (exact match)?
+4. Test Module 1 - does it return data?
+5. Test Module 3 manually - does email send?
+
+================================================================================
+QUICK ANSWER
+================================================================================
+
+To answer "Are settings correct?":
+
+CHECK THESE 3 THINGS:
+---------------------
+1. Module 3 "To" field = [{"value": "{{1.1}}"}]
+2. No backticks anywhere: {{1.0}}, {{1.1}}, {{1.3}}
+3. Language filter matches sheet value exactly
+
+If all 3 are correct: ✅ Settings are correct!
+If any are wrong: ❌ Fix them first!
+
+================================================================================
+

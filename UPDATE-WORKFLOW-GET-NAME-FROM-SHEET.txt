@@ -1,0 +1,185 @@
+================================================================================
+UPDATE: GET NAME FROM SHEET WHEN EMAIL EXISTS
+================================================================================
+
+The scenario SHOULD check the leads sheet and use the name from there
+when email already exists. Let's fix this!
+
+================================================================================
+CURRENT WORKFLOW ISSUE
+================================================================================
+
+Module 11: Searches for email in sheet ✅
+Module 12: Aggregates search results ✅
+Module 5: Sets rowNumber and rowExists ✅
+  ❌ BUT: Does NOT extract Name from the found row!
+
+When email exists in sheet, we have the row data in Module 12,
+but we're not using the Name from that row.
+
+================================================================================
+THE FIX: EXTRACT NAME FROM SHEET
+================================================================================
+
+STEP 1: Update Module 5 to Extract Name
+──────────────────────────────────────────
+
+Add a new variable to Module 5:
+
+Variable Name: sheetName
+Variable Value: {{if(12.length > 0; 12.array[0].Name; "")}}
+
+This extracts the Name column from the sheet row if email was found.
+
+STEP 2: Create Smart Name Variable
+────────────────────────────────────────
+
+Add Module 5.5 (Set Variables) after Module 5:
+
+Variables:
+  • displayName: {{if(5.rowExists = "true"; 5.sheetName; 2.name || split(2.email; "@")[0] || "Guest")}}
+
+This means:
+  • If row exists → Use name from sheet
+  • If not → Use name from form OR email username OR "Guest"
+
+STEP 3: Update All Email Templates
+─────────────────────────────────────
+
+In ALL email modules (16, 17, 19, 20), change:
+
+FROM:
+  <p>Dear {{2.name}},</p>
+
+TO:
+  <p>Dear {{5.displayName}},</p>
+
+================================================================================
+DETAILED INSTRUCTIONS
+================================================================================
+
+STEP 1: Update Module 5
+──────────────────────────
+
+1. Open scenario in Make.com
+2. Find Module 5 (Set Variables)
+3. Click "Add Variable" or edit existing
+4. Add new variable:
+
+   Variable Name: sheetName
+   Variable Value: {{if(12.length > 0; 12.array[0].Name; "")}}
+
+5. Save Module 5
+
+STEP 2: Add Module 5.5
+─────────────────────────
+
+1. Click "+" button after Module 5
+2. Add "Set Variables" module
+3. Position it between Module 5 and Module 6
+4. Configure:
+
+   Variable Name: displayName
+   Variable Value: {{if(5.rowExists = "true"; 5.sheetName; 2.name || split(2.email; "@")[0] || "Guest")}}
+
+5. Save Module 5.5
+
+STEP 3: Update Email Modules
+──────────────────────────────
+
+For EACH email module (16, 17, 19, 20):
+
+1. Open the module
+2. Find HTML Content field
+3. Search for: "Dear {{2.name}},"
+4. Replace with: "Dear {{5.displayName}},"
+5. Save
+
+================================================================================
+WHAT THIS DOES
+================================================================================
+
+BEFORE:
+  • Module 11 searches sheet
+  • Module 12 has row data (including Name)
+  • Module 5 only checks if row exists
+  • Email uses {{2.name}} which might be null
+  • Result: "Dear Yes, I'll attend," ❌
+
+AFTER:
+  • Module 11 searches sheet
+  • Module 12 has row data (including Name)
+  • Module 5 extracts Name from sheet row
+  • Module 5.5 creates smart displayName
+  • Email uses {{5.displayName}}
+  • Result: "Dear fahad alamri," ✅
+
+================================================================================
+LOGIC BREAKDOWN
+================================================================================
+
+When Email EXISTS in Sheet:
+  • Module 11 finds row
+  • Module 12.array[0].Name = "fahad alamri"
+  • Module 5.sheetName = "fahad alamri"
+  • Module 5.5.displayName = "fahad alamri" (from sheet)
+  • Email shows: "Dear fahad alamri,"
+
+When Email NOT in Sheet:
+  • Module 11 finds nothing
+  • Module 5.sheetName = ""
+  • Module 5.5.displayName = 2.name OR email username OR "Guest"
+  • Email shows name from form or fallback
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After implementing, test:
+
+TEST 1: Email Exists in Sheet
+──────────────────────────────
+1. Submit form with email that exists in sheet
+2. Check Module 5 output: sheetName should have value
+3. Check Module 5.5 output: displayName should be from sheet
+4. Check email: Should show sheet name
+
+TEST 2: Email Not in Sheet
+─────────────────────────────
+1. Submit form with new email
+2. Check Module 5 output: sheetName should be empty
+3. Check Module 5.5 output: displayName should use form name or fallback
+4. Check email: Should show form name or fallback
+
+================================================================================
+CHECKLIST
+================================================================================
+
+□ Update Module 5: Add sheetName variable
+□ Add Module 5.5: Create displayName variable  
+□ Update Module 16: Use {{5.displayName}}
+□ Update Module 17: Use {{5.displayName}}
+□ Update Module 19: Use {{5.displayName}}
+□ Update Module 20: Use {{5.displayName}}
+□ Test with existing email → Should show sheet name
+□ Test with new email → Should show form name or fallback
+
+================================================================================
+ALTERNATIVE: DIRECT ACCESS (SIMPLER)
+================================================================================
+
+If you don't want to add Module 5.5, update email templates directly:
+
+FOR MODULES 16, 17 (Email Exists Path):
+  Use: {{if(12.length > 0; 12.array[0].Name; 2.name)}}
+
+FOR MODULES 19, 20 (Email Not Found Path):
+  Use: {{2.name || split(2.email; "@")[0] || "Guest"}}
+
+But the Module 5.5 approach is cleaner and more maintainable.
+
+================================================================================
+END
+================================================================================
+
+

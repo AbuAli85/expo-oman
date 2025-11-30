@@ -1,0 +1,302 @@
+================================================================================
+FIX: EMAIL 1 NOT SENDING WHEN LEAD ADDED
+Simple Step-by-Step Solution
+================================================================================
+
+Follow these steps in order. Stop when you find the issue and fix it.
+
+================================================================================
+STEP 1: CHECK IF SCENARIO IS ON (MOST COMMON ISSUE)
+================================================================================
+
+1. Go to Make.com
+2. Find "Email 1 - Invitation" scenario
+3. Look at the top - is there a toggle switch?
+4. Is it GREEN/ON or GRAY/OFF?
+
+IF OFF:
+-------
+1. Click the toggle to turn it ON
+2. Wait 5 seconds
+3. Add a new test lead to Google Sheets
+4. Wait 10 seconds
+5. Check if email was sent
+
+IF ON:
+------
+Continue to Step 2
+
+================================================================================
+STEP 2: TEST IF TRIGGER IS WORKING
+================================================================================
+
+1. In Make.com, open "Email 1 - Invitation" scenario
+2. Click on Module 1 (Google Sheets - Watch Rows)
+3. Click "Run once" button (or "Test" button)
+4. Does it show your lead data?
+
+IF NO DATA:
+-----------
+Problem: Google Sheets connection issue
+Fix:
+1. Click on the connection (Google Sheets)
+2. Click "Reconnect" or "Authorize"
+3. Test again
+
+IF YES DATA:
+------------
+Continue to Step 3
+
+================================================================================
+STEP 3: CHECK YOUR LEAD DATA
+================================================================================
+
+Open Google Sheets and check your lead row:
+
+REQUIRED COLUMNS:
+-----------------
+□ Column A (Name): Has a name? Example: "John Smith"
+□ Column B (Email): Has email? Example: "john@example.com"
+□ Column D (Language): Has "en" or "ar"? Must be exact!
+
+COMMON PROBLEMS:
+----------------
+Problem 1: Language column is empty
+→ Fix: Add "en" or "ar" to Column D
+
+Problem 2: Language is "EN" (uppercase) but filter checks "en" (lowercase)
+→ Fix: Either change sheet to "en" OR change filter to "EN"
+
+Problem 3: Email column is empty
+→ Fix: Add email address to Column B
+
+Problem 4: Row not saved
+→ Fix: Press Ctrl+S to save the sheet
+
+================================================================================
+STEP 4: CHECK EXECUTION LOGS
+================================================================================
+
+1. In Make.com, click "Execution history" or "Logs"
+2. Look for recent executions
+3. Do you see any executions?
+
+IF NO EXECUTIONS:
+-----------------
+Problem: Scenario not triggering
+Possible causes:
+- Scenario is OFF (Step 1)
+- Google Sheets connection broken (Step 2)
+- Watch Rows module not configured correctly
+
+Fix: Go back to Steps 1-2
+
+IF EXECUTIONS WITH ERRORS:
+-------------------------
+1. Click on the failed execution
+2. Read the error message
+3. See Step 5 for common errors
+
+IF EXECUTIONS SUCCESSFUL:
+-------------------------
+But email not received? Check:
+- Spam folder
+- Email address is correct
+- Resend connection is working
+
+================================================================================
+STEP 5: FIX COMMON ERRORS
+================================================================================
+
+ERROR 1: "Missing value of required parameter 'to'"
+---------------------------------------------------
+MEANING: Email address not found
+
+FIX:
+1. Open Module 3 or 4 (Email module)
+2. Check "To" field
+3. Should be: `[{"value": "{{1.1}}"}]`
+4. NOT: `["{{1.1}}"]` or `["{{1.`1`}}"]`
+5. Also check: Column B in Google Sheets has email
+
+ERROR 2: "The 'to' field must be a 'string'"
+---------------------------------------------
+MEANING: Wrong format
+
+FIX:
+1. Open Module 3 or 4
+2. Change "To" field to: `[{"value": "{{1.1}}"}]`
+3. Save and test
+
+ERROR 3: "Filter condition not met"
+------------------------------------
+MEANING: Language doesn't match
+
+FIX:
+1. Check Column D in Google Sheets - what value?
+2. Check filter in Module 3/4 - what does it check?
+3. Make them match exactly (case-sensitive!)
+
+ERROR 4: "Connection error"
+---------------------------
+MEANING: Google Sheets or Resend connection broken
+
+FIX:
+1. Reconnect Google Sheets (Module 1)
+2. Reconnect Resend (Module 3/4)
+3. Test again
+
+================================================================================
+STEP 6: FIX VARIABLE REFERENCES
+================================================================================
+
+CHECK FOR BACKTICKS:
+--------------------
+1. Open Module 3 (English Email)
+2. Check all fields for backticks like: `{{1.`1`}}`
+3. Remove backticks: Change to `{{1.1}}`
+
+FIXES NEEDED:
+-------------
+In Module 3:
+- Filter: `{{1.`3`}}` → `{{1.3}}`
+- To field: `["{{1.`1`}}"]` → `[{"value": "{{1.1}}"}]`
+- Subject: `{{1.`0`}}` → `{{1.0}}`
+- HTML: `{{1.`0`}}` → `{{1.0}}`
+
+In Module 4 (Arabic):
+- Same fixes as above
+
+================================================================================
+STEP 7: COMPLETE TEST PROCEDURE
+================================================================================
+
+FOLLOW THIS EXACTLY:
+--------------------
+
+1. PREPARE:
+   - Open Google Sheets
+   - Prepare a test lead:
+     * Name: "Test User"
+     * Email: your-real-email@example.com
+     * Language: "en" (lowercase, exact)
+     * Status: (leave empty)
+
+2. CHECK SCENARIO:
+   - Go to Make.com
+   - Open "Email 1 - Invitation"
+   - Is toggle ON? (green)
+   - If not, turn it ON
+
+3. ADD LEAD:
+   - Add the test lead to Google Sheets
+   - Save the sheet (Ctrl+S)
+   - Wait 15 seconds
+
+4. CHECK:
+   - Check Make.com execution logs
+   - Check your email inbox
+   - Check spam folder
+   - Check Google Sheets - Status should be "Email 1 Sent"
+
+5. IF STILL NOT WORKING:
+   - Check execution logs for errors
+   - Follow error message
+   - See troubleshooting steps above
+
+================================================================================
+QUICK DIAGNOSIS
+================================================================================
+
+Answer these questions:
+
+Q1: Is the scenario toggle ON (green)?
+   □ Yes → Continue
+   □ No → Turn it ON (Step 1)
+
+Q2: When you click "Run once" on Module 1, does it return data?
+   □ Yes → Continue
+   □ No → Fix Google Sheets connection (Step 2)
+
+Q3: Does your lead have:
+   - Name in Column A?
+   - Email in Column B?
+   - "en" or "ar" in Column D?
+   □ Yes → Continue
+   □ No → Add missing data (Step 3)
+
+Q4: Do you see executions in Make.com logs?
+   □ Yes → Check if they succeeded or failed
+   □ No → Scenario not triggering (Steps 1-2)
+
+Q5: If executions exist, what error do you see?
+   □ "Missing value of required parameter 'to'" → Fix Step 5, Error 1
+   □ "The 'to' field must be a 'string'" → Fix Step 5, Error 2
+   □ "Filter condition not met" → Fix Step 5, Error 3
+   □ "Connection error" → Fix Step 5, Error 4
+   □ No error but email not sent → Check spam, verify email address
+
+================================================================================
+MOST LIKELY FIXES (In Order of Probability)
+================================================================================
+
+1. SCENARIO NOT ON (90% of cases)
+   → Turn scenario toggle ON
+
+2. LANGUAGE MISMATCH (80% of cases)
+   → Make filter match sheet value exactly
+
+3. WRONG TO FIELD FORMAT (70% of cases)
+   → Change to: `[{"value": "{{1.1}}"}]`
+
+4. BACKTICKS IN VARIABLES (60% of cases)
+   → Remove all backticks
+
+5. EMAIL COLUMN EMPTY (50% of cases)
+   → Add email to Column B
+
+6. CONNECTION ISSUE (30% of cases)
+   → Reconnect Google Sheets or Resend
+
+================================================================================
+STILL NOT WORKING?
+================================================================================
+
+If you've tried everything:
+
+1. SHARE THIS INFORMATION:
+   - Screenshot of execution logs
+   - Error message (if any)
+   - Your lead data (Name, Email, Language)
+   - Scenario status (ON/OFF)
+
+2. CHECK THESE ONE MORE TIME:
+   □ Scenario is ON
+   □ Google Sheets connection works
+   □ Lead has all required data
+   □ Language matches filter exactly
+   □ To field is: `[{"value": "{{1.1}}"}]`
+   □ No backticks in variables
+
+3. TRY MANUAL TEST:
+   - Click "Run once" on Module 1
+   - Does it return data?
+   - Click "Run once" on Module 3
+   - Does email send?
+
+================================================================================
+SUCCESS CHECKLIST
+================================================================================
+
+After fixing, you should see:
+□ Scenario is ON (green toggle)
+□ Execution appears in logs (within 15 seconds of adding lead)
+□ Execution shows SUCCESS (green checkmark)
+□ Email received in inbox
+□ Google Sheets Status = "Email 1 Sent"
+□ Google Sheets Email 1 Date = current date/time
+
+If all checked: ✅ IT'S WORKING!
+
+================================================================================
+

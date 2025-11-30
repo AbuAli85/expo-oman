@@ -1,0 +1,259 @@
+================================================================================
+FINAL FIX: ALL ISSUES IN YOUR SCENARIO
+Complete Fix Guide
+================================================================================
+
+ISSUES FOUND:
+-------------
+1. ❌ Module 3: Mode "select" with rowNumber="{{4.email}}" (email is NOT a row number!)
+2. ❌ Module 5: Mode "select" with rowNumber="{{4.email}}" (same issue)
+3. ❌ Module 6: "to" field is string, should be array format
+4. ❌ Module 7: "to" field is string, should be array format
+5. ❌ Module 3: Unnecessary "1": "{{4.email}}" in values (updating email column)
+
+================================================================================
+FIX 1: MODULE 3 (UPDATE ROW - ROUTE 1)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"mode": "select"
+"rowNumber": "{{4.email}}"
+"values": {
+  "1": "{{4.email}}",  ← Unnecessary!
+  "10": "Accepted",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+FIXED:
+------
+"mode": "search"
+"filters": [
+  {
+    "a": "1",
+    "o": "text:equal",
+    "b": "{{4.email}}"
+  }
+]
+"values": {
+  "10": "Accepted",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+(Remove rowNumber field)
+(Remove "1": "{{4.email}}" from values)
+
+================================================================================
+FIX 2: MODULE 5 (UPDATE ROW - ROUTE 2)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"mode": "select"
+"rowNumber": "{{4.email}}"
+
+FIXED:
+------
+"mode": "search"
+"filters": [
+  {
+    "a": "1",
+    "o": "text:equal",
+    "b": "{{4.email}}"
+  }
+]
+(Remove rowNumber field)
+
+================================================================================
+FIX 3: MODULE 6 (EMAIL - ROUTE 1)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"to": ["{{4.email}}"]
+
+FIXED:
+------
+"to": [
+  {
+    "value": "{{4.email}}"
+  }
+]
+
+================================================================================
+FIX 4: MODULE 7 (EMAIL - ROUTE 2)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"to": ["{{4.email}}"]
+
+FIXED:
+------
+"to": [
+  {
+    "value": "{{4.email}}"
+  }
+]
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Fix Module 3 (Update Row - Accept) (3 minutes)
+--------------------------------------------------------
+1. Open Module 3
+2. Change Mode: "select" → "search"
+3. Add Search Filter:
+   - Column: Email (or index 1)
+   - Operator: equals
+   - Value: {{4.email}}
+4. Remove "Row Number" field (delete it)
+5. In Values section:
+   - Remove: "1": "{{4.email}}" (don't update email column)
+   - Keep: "10": "Accepted"
+   - Keep: "11": "{{now}}"
+   - Keep: "12": "{{4.comments}}"
+6. Save
+
+STEP 2: Fix Module 6 (Email - Accept) (2 minutes)
+---------------------------------------------------
+1. Open Module 6
+2. "To" field:
+   - Current: ["{{4.email}}"]
+   - Change to: [{"value": "{{4.email}}"}]
+   - Click "To" field → Add item → Object → value: {{4.email}}
+3. Add HTML content for agreement email
+4. Save
+
+STEP 3: Fix Module 5 (Update Row - Reject) (3 minutes)
+--------------------------------------------------------
+1. Open Module 5
+2. Change Mode: "select" → "search"
+3. Add Search Filter:
+   - Column: Email (or index 1)
+   - Operator: equals
+   - Value: {{4.email}}
+4. Remove "Row Number" field
+5. Values should be:
+   - "10": "Rejected"
+   - "11": "{{now}}"
+   - "12": "{{4.comments}}"
+6. Save
+
+STEP 4: Fix Module 7 (Email - Reject) (2 minutes)
+---------------------------------------------------
+1. Open Module 7
+2. "To" field:
+   - Current: ["{{4.email}}"]
+   - Change to: [{"value": "{{4.email}}"}]
+   - Click "To" field → Add item → Object → value: {{4.email}}
+3. Add HTML content for thank you email
+4. Save
+
+================================================================================
+COMPLETE FIXED CONFIGURATION
+================================================================================
+
+MODULE 1: Google Forms Watch Responses ✅
+MODULE 4: Set Variables ✅
+MODULE 2: Router ✅
+
+ROUTE 1 (Accept):
+------------------
+Module 3: Update Row
+   - Mode: "search"
+   - Search Filter: Email = {{4.email}}
+   - Values: Response="Accepted", Response Date, Comments
+   - NO rowNumber field
+   - NO updating email column
+
+Module 6: Send Email
+   - To: [{"value": "{{4.email}}"}]
+   - Subject: "Agreement - UAE Property Expo"
+   - HTML: Agreement template
+
+ROUTE 2 (Reject):
+------------------
+Module 5: Update Row
+   - Mode: "search"
+   - Search Filter: Email = {{4.email}}
+   - Values: Response="Rejected", Response Date, Comments
+   - NO rowNumber field
+
+Module 7: Send Email
+   - To: [{"value": "{{4.email}}"}]
+   - Subject: "Thank You - UAE Property Expo"
+   - HTML: Thank you template
+
+================================================================================
+CRITICAL CHANGES SUMMARY
+================================================================================
+
+MODULE 3:
+---------
+❌ "mode": "select" → ✅ "mode": "search"
+❌ "rowNumber": "{{4.email}}" → ✅ Remove (add search filter instead)
+❌ "1": "{{4.email}}" in values → ✅ Remove (don't update email)
+
+MODULE 5:
+---------
+❌ "mode": "select" → ✅ "mode": "search"
+❌ "rowNumber": "{{4.email}}" → ✅ Remove (add search filter instead)
+
+MODULE 6:
+---------
+❌ "to": ["{{4.email}}"] → ✅ "to": [{"value": "{{4.email}}"}]
+
+MODULE 7:
+---------
+❌ "to": ["{{4.email}}"] → ✅ "to": [{"value": "{{4.email}}"}]
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Module 3: Mode = "search" (not "select")
+□ Module 3: Has search filter (Email = {{4.email}})
+□ Module 3: No rowNumber field
+□ Module 3: Removed "1": "{{4.email}}" from values
+□ Module 5: Mode = "search" (not "select")
+□ Module 5: Has search filter (Email = {{4.email}})
+□ Module 5: No rowNumber field
+□ Module 6: "To" = [{"value": "{{4.email}}"}]
+□ Module 7: "To" = [{"value": "{{4.email}}"}]
+□ All modules saved
+□ Scenario is ON
+
+================================================================================
+WHY THESE FIXES ARE CRITICAL
+================================================================================
+
+ISSUE 1: rowNumber = email
+---------------------------
+Problem: Email address is NOT a row number!
+- Row numbers are: 1, 2, 3, 4, etc.
+- Email is: "test@example.com"
+- This will cause error or update wrong row
+
+Solution: Use "search" mode to find row by email
+
+ISSUE 2: "to" field format
+---------------------------
+Problem: Resend API expects array of objects
+- Current: ["{{4.email}}"] (array of strings)
+- Required: [{"value": "{{4.email}}"}] (array of objects)
+
+Solution: Use object format with "value" property
+
+ISSUE 3: Updating email column
+-------------------------------
+Problem: No need to update email column
+- Email is used to FIND the row
+- Don't update it in values
+
+Solution: Remove "1": "{{4.email}}" from values
+
+================================================================================
+

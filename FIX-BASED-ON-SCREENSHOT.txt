@@ -1,0 +1,259 @@
+================================================================================
+FIX BASED ON SCREENSHOT REVIEW
+Complete Fix Guide
+================================================================================
+
+WHAT I SEE IN YOUR SCREENSHOT:
+-------------------------------
+✅ Workflow structure looks correct
+✅ Google Forms modal is open (configuring "Watch Responses")
+✅ Router with two paths (Accept/Reject)
+✅ Google Sheets Search Rows modules (8 & 9)
+✅ Google Sheets Update Row modules (3 & 5)
+✅ Resend Email modules (6 & 7)
+
+ISSUE:
+------
+Trigger not firing even though form has responses
+
+================================================================================
+STEP 1: CONFIGURE GOOGLE FORMS MODULE (2 minutes)
+================================================================================
+
+IN THE MODAL THAT'S OPEN:
+---------------------------
+1. Click "Watch Responses" (the one with ACID badge)
+2. Click "Continue" or "OK"
+3. Configure:
+   - Connection: Select your Google account
+   - Form: Select "UAE Property Expo - Response"
+   - Limit: 1
+4. Click "OK" or "Save"
+
+IMPORTANT:
+----------
+- Use "Watch Responses" (NOT "Watch Responses in Google Sheets")
+- Make sure connection is selected
+- Make sure form is selected
+
+================================================================================
+STEP 2: VERIFY MODULE CONNECTIONS (1 minute)
+================================================================================
+
+CHECK CONNECTIONS:
+------------------
+1. Google Forms (Module 1) → Set Variables (Module 4): Connected?
+2. Set Variables (Module 4) → Router (Module 2): Connected?
+3. Router → Route 1: Connected?
+4. Router → Route 2: Connected?
+5. Route 1: Module 8 → Module 3 → Module 6: All connected?
+6. Route 2: Module 9 → Module 5 → Module 7: All connected?
+
+IF NOT CONNECTED:
+→ Click and drag from output to input to connect
+→ Save scenario
+
+================================================================================
+STEP 3: CHECK SCENARIO STATUS (30 seconds)
+================================================================================
+
+CHECK:
+------
+1. Look at bottom control bar
+2. Is there a toggle switch? Is it ON?
+3. Or check top of scenario: Is there a green toggle?
+
+IF OFF:
+→ Turn it ON
+→ Wait 30 seconds
+
+================================================================================
+STEP 4: SAVE SCENARIO (30 seconds)
+================================================================================
+
+IMPORTANT:
+----------
+1. Click "Save" button (bottom control bar or top)
+2. Make sure scenario is saved
+3. Wait for save confirmation
+
+================================================================================
+STEP 5: TEST TRIGGER (2 minutes)
+================================================================================
+
+OPTION A: USE "RUN ONCE" BUTTON
+--------------------------------
+1. Click "Run once" button (bottom control bar)
+2. This will manually trigger the scenario
+3. Check if it processes form responses
+
+OPTION B: SUBMIT NEW FORM
+--------------------------
+1. Submit a NEW form response
+2. Use email that exists in Google Sheets
+3. Wait 1-2 minutes
+4. Check execution history
+
+================================================================================
+STEP 6: CHECK EXECUTION HISTORY (1 minute)
+================================================================================
+
+CHECK:
+------
+1. Look for "Execution history" or "Runs" button (usually top right)
+2. Click it
+3. Do you see any executions?
+
+IF YES:
+→ Click on latest execution
+→ Check which module it reaches
+→ Identify where it stops
+
+IF NO:
+→ Scenario is not triggering
+→ Continue to Step 7
+
+================================================================================
+STEP 7: VERIFY GOOGLE FORMS CONNECTION (2 minutes)
+================================================================================
+
+CHECK:
+------
+1. Click on Google Forms module (Module 1)
+2. Check connection icon
+3. Is it green/connected?
+
+IF NOT CONNECTED OR ERROR:
+→ Click on connection
+→ Re-authenticate Google account
+→ Grant ALL permissions:
+  □ Google Forms
+  □ Google Drive  
+  □ Google Sheets
+→ Save
+
+================================================================================
+STEP 8: VERIFY FORM ID (1 minute)
+================================================================================
+
+CHECK:
+------
+1. In Google Forms module, check Form ID
+2. Should be: 1ULw8aIt2VuH4d8xUQDmH4fVbzHxBxacuZZtwT6mPRJI
+3. Or select form from dropdown
+
+VERIFY:
+-------
+1. Open Google Forms
+2. Get Form ID from URL
+3. Compare with Module 1
+4. Update if different
+
+================================================================================
+COMPLETE FIX PROCEDURE (10 MINUTES)
+================================================================================
+
+STEP 1: Close Modal and Configure (2 min)
+-------------------------------------------
+1. In the Google Forms modal, select "Watch Responses"
+2. Configure connection and form
+3. Click "OK" or "Save"
+4. Close modal
+
+STEP 2: Verify Connections (1 min)
+-----------------------------------
+1. Check all modules are connected
+2. Connect any missing connections
+3. Save
+
+STEP 3: Check Scenario Status (30 sec)
+---------------------------------------
+1. Turn scenario ON (if not already)
+2. Save scenario
+
+STEP 4: Test (2 min)
+---------------------
+1. Click "Run once" button
+2. OR submit new form response
+3. Wait 1-2 minutes
+
+STEP 5: Check Results (1 min)
+-------------------------------
+1. Check execution history
+2. Verify execution appears
+3. Check which module it reaches
+
+STEP 6: Fix Any Errors (3 min)
+-------------------------------
+1. If execution fails, check error message
+2. Fix the specific issue
+3. Test again
+
+================================================================================
+COMMON ISSUES FROM SCREENSHOT
+================================================================================
+
+ISSUE 1: Modal Not Closed/Configured
+--------------------------------------
+Problem: Google Forms modal is open but not configured
+Fix: Select "Watch Responses", configure, and save
+
+ISSUE 2: Scenario Not Saved
+---------------------------
+Problem: Changes not saved
+Fix: Click "Save" button
+
+ISSUE 3: Scenario Not ON
+-------------------------
+Problem: Toggle is OFF
+Fix: Turn scenario ON
+
+ISSUE 4: Connection Not Authenticated
+-------------------------------------
+Problem: Google account not connected
+Fix: Re-authenticate connection
+
+ISSUE 5: Modules Not Connected
+------------------------------
+Problem: Modules not linked
+Fix: Connect all modules
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Google Forms modal: "Watch Responses" selected and configured
+□ Connection: Google account authenticated
+□ Form: Correct form selected
+□ Scenario: Saved
+□ Scenario: Turned ON (green toggle)
+□ Modules: All connected
+□ Test: "Run once" clicked OR new form submitted
+□ Execution: Appears in history
+
+If all checked → Should work! ✅
+
+================================================================================
+SPECIFIC ACTIONS FROM SCREENSHOT
+================================================================================
+
+1. IN THE MODAL:
+   - Click "Watch Responses" (top option with ACID badge)
+   - Click "Continue"
+   - Select connection
+   - Select form
+   - Click "OK"
+
+2. AFTER MODAL CLOSES:
+   - Verify Module 1 is configured
+   - Check all connections
+   - Save scenario
+   - Turn ON
+
+3. TEST:
+   - Click "Run once" button (bottom bar)
+   - OR submit new form
+   - Check execution history
+
+================================================================================
+

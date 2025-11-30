@@ -79,6 +79,30 @@ Complete automation workflow description including:
 - **Error Handling:** Best practices and recommendations
 - **Optional Enhancements:** A/B testing, personalization, analytics
 
+### ✅ TASK 6: Make.com Scenario Improvements
+**Files:**
+- `handle-expo-responses-improved.json` - Improved scenario JSON
+- `SCENARIO-IMPROVEMENTS-IMPLEMENTATION-GUIDE.txt` - Step-by-step implementation guide
+- `SCENARIO-IMPROVEMENTS-SUMMARY.txt` - Executive summary of improvements
+- `IMPROVED-SCENARIO-FLOW-DIAGRAM.txt` - Visual flow diagram
+
+Complete best-practices implementation for the "Handle Expo Form Responses" scenario:
+
+- **Pre-Router Search:** Checks if row exists before routing
+- **Efficient Updates:** Uses rowNumber mode instead of search mode
+- **Proper Routing:** Route 1 updates existing rows, Route 2 adds new rows
+- **Array Aggregation:** Ensures single email per submission
+- **Variable Management:** Uses execution scope to prevent data leakage
+- **Error Handling:** Improved error recovery and transaction safety
+- **Performance:** Reduced operations and API calls
+
+Key improvements:
+- ✅ 18% fewer operations per execution
+- ✅ No failed updates on non-existent rows
+- ✅ Guaranteed single email per submission
+- ✅ Better error handling and recovery
+- ✅ Cleaner, more maintainable code
+
 ---
 
 ## 🎨 Brand Colors
@@ -136,17 +160,28 @@ Complete automation workflow description including:
 4. Configure email service (Gmail/SMTP/Mailgun/SendGrid)
 5. Test with a single lead first
 
+### Make.com Scenario Improvements
+1. Review `SCENARIO-IMPROVEMENTS-SUMMARY.txt` for overview
+2. Read `SCENARIO-IMPROVEMENTS-IMPLEMENTATION-GUIDE.txt` for detailed steps
+3. Check `IMPROVED-SCENARIO-FLOW-DIAGRAM.txt` for visual flow
+4. Import `handle-expo-responses-improved.json` or build manually
+5. Test with both new and existing email addresses
+
 ---
 
 ## 📋 File Structure
 
 ```
 expo-oman/
-├── index.html                          # Landing page (English + Arabic)
-├── all-email-templates.html            # All 6 email templates in one file
-├── whatsapp-messages.txt               # WhatsApp messages (EN + AR)
-├── make-com-automation-blueprint.txt  # Make.com automation guide
-└── README.md                           # This file
+├── index.html                                    # Landing page (English + Arabic)
+├── all-email-templates.html                      # All 6 email templates in one file
+├── whatsapp-messages.txt                         # WhatsApp messages (EN + AR)
+├── make-com-automation-blueprint.txt            # Make.com automation guide
+├── handle-expo-responses-improved.json          # Improved scenario JSON
+├── SCENARIO-IMPROVEMENTS-IMPLEMENTATION-GUIDE.txt # Implementation guide
+├── SCENARIO-IMPROVEMENTS-SUMMARY.txt             # Executive summary
+├── IMPROVED-SCENARIO-FLOW-DIAGRAM.txt           # Visual flow diagram
+└── README.md                                     # This file
 ```
 
 ---

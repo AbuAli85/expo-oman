@@ -1,0 +1,98 @@
+================================================================================
+EMAIL TEMPLATE FIXES APPLIED
+================================================================================
+
+ISSUES FOUND:
+-------------
+1. ❌ Variable reference: {{9.name}} (should be {{8.name}})
+2. ❌ Register Now button: href="#" (should link to Google Form)
+
+FIXES APPLIED:
+--------------
+1. ✅ Changed {{9.name}} to {{8.name}}
+2. ✅ Updated Register Now button to link to Google Form
+
+================================================================================
+CHANGES MADE
+================================================================================
+
+CHANGE 1: Variable Reference
+----------------------------
+FROM: Dear {{9.name}},
+TO:   Dear {{8.name}},
+
+REASON:
+-------
+Module 8 (Set Variables) stores the name as {{8.name}}
+Using {{9.name}} would be incorrect
+
+CHANGE 2: Register Now Button Link
+-----------------------------------
+FROM: <a href="#">
+TO:   <a href="https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform">
+
+REASON:
+-------
+Button should link to your Google Form
+Clients can then fill the form to accept/reject
+
+================================================================================
+UPDATED HTML TEMPLATE
+================================================================================
+
+The fixed template is saved in: FIXED-EMAIL-TEMPLATE-WITH-FORM-LINK.html
+
+KEY CHANGES:
+------------
+Line 30: {{9.name}} → {{8.name}}
+Line 58: href="#" → href="GOOGLE_FORM_URL"
+
+================================================================================
+HOW TO USE IN MAKE.COM
+================================================================================
+
+MODULE 3 (English Email):
+--------------------------
+1. Open Module 3
+2. Click "HTML Content" field
+3. Copy the entire content from FIXED-EMAIL-TEMPLATE-WITH-FORM-LINK.html
+4. Paste it
+5. Save
+
+MODULE 4 (Arabic Email):
+-------------------------
+1. Open Module 4
+2. Update the Arabic template similarly:
+   - Change {{9.name}} to {{8.name}}
+   - Update "سجل الآن" button link to Google Form
+3. Save
+
+================================================================================
+ALTERNATIVE: PRE-FILL FORM LINK
+================================================================================
+
+If you want to pre-fill the form with email and name:
+
+Get field IDs from Google Forms response sheet, then use:
+
+```html
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.EMAIL_FIELD_ID={{8.email}}&entry.NAME_FIELD_ID={{8.name}}" 
+   style="...">
+   Register Now
+</a>
+```
+
+For now, simple link works fine - clients will fill email/name manually.
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After updating:
+□ Variable {{8.name}} is used (not {{9.name}})
+□ Register Now button links to Google Form
+□ Form URL is correct
+□ Template saved in Module 3
+
+================================================================================
+

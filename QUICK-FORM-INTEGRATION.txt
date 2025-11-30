@@ -1,0 +1,79 @@
+================================================================================
+QUICK INTEGRATION: GOOGLE FORM WITH MAKE.COM
+10-Minute Setup
+================================================================================
+
+YOUR FORM URL:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform
+
+================================================================================
+STEP 1: UPDATE EMAIL BUTTONS (3 minutes)
+================================================================================
+
+In Module 3 and Module 4, update "Register Now" button:
+
+SIMPLE LINK (EASIEST):
+-----------------------
+```html
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform" 
+   style="...">
+   Register Now
+</a>
+```
+
+PRE-FILLED LINK (BETTER):
+--------------------------
+Get field IDs first, then use:
+```html
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.EMAIL_ID={{8.email}}&entry.NAME_ID={{8.name}}">
+   Register Now
+</a>
+```
+
+================================================================================
+STEP 2: CREATE RESPONSE HANDLER (5 minutes)
+================================================================================
+
+Create NEW scenario: "Handle Expo Form Responses"
+
+1. Add trigger: Google Forms → Watch Responses
+   - Select: "UAE Property Expo - Response"
+
+2. Add Router:
+   - Route 1: {{1.Will you attend the expo?}} = "Yes, I'll attend"
+   - Route 2: {{1.Will you attend the expo?}} = "No, I cannot attend"
+
+3. Route 1 (Accept):
+   - Update Google Sheets: Response = "Accepted"
+   - Send agreement email
+
+4. Route 2 (Reject):
+   - Update Google Sheets: Response = "Rejected"
+   - Send thank you email
+
+================================================================================
+STEP 3: UPDATE GOOGLE SHEETS (2 minutes)
+================================================================================
+
+Add columns:
+- Column K: Response
+- Column L: Response Date
+- Column M: Comments
+
+================================================================================
+DONE!
+================================================================================
+
+Now when clients:
+1. Receive email
+2. Click "Register Now"
+3. Fill form
+4. Submit
+
+Make.com will:
+- Detect response
+- Update Google Sheets
+- Send follow-up email
+
+================================================================================
+

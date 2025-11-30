@@ -1,0 +1,197 @@
+================================================================================
+EMAIL TEMPLATES FOR MAKE.COM
+Ready to Copy and Paste
+================================================================================
+
+These templates are ready to use in your Make.com email modules. The variable
+{{4.name}} has been replaced with {{2.name}} to match your scenario structure.
+
+================================================================================
+TEMPLATE 1: AGREEMENT EMAIL (For "Yes, I'll attend")
+================================================================================
+
+Use this template in:
+- Module 16 (Route 1A - Update Existing Row)
+- Module 19 (Route 2A - Add New Row)
+
+Subject: "Agreement - UAE Property Expo"
+
+HTML Content (copy everything below this line):
+───────────────────────────────────────────────────────────────────────────────
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agreement - UAE Property Expo</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header Image -->
+                    <tr>
+                        <td>
+                            <img src="https://i.imgur.com/9GWYlQI.jpeg" alt="UAE Property Expo Muscat" style="width: 100%; height: auto; display: block; max-width: 600px;">
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 30px; background-color: #FFFFFF;">
+                            <h1 style="color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;">Thank You for Accepting!</h1>
+                            <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                                Dear {{2.name}},
+                            </p>
+                            <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                                We're thrilled that you'll be joining us at the <strong style="color: #C40021;">UAE Property Expo – Muscat</strong>! Your acceptance means a lot to us, and we're excited to have you as part of this exclusive event.
+                            </p>
+                            <div style="background: linear-gradient(135deg, #1E4168 0%, #000000 100%); color: #FFFFFF; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center;">
+                                <p style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold; color: #D4AF37;">📅 26–27 December 2025</p>
+                                <p style="margin: 0; font-size: 18px;">📍 Grand Hyatt, Muscat</p>
+                            </div>
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #C40021;">
+                                <p style="color: #1E4168; font-size: 16px; font-weight: bold; margin: 0 0 10px 0;">📋 What's Next:</p>
+                                <ul style="color: #333333; font-size: 15px; line-height: 1.8; margin: 0; padding-left: 20px;">
+                                    <li>You'll receive detailed event information and agenda closer to the date</li>
+                                    <li>Exclusive access to premium property showcases</li>
+                                    <li>Direct meetings with top developers and consultants</li>
+                                    <li>Special expo-only offers and financing options</li>
+                                    <li>Networking opportunities with industry leaders</li>
+                                </ul>
+                            </div>
+                            <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
+                                We look forward to welcoming you to this exceptional event. If you have any questions or need assistance, please don't hesitate to contact us.
+                            </p>
+                            <!-- Contact Info -->
+                            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;">
+                                <p style="color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;">Contact Us:</p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">UAE: <a href="tel:+971585312174" style="color: #C40021; text-decoration: none;">+971 58 531 2174</a></p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">Oman: <a href="tel:+96897083232" style="color: #C40021; text-decoration: none;">+968 970 83232</a> | <a href="tel:+96879665511" style="color: #C40021; text-decoration: none;">+968 796 65511</a></p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">Email: <a href="mailto:sales@thesmartpro.io" style="color: #C40021; text-decoration: none;">sales@thesmartpro.io</a></p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">Website: <a href="https://www.thesmartpro.io" style="color: #C40021; text-decoration: none;">www.thesmartpro.io</a></p>
+                            </div>
+                            <p style="color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;">
+                                Organized by: UAE Property Expo • Falcon Eye • Globo
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+───────────────────────────────────────────────────────────────────────────────
+
+================================================================================
+TEMPLATE 2: THANK YOU EMAIL (For "No, I cannot attend")
+================================================================================
+
+Use this template in:
+- Module 17 (Route 1B - Update Existing Row)
+- Module 20 (Route 2B - Add New Row)
+
+Subject: "Thank You - UAE Property Expo"
+
+HTML Content (copy everything below this line):
+───────────────────────────────────────────────────────────────────────────────
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - UAE Property Expo</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header Image -->
+                    <tr>
+                        <td>
+                            <img src="https://i.imgur.com/9GWYlQI.jpeg" alt="UAE Property Expo Muscat" style="width: 100%; height: auto; display: block; max-width: 600px;">
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 30px; background-color: #FFFFFF;">
+                            <h1 style="color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;">Thank You!</h1>
+                            <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                                Dear {{2.name}},
+                            </p>
+                            <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+                                Thank you for taking the time to respond to our invitation for the <strong style="color: #C40021;">UAE Property Expo – Muscat</strong>. We understand that you cannot attend this time, and we truly appreciate your interest.
+                            </p>
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #C40021;">
+                                <p style="color: #1E4168; font-size: 16px; font-weight: bold; margin: 0 0 10px 0;">💡 Stay Connected:</p>
+                                <ul style="color: #333333; font-size: 15px; line-height: 1.8; margin: 0; padding-left: 20px;">
+                                    <li>We'll keep you informed about future property events and opportunities</li>
+                                    <li>Access to exclusive property listings and market insights</li>
+                                    <li>Special offers and promotions for future events</li>
+                                    <li>Direct access to our property consultants when you're ready</li>
+                                </ul>
+                            </div>
+                            <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
+                                We hope to have the opportunity to welcome you at a future event. If your circumstances change or you'd like to learn more about UAE properties, please don't hesitate to reach out to us.
+                            </p>
+                            <!-- Contact Info -->
+                            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;">
+                                <p style="color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;">Contact Us:</p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">UAE: <a href="tel:+971585312174" style="color: #C40021; text-decoration: none;">+971 58 531 2174</a></p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">Oman: <a href="tel:+96897083232" style="color: #C40021; text-decoration: none;">+968 970 83232</a> | <a href="tel:+96879665511" style="color: #C40021; text-decoration: none;">+968 796 65511</a></p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">Email: <a href="mailto:sales@thesmartpro.io" style="color: #C40021; text-decoration: none;">sales@thesmartpro.io</a></p>
+                                <p style="color: #333333; font-size: 14px; margin: 5px 0;">Website: <a href="https://www.thesmartpro.io" style="color: #C40021; text-decoration: none;">www.thesmartpro.io</a></p>
+                            </div>
+                            <p style="color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;">
+                                Organized by: UAE Property Expo • Falcon Eye • Globo
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+───────────────────────────────────────────────────────────────────────────────
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Module 16 (Route 1A - Update, Yes):
+  Subject: "Agreement - UAE Property Expo"
+  HTML: Use Template 1 above
+
+Module 17 (Route 1B - Update, No):
+  Subject: "Thank You - UAE Property Expo"
+  HTML: Use Template 2 above
+
+Module 19 (Route 2A - Add, Yes):
+  Subject: "Agreement - UAE Property Expo"
+  HTML: Use Template 1 above
+
+Module 20 (Route 2B - Add, No):
+  Subject: "Thank You - UAE Property Expo"
+  HTML: Use Template 2 above
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+✅ Variable {{2.name}} is already set correctly
+✅ All templates use inline CSS for email client compatibility
+✅ Images are hosted on Imgur (https://i.imgur.com/9GWYlQI.jpeg)
+✅ Templates are mobile-responsive (600px max-width)
+✅ All links are properly formatted
+
+================================================================================
+END OF TEMPLATES
+================================================================================
+

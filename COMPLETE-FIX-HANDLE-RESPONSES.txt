@@ -1,0 +1,231 @@
+================================================================================
+COMPLETE FIX: HANDLE EXPO FORM RESPONSES SCENARIO
+All Issues Fixed
+================================================================================
+
+ISSUES FOUND:
+-------------
+1. ❌ Module 3: Using "select" mode with {{1.__ROW_NUMBER__}} (doesn't exist)
+2. ❌ Module 3: Need to search by email instead
+3. ❌ Route 2: Has placeholder instead of real modules
+4. ❌ Missing email modules for follow-up emails
+5. ❌ Missing Set Variables module (optional but recommended)
+
+================================================================================
+FIX 1: ADD SET VARIABLES MODULE (RECOMMENDED)
+================================================================================
+
+Add Module 2 (Set Variables) after Module 1:
+
+Variables:
+- email: {{1.respondentEmail}}
+- name: {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+- attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+- comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+This makes code cleaner: use {{2.email}} instead of long paths.
+
+================================================================================
+FIX 2: FIX MODULE 3 (UPDATE ROW - ROUTE 1)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+- Mode: "select"
+- Row Number: {{1.__ROW_NUMBER__}} (doesn't exist!)
+
+FIXED:
+------
+- Mode: "search" (to find row by email)
+- Search Filter: Email (Column 1) = {{1.respondentEmail}} (or {{2.email}})
+- Values: Response="Accepted", Response Date, Comments
+- Row Number: NOT NEEDED (automatically found)
+
+================================================================================
+FIX 3: REPLACE PLACEHOLDER IN ROUTE 2
+================================================================================
+
+CURRENT:
+--------
+Placeholder module (wrong!)
+
+FIXED:
+------
+Module 4: Google Sheets → Update Row
+   - Mode: "search"
+   - Search Filter: Email = {{1.respondentEmail}}
+   - Values: Response="Rejected", Response Date, Comments
+
+Module 5: Resend → Send Thank You Email
+   - To: {{1.respondentEmail}}
+   - Subject: "Thank You - UAE Property Expo"
+
+================================================================================
+FIX 4: ADD EMAIL MODULE TO ROUTE 1
+================================================================================
+
+After Module 3, add:
+
+Module 4: Resend → Send Agreement Email
+   - To: {{1.respondentEmail}}
+   - Subject: "Agreement - UAE Property Expo"
+   - HTML: Agreement email template
+
+================================================================================
+COMPLETE FIXED STRUCTURE
+================================================================================
+
+MODULE 1: Google Forms → Watch Responses ✅
+   - Form: UAE Property Expo - Response
+   - Limit: 1
+
+MODULE 2: Set Variables (NEW - RECOMMENDED)
+   - email: {{1.respondentEmail}}
+   - name: {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+   - attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+   - comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+MODULE 3: Router
+   Route 1 Filter: {{2.attendance}} = "Yes, I'll attend" (or use {{1.answers.677abd25.textAnswers.answers[0].value}})
+   Route 2 Filter: {{2.attendance}} = "No, I cannot attend"
+
+ROUTE 1 (ACCEPTED):
+--------------------
+Module 4: Google Sheets → Update Row
+   - Mode: "search"
+   - Search Filter: Email (Column 1) = {{2.email}}
+   - Values:
+     * Response (K): "Accepted"
+     * Response Date (L): {{now}}
+     * Comments (M): {{2.comments}}
+
+Module 5: Resend → Send Agreement Email
+   - To: {{2.email}}
+   - Subject: "Agreement - UAE Property Expo"
+   - HTML: Agreement template
+
+ROUTE 2 (REJECTED):
+--------------------
+Module 6: Google Sheets → Update Row
+   - Mode: "search"
+   - Search Filter: Email (Column 1) = {{2.email}}
+   - Values:
+     * Response (K): "Rejected"
+     * Response Date (L): {{now}}
+     * Comments (M): {{2.comments}}
+
+Module 7: Resend → Send Thank You Email
+   - To: {{2.email}}
+   - Subject: "Thank You - UAE Property Expo"
+   - HTML: Thank you template
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Add Set Variables Module (Optional but Recommended)
+------------------------------------------------------------
+1. After Module 1, add: Set Variables
+2. Add variables:
+   - email: {{1.respondentEmail}}
+   - name: {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+   - attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+   - comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+3. Save
+
+STEP 2: Fix Module 3 (Update Row)
+----------------------------------
+1. Open Module 3
+2. Change Mode: "select" → "search"
+3. Add Search Filter:
+   - Column: Email (or index 1)
+   - Operator: equals
+   - Value: {{1.respondentEmail}} (or {{2.email}} if using Set Variables)
+4. Keep Values:
+   - Column K: "Accepted"
+   - Column L: {{now}}
+   - Column M: {{1.answers.08d2bdde.textAnswers.answers[0].value}} (or {{2.comments}})
+5. Remove Row Number field (not needed with search mode)
+6. Save
+
+STEP 3: Add Email Module to Route 1
+------------------------------------
+1. After Module 3, add: Resend → Send an Email
+2. Configure:
+   - To: {{1.respondentEmail}} (or {{2.email}})
+   - From: sales@thesmartpro.io
+   - Subject: "Agreement - UAE Property Expo"
+   - HTML: Agreement email template
+3. Save
+
+STEP 4: Replace Placeholder in Route 2
+---------------------------------------
+1. Delete placeholder module
+2. Add: Google Sheets → Update Row
+   - Mode: "search"
+   - Search Filter: Email = {{1.respondentEmail}}
+   - Values: Response="Rejected", Response Date, Comments
+3. Add: Resend → Send an Email
+   - Thank you email
+4. Save
+
+================================================================================
+ALTERNATIVE: WITHOUT SET VARIABLES
+================================================================================
+
+If you don't want Set Variables module, use direct references:
+
+Module 3 (Update Row):
+- Search Filter: Email = {{1.respondentEmail}}
+- Values:
+  * Response: "Accepted"
+  * Response Date: {{now}}
+  * Comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+Module 4 (Email):
+- To: {{1.respondentEmail}}
+
+Route 2:
+- Same but Response = "Rejected"
+
+================================================================================
+CRITICAL FIX: MODULE 3 MODE
+================================================================================
+
+YOUR CURRENT CONFIG:
+--------------------
+"mode": "select"
+"rowNumber": "{{1.__ROW_NUMBER__}}"
+
+PROBLEM:
+--------
+{{1.__ROW_NUMBER__}} doesn't exist in Google Forms output!
+
+FIX:
+----
+"mode": "search"
+"filters": [
+  {
+    "a": "1",
+    "o": "text:equal",
+    "b": "{{1.respondentEmail}}"
+  }
+]
+Remove: "rowNumber" field
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Add Set Variables module (optional)
+□ Module 3: Change mode to "search"
+□ Module 3: Add search filter (Email = {{1.respondentEmail}})
+□ Module 3: Remove rowNumber field
+□ Add email module to Route 1 (Agreement email)
+□ Replace placeholder in Route 2 with Update Row module
+□ Add email module to Route 2 (Thank you email)
+□ All modules saved
+□ Scenario is ON
+
+================================================================================
+

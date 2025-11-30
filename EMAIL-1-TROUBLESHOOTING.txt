@@ -1,0 +1,339 @@
+================================================================================
+EMAIL 1 TROUBLESHOOTING GUIDE
+Fixing Issues in Your Email 1 Configuration
+================================================================================
+
+I've identified several issues in your Email 1 JSON configuration that need to be fixed.
+
+================================================================================
+ISSUE 1: BACKTICKS IN VARIABLE REFERENCES
+================================================================================
+
+PROBLEM:
+--------
+Your configuration uses backticks in variable references:
+- `{{1.`3`}}` (Language)
+- `{{1.`1`}}` (Email)
+- `{{1.`0`}}` (Name)
+
+These backticks can cause Make.com to not resolve the variables correctly.
+
+FIX:
+----
+Remove all backticks from variable references:
+
+CHANGE FROM:
+- `{{1.`3`}}` → `{{1.3}}`
+- `{{1.`1`}}` → `{{1.1}}`
+- `{{1.`0`}}` → `{{1.0}}`
+
+IN YOUR JSON:
+-------------
+1. In Module 3 (English Email) filter:
+   Change: `"a": "{{1.`3`}}"`
+   To: `"a": "{{1.3}}"`
+
+2. In Module 3 (English Email) mapper:
+   Change: `"to": ["{{1.`1`}}"]`
+   To: `"to": ["{{1.1}}"]`
+
+3. In Module 3 (English Email) subject:
+   Change: `"{{1.`0`}},You're Invited!..."`
+   To: `"{{1.0}}, You're Invited!..."` (also add space after comma)
+
+4. In Module 3 (English Email) HTML:
+   Change: `Dear {{1.`0`}},`
+   To: `Dear {{1.0}},`
+
+5. In Module 4 (Arabic Email) filter:
+   Change: `"a": "{{1.`3`}}"`
+   To: `"a": "{{1.3}}"`
+
+6. In Module 4 (Arabic Email) mapper:
+   Change: `"to": ["{{1.`1`}}"]`
+   To: `"to": ["{{1.1}}"]`
+
+7. In Module 4 (Arabic Email) subject:
+   Change: `"{{1.`0`}},أنت مدعو!..."`
+   To: `"{{1.0}}، أنت مدعو!..."` (also add space after comma)
+
+8. In Module 4 (Arabic Email) HTML:
+   Change: `عزيزي {{1.`0`}}،`
+   To: `عزيزي {{1.0}}،`
+
+================================================================================
+ISSUE 2: TO FIELD FORMAT (POTENTIAL ISSUE)
+================================================================================
+
+PROBLEM:
+--------
+The `to` field is configured as: `["{{1.1}}"]` (array of strings)
+
+While this might work, Resend API typically expects:
+- Array of objects: `[{"value": "{{1.1}}"}]`
+
+FIX:
+----
+If emails are not sending, try changing the `to` field format:
+
+CHANGE FROM:
+```json
+"to": ["{{1.1}}"]
+```
+
+CHANGE TO:
+```json
+"to": [{"value": "{{1.1}}"}]
+```
+
+Apply this to both Module 3 (English) and Module 4 (Arabic).
+
+================================================================================
+ISSUE 3: SUBJECT LINE FORMATTING
+================================================================================
+
+PROBLEM:
+--------
+Subject lines are missing spaces after commas:
+- English: `"{{1.`0`}},You're Invited!..."` (no space after comma)
+- Arabic: `"{{1.`0`}},أنت مدعو!..."` (no space after comma)
+
+FIX:
+----
+Add proper spacing:
+
+English:
+```json
+"subject": "{{1.0}}, You're Invited! UAE Property Expo – Muscat"
+```
+
+Arabic:
+```json
+"subject": "{{1.0}}، أنت مدعو! معرض عقارات الإمارات – مسقط"
+```
+
+================================================================================
+ISSUE 4: ROUTER CONFIGURATION
+================================================================================
+
+CURRENT SETUP:
+--------------
+Filters are on the email modules (Module 3 and 4), not on the router routes.
+
+This works, but it's less efficient because:
+- Router routes to both paths
+- Then each email module filters again
+
+RECOMMENDED:
+------------
+Move filters to router routes for better performance:
+
+Route 1 (English):
+```json
+"filter": {
+    "name": "",
+    "conditions": [
+        [
+            {
+                "a": "{{1.3}}",
+                "b": "en",
+                "o": "text:equal"
+            }
+        ]
+    ]
+}
+```
+
+Route 2 (Arabic):
+```json
+"filter": {
+    "name": "",
+    "conditions": [
+        [
+            {
+                "a": "{{1.3}}",
+                "b": "ar",
+                "o": "text:equal"
+            }
+        ]
+    ]
+}
+```
+
+Then remove filters from Module 3 and Module 4.
+
+================================================================================
+COMPLETE FIXED CONFIGURATION
+================================================================================
+
+Here are the key changes needed in your JSON:
+
+1. MODULE 3 (English Email) - Filter:
+```json
+"filter": {
+    "name": "",
+    "conditions": [
+        [
+            {
+                "a": "{{1.3}}",  // Changed from {{1.`3`}}
+                "b": "en",
+                "o": "text:equal"
+            }
+        ]
+    ]
+}
+```
+
+2. MODULE 3 (English Email) - Mapper:
+```json
+"mapper": {
+    "to": [{"value": "{{1.1}}"}],  // Changed from ["{{1.`1`}}"]
+    "from": "sales@thesmartpro.io",
+    "subject": "{{1.0}}, You're Invited! UAE Property Expo – Muscat",  // Fixed spacing
+    "html": "...Dear {{1.0}},...",  // Changed from {{1.`0`}}
+    "sendEmailAs": "html"
+}
+```
+
+3. MODULE 4 (Arabic Email) - Filter:
+```json
+"filter": {
+    "name": "",
+    "conditions": [
+        [
+            {
+                "a": "{{1.3}}",  // Changed from {{1.`3`}}
+                "b": "ar",
+                "o": "text:equal"
+            }
+        ]
+    ]
+}
+```
+
+4. MODULE 4 (Arabic Email) - Mapper:
+```json
+"mapper": {
+    "to": [{"value": "{{1.1}}"}],  // Changed from ["{{1.`1`}}"]
+    "from": "sales@thesmartpro.io",
+    "subject": "{{1.0}}، أنت مدعو! معرض عقارات الإمارات – مسقط",  // Fixed spacing
+    "html": "...عزيزي {{1.0}}،...",  // Changed from {{1.`0`}}
+    "sendEmailAs": "html"
+}
+```
+
+================================================================================
+STEP-BY-STEP FIX IN MAKE.COM UI
+================================================================================
+
+OPTION 1: Fix in Make.com UI (Easier)
+--------------------------------------
+
+1. Open Email 1 scenario in Make.com
+2. Click on Module 3 (English Email)
+3. In the filter section:
+   - Change `{{1.`3`}}` to `{{1.3}}`
+4. In the mapper section:
+   - To field: Change from `["{{1.`1`}}"]` to `[{"value": "{{1.1}}"}]`
+   - Subject: Change `{{1.`0`}},You're Invited!...` to `{{1.0}}, You're Invited!...`
+   - HTML: Find and replace `{{1.`0`}}` with `{{1.0}}`
+5. Click on Module 4 (Arabic Email)
+6. Repeat steps 3-4 for Arabic email
+7. Save the scenario
+8. Test with a new lead
+
+OPTION 2: Fix in JSON (Advanced)
+----------------------------------
+1. Export your scenario JSON
+2. Use find and replace:
+   - Find: `{{1.\`3\`}}` → Replace: `{{1.3}}`
+   - Find: `{{1.\`1\`}}` → Replace: `{{1.1}}`
+   - Find: `{{1.\`0\`}}` → Replace: `{{1.0}}`
+   - Find: `"to": ["{{1.1}}"]` → Replace: `"to": [{"value": "{{1.1}}"}]`
+3. Import the fixed JSON back to Make.com
+
+================================================================================
+TESTING AFTER FIX
+================================================================================
+
+1. Add a test lead to Google Sheets:
+   - Name: "Test User"
+   - Email: your-test-email@example.com
+   - Language: "en" or "ar"
+   - Status: "New"
+
+2. Wait a few seconds
+
+3. Check:
+   □ Email was sent
+   □ Google Sheets updated:
+      - Status = "Email 1 Sent"
+      - Email 1 Date = current date/time
+
+4. Check Make.com execution logs:
+   □ No errors
+   □ All modules executed successfully
+   □ Variables resolved correctly
+
+================================================================================
+COMMON ERRORS TO CHECK
+================================================================================
+
+ERROR 1: "Missing value of required parameter 'to'"
+---------------------------------------------------
+Cause: Variable `{{1.1}}` not resolving
+Fix: Check that Email column (B) has data
+Fix: Remove backticks from `{{1.`1`}}` → `{{1.1}}`
+
+ERROR 2: "The 'to' field must be a 'string'"
+--------------------------------------------
+Cause: Wrong array format
+Fix: Change `["{{1.1}}"]` to `[{"value": "{{1.1}}"}]`
+
+ERROR 3: Filter not working
+----------------------------
+Cause: Backticks in filter condition
+Fix: Change `{{1.`3`}}` to `{{1.3}}`
+
+ERROR 4: Name not showing in email
+----------------------------------
+Cause: Backticks in HTML template
+Fix: Change `{{1.`0`}}` to `{{1.0}}` in HTML
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Remove backticks from all variable references
+  - `{{1.`3`}}` → `{{1.3}}`
+  - `{{1.`1`}}` → `{{1.1}}`
+  - `{{1.`0`}}` → `{{1.0}}`
+
+□ Fix `to` field format (if emails not sending)
+  - `["{{1.1}}"]` → `[{"value": "{{1.1}}"}]`
+
+□ Fix subject line spacing
+  - Add space after comma
+
+□ Test with new lead
+  - Verify email sends
+  - Verify Google Sheets updates
+
+□ Check execution logs
+  - No errors
+  - Variables resolve correctly
+
+================================================================================
+EXPECTED RESULT AFTER FIX
+================================================================================
+
+After fixing these issues:
+✅ Email 1 sends immediately when new lead added
+✅ Correct language email sent (English or Arabic)
+✅ Name appears correctly in email
+✅ Subject line formatted correctly
+✅ Google Sheets updates automatically
+✅ No errors in execution logs
+
+================================================================================
+

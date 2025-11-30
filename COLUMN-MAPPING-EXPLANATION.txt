@@ -1,0 +1,165 @@
+================================================================================
+COLUMN MAPPING EXPLANATION FOR YOUR GOOGLE SHEET
+================================================================================
+
+Based on the sheet structure you provided, here's how the columns are mapped
+for the Google Apps Script webhook trigger.
+
+================================================================================
+YOUR SHEET HEADER (AS SHOWN)
+================================================================================
+
+Name | Email | Phone | Language | Status | Date Added | Email 1 Date | 
+Email 2 Date | Email 3 Date | Notes | Response | Response Date | Comments
+
+================================================================================
+ACTUAL COLUMN STRUCTURE (WITH GOOGLE FORMS)
+================================================================================
+
+IMPORTANT: Google Forms automatically adds a "Timestamp" column as Column A
+when responses are submitted. This column is NOT shown in your header row,
+but it exists in the sheet.
+
+So your actual structure is:
+
+Column A: Timestamp        (Auto-added by Google Forms - hidden from header)
+Column B: Name             (Your header row starts here)
+Column C: Email            
+Column D: Phone            
+Column E: Language         
+Column F: Status           
+Column G: Date Added       
+Column H: Email 1 Date     
+Column I: Email 2 Date     
+Column J: Email 3 Date     
+Column K: Notes            
+Column L: Response         (This contains attendance: "Yes, I'll attend" etc.)
+Column M: Response Date    
+Column N: Comments         
+
+================================================================================
+SCRIPT COLUMN MAPPING
+================================================================================
+
+The script uses these mappings (1-based numbering):
+
+TIMESTAMP:     Column A (1)  - Auto timestamp from Google Forms
+NAME:          Column B (2)  - Name field
+EMAIL:         Column C (3)  - Email field
+PHONE:         Column D (4)  - Phone field
+LANGUAGE:      Column E (5)  - Language (e.g., "en")
+STATUS:        Column F (6)  - Status field
+DATE_ADDED:    Column G (7)  - Date Added field
+RESPONSE:      Column L (12) - Response/Attendance field
+RESPONSE_DATE: Column M (13) - Response Date field
+COMMENTS:      Column N (14) - Comments field
+
+================================================================================
+WEBHOOK DATA STRUCTURE
+================================================================================
+
+When the script sends data to Make.com, it sends:
+
+{
+  "timestamp": "2025-01-15T10:30:00.000Z",  // From Column A or Date Added
+  "name": "fahad alamri",                    // From Column B
+  "email": "chairman@falconeyegroup.net",    // From Column C (lowercased)
+  "phone": "",                               // From Column D
+  "language": "en",                          // From Column E
+  "status": "",                              // From Column F
+  "attendance": "...",                       // From Column L (Response)
+  "response": "...",                         // From Column L (same as attendance)
+  "responseDate": "...",                     // From Column M
+  "comments": ""                             // From Column N
+}
+
+================================================================================
+VERIFYING YOUR COLUMN STRUCTURE
+================================================================================
+
+To verify your exact column structure:
+
+1. Open your Google Sheet
+2. Look at Row 1 (header row)
+3. Count the columns:
+   - Does Column A show "Timestamp"? (If yes, Column B = Name)
+   - OR does Column A show "Name"? (If yes, no auto-timestamp)
+
+4. Check a sample row (like your test data):
+   Row 2: fahad alamri | chairman@falconeyegroup.net | (empty) | en
+   
+   If this starts in Column B (Name, Email, Phone, Language), then:
+   - Column A = Timestamp (auto-added, might be hidden)
+   - Column B = Name
+   - Column C = Email
+   - Column D = Phone
+   - Column E = Language
+
+================================================================================
+IF YOUR SHEET DOESN'T HAVE AUTO-TIMESTAMP
+================================================================================
+
+If you're NOT using Google Forms (custom sheet), and Column A really is "Name",
+then update the script's COLUMN_MAPPING to:
+
+const COLUMN_MAPPING = {
+  TIMESTAMP: 1,      // Column A - Name (no timestamp, use Date Added instead)
+  NAME: 1,           // Column A - Name
+  EMAIL: 2,          // Column B - Email
+  PHONE: 3,          // Column C - Phone
+  LANGUAGE: 4,       // Column D - Language
+  // ... etc
+};
+
+But typically, if you're using Google Forms, Column A is ALWAYS the timestamp.
+
+================================================================================
+TESTING THE MAPPING
+================================================================================
+
+1. Run the testWebhook() function in Apps Script
+2. Check the logs to see what data is being sent
+3. Check Make.com to see what data is received
+4. Compare with your sheet structure
+5. Adjust COLUMN_MAPPING if needed
+
+================================================================================
+YOUR SAMPLE DATA
+================================================================================
+
+Based on your provided data:
+
+Row 1 (Header): Name | Email | Phone | Language | ...
+Row 2: fahad alamri | chairman@falconeyegroup.net | (empty) | en
+Row 3: faahd alamri | luxsess2001@hotmail.com | (empty) | en
+
+This confirms:
+- Name is in the first column shown (likely Column B if timestamp exists)
+- Email is in the second column shown
+- Language is in the fourth column shown
+- Phone appears to be empty in your samples
+
+================================================================================
+ADJUSTING IF MAPPING IS WRONG
+================================================================================
+
+If the script doesn't work correctly:
+
+1. Check Apps Script logs (View → Logs)
+2. Verify which column contains which data
+3. Update COLUMN_MAPPING numbers in the script
+4. Remember: Array indices are 0-based, column numbers are 1-based
+   - Column A = index 0 in array
+   - Column B = index 1 in array
+   - Column C = index 2 in array
+
+Example:
+  rowData[0] = Column A (Timestamp)
+  rowData[1] = Column B (Name)
+  rowData[2] = Column C (Email)
+
+================================================================================
+END OF COLUMN MAPPING EXPLANATION
+================================================================================
+
+

@@ -1,0 +1,404 @@
+================================================================================
+DEBUG: SCENARIO NOT WORKING
+Step-by-Step Troubleshooting Guide
+================================================================================
+
+SYMPTOMS:
+---------
+❌ Form submitted but Google Sheets not updated
+❌ "Handle Expo Form Responses" scenario not working
+
+================================================================================
+STEP 1: CHECK SCENARIO STATUS (1 minute)
+================================================================================
+
+CHECK:
+------
+1. Go to Make.com
+2. Open "Handle Expo Form Responses" scenario
+3. Is the toggle ON (green)? 
+
+IF OFF:
+→ Turn it ON (click the toggle)
+→ Wait 30 seconds
+→ Test again
+
+IF ON:
+→ Continue to Step 2
+
+================================================================================
+STEP 2: CHECK EXECUTION HISTORY (2 minutes)
+================================================================================
+
+CHECK:
+------
+1. In Make.com scenario, click "Execution history" (top right)
+2. Do you see ANY executions?
+
+IF NO EXECUTIONS:
+→ Scenario is not triggering
+→ Go to Step 3
+
+IF YES, BUT FAILED:
+→ Click on the failed execution
+→ Check which module failed
+→ See error message
+→ Go to Step 4
+
+IF YES, AND SUCCESSFUL:
+→ But sheet not updated?
+→ Go to Step 5
+
+================================================================================
+STEP 3: CHECK MODULE 1 (TRIGGER) (2 minutes)
+================================================================================
+
+CHECK:
+------
+1. Open Module 1 (Google Forms Watch Responses)
+2. Verify:
+   □ Form ID is correct: 1ULw8aIt2VuH4d8xUQDmH4fVbzHxBxacuZZtwT6mPRJI
+   □ Connection is working (green checkmark)
+   □ Limit is set (usually 1)
+
+TEST:
+-----
+1. Click "Run once" button (if available)
+2. Or manually trigger by submitting form again
+3. Check execution history
+
+IF STILL NOT TRIGGERING:
+→ Check form responses in Google Forms
+→ Verify form is actually receiving submissions
+→ Check Make.com connection to Google Forms
+
+================================================================================
+STEP 4: CHECK MODULE CONNECTIONS (2 minutes)
+================================================================================
+
+VERIFY CONNECTIONS:
+-------------------
+1. Module 1 → Module 4: Connected?
+2. Module 4 → Module 2: Connected?
+3. Module 2 → Route 1: Connected?
+4. Module 2 → Route 2: Connected?
+5. Route 1: Module 8 → Module 3 → Module 6: All connected?
+6. Route 2: Module 9 → Module 5 → Module 7: All connected?
+
+IF NOT CONNECTED:
+→ Connect modules (drag from output to input)
+→ Save scenario
+
+================================================================================
+STEP 5: CHECK ROUTER FILTERS (2 minutes)
+================================================================================
+
+ROUTE 1 FILTER:
+---------------
+1. Open Module 2 (Router)
+2. Check Route 1 filter:
+   - Field: {{4.attendance}}
+   - Operator: equals
+   - Value: "Yes, I'll attend" (exact match, case-sensitive)
+
+ROUTE 2 FILTER:
+---------------
+1. Check Route 2 filter:
+   - Field: {{4.attendance}}
+   - Operator: equals
+   - Value: "No, I cannot attend" (exact match, case-sensitive)
+
+VERIFY:
+-------
+1. Check Module 4 output in execution log
+2. What is the actual value of "attendance"?
+3. Does it match the filter exactly?
+
+IF NOT MATCHING:
+→ Update filter to match actual value
+→ Or update form response values
+
+================================================================================
+STEP 6: CHECK MODULE 4 (SET VARIABLES) (2 minutes)
+================================================================================
+
+CHECK EXECUTION LOG:
+--------------------
+1. Find latest execution
+2. Click on Module 4
+3. Check output:
+   □ email: Should show email address
+   □ name: Should show name (or empty if form doesn't have it)
+   □ attendance: Should show "Yes, I'll attend" or "No, I cannot attend"
+   □ comments: Should show comments (or empty)
+
+IF EMAIL IS EMPTY:
+→ Check Module 1 output
+→ Is respondentEmail present?
+→ If not, user might not be logged into Google
+→ Solution: Use pre-filled form or enable email collection
+
+IF ATTENDANCE IS EMPTY OR WRONG:
+→ Check Module 1 output
+→ Check answers.677abd25.textAnswers.answers[0].value
+→ Verify question ID is correct
+
+================================================================================
+STEP 7: CHECK MODULE 8/9 (FILTER ROWS) (3 minutes)
+================================================================================
+
+ROUTE 1 (Module 8):
+-------------------
+1. Open Module 8
+2. Check filter:
+   - Column: Email (B) or index 1
+   - Operator: equals
+   - Value: {{4.email}}
+3. Check execution log:
+   □ Did it find a row?
+   □ What is __ROW_NUMBER__?
+
+IF NO ROW FOUND:
+→ Check Google Sheets: Does email exist?
+→ Check email format: Exact match? (case-sensitive, no spaces)
+→ Check Module 4: Is email value correct?
+
+ROUTE 2 (Module 9):
+-------------------
+Same checks as Route 1
+
+================================================================================
+STEP 8: CHECK MODULE 3/5 (UPDATE ROW) (3 minutes)
+================================================================================
+
+ROUTE 1 (Module 3):
+-------------------
+1. Open Module 3
+2. Check:
+   □ Mode: "select"
+   □ Row Number: {{8.__ROW_NUMBER__}}
+   □ Values:
+     * "10": "Accepted"
+     * "11": "{{now}}"
+     * "12": "{{4.comments}}"
+3. Check execution log:
+   □ Did it update successfully?
+   □ Any error messages?
+
+IF ERROR:
+→ Check row number: Is it valid?
+→ Check columns K, L, M: Do they exist?
+→ Check Google Sheets permissions
+
+ROUTE 2 (Module 5):
+-------------------
+Same checks as Route 1
+
+================================================================================
+STEP 9: CHECK MODULE 6/7 (SEND EMAIL) (2 minutes)
+================================================================================
+
+ROUTE 1 (Module 6):
+-------------------
+1. Open Module 6
+2. Check:
+   □ "To" field: [{"value": "{{4.email}}"}]
+   □ Subject: "Agreement - UAE Property Expo"
+   □ HTML: Content is present
+3. Check execution log:
+   □ Did email send?
+   □ Any error messages?
+
+IF ERROR:
+→ Check "To" field format (must be array of objects)
+→ Check Resend connection
+→ Check email address is valid
+
+ROUTE 2 (Module 7):
+-------------------
+Same checks as Route 1
+
+================================================================================
+COMMON ISSUES AND FIXES
+================================================================================
+
+ISSUE 1: Scenario Not Triggering
+----------------------------------
+SYMPTOM: No executions in history
+
+FIXES:
+1. Turn scenario ON
+2. Check Module 1 connection
+3. Verify form ID is correct
+4. Test by submitting form again
+5. Check Make.com connection to Google Forms
+
+ISSUE 2: Router Not Routing
+---------------------------
+SYMPTOM: Execution stops at Router
+
+FIXES:
+1. Check Module 4 output: What is attendance value?
+2. Check router filters: Do they match exactly?
+3. Update filter values to match actual response
+4. Check case sensitivity
+
+ISSUE 3: Filter Rows Not Finding Row
+--------------------------------------
+SYMPTOM: Module 8/9 finds no rows
+
+FIXES:
+1. Check email in Google Sheets: Does it exist?
+2. Check email format: Exact match? (no spaces, case-sensitive)
+3. Check Module 4: Is email value correct?
+4. Verify column B is Email column
+
+ISSUE 4: Update Row Failing
+---------------------------
+SYMPTOM: Module 3/5 fails
+
+FIXES:
+1. Check row number: Is {{8.__ROW_NUMBER__}} valid?
+2. Check columns K, L, M exist
+3. Check Google Sheets permissions
+4. Verify spreadsheet ID is correct
+
+ISSUE 5: Email Not Sending
+---------------------------
+SYMPTOM: Module 6/7 fails
+
+FIXES:
+1. Fix "To" field format: [{"value": "{{4.email}}"}]
+2. Check Resend connection
+3. Verify email address is valid
+4. Check HTML content is present
+
+================================================================================
+QUICK DEBUG CHECKLIST (5 MINUTES)
+================================================================================
+
+□ Scenario is ON (green toggle)
+□ Execution appears in history
+□ Module 1: Shows form response
+□ Module 4: email and attendance have values
+□ Module 2: Routes to correct route
+□ Module 8/9: Finds row (shows __ROW_NUMBER__)
+□ Module 3/5: Updates successfully
+□ Module 6/7: Sends email successfully
+□ Google Sheets: Response column updated
+
+If all checked → System works! ✅
+If any unchecked → Fix that step
+
+================================================================================
+STEP-BY-STEP DEBUG PROCEDURE
+================================================================================
+
+1. CHECK SCENARIO STATUS (1 min)
+   → Is it ON?
+
+2. CHECK EXECUTION HISTORY (1 min)
+   → Any executions? Failed or successful?
+
+3. CHECK MODULE 1 (1 min)
+   → Does it show form response?
+
+4. CHECK MODULE 4 (1 min)
+   → Are variables set correctly?
+
+5. CHECK MODULE 2 (1 min)
+   → Does router route correctly?
+
+6. CHECK MODULE 8/9 (2 min)
+   → Does it find the row?
+
+7. CHECK MODULE 3/5 (2 min)
+   → Does it update successfully?
+
+8. CHECK MODULE 6/7 (1 min)
+   → Does it send email?
+
+9. CHECK GOOGLE SHEETS (1 min)
+   → Is Response column updated?
+
+================================================================================
+GET DETAILED ERROR INFORMATION
+================================================================================
+
+STEP 1: Find Failed Execution
+-------------------------------
+1. Go to Make.com
+2. "Handle Expo Form Responses" scenario
+3. Click "Execution history"
+4. Find latest execution (red = failed, yellow = warning, green = success)
+5. Click on it
+
+STEP 2: Check Each Module
+-------------------------
+1. Click on each module in the execution
+2. Check:
+   □ Status (success/failed)
+   □ Input data
+   □ Output data
+   □ Error messages
+
+STEP 3: Identify Problem Module
+--------------------------------
+Find the FIRST module that failed
+That's where the problem is!
+
+STEP 4: Fix the Problem
+-----------------------
+Based on error message:
+- Connection issue → Reconnect
+- Format issue → Fix format
+- Missing data → Check previous module
+- Permission issue → Check permissions
+
+================================================================================
+TESTING PROCEDURE
+================================================================================
+
+STEP 1: Submit Test Form
+-------------------------
+1. Open Google Form
+2. Fill and submit
+3. Note: Email used, Attendance answer
+
+STEP 2: Wait (30 seconds)
+--------------------------
+Wait for Make.com to process
+
+STEP 3: Check Execution
+------------------------
+1. Go to Make.com
+2. Check execution history
+3. Find latest execution
+4. Check status
+
+STEP 4: Verify Each Step
+-------------------------
+1. Module 1: Response received?
+2. Module 4: Variables set?
+3. Module 2: Routed correctly?
+4. Module 8/9: Row found?
+5. Module 3/5: Updated?
+6. Module 6/7: Email sent?
+7. Google Sheets: Updated?
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+PROVIDE THIS INFORMATION:
+-------------------------
+1. Screenshot of execution history
+2. Screenshot of failed module (showing error)
+3. Module 4 output (email and attendance values)
+4. Module 8/9 output (did it find row?)
+5. Google Sheets: Does email exist?
+
+This will help identify the exact issue!
+
+================================================================================
+

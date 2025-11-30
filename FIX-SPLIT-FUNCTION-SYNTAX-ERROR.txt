@@ -1,0 +1,250 @@
+================================================================================
+FIX: SPLIT FUNCTION SYNTAX ERROR
+"Invalid IML for parameter" Error
+================================================================================
+
+ERROR MESSAGE:
+─────────────
+Invalid IML for parameter '{{split(1.respondentEmail; "@")}}{{[0]}}': 
+Unexpected [ at 34.
+
+Module references non-existing module 'NaN'.
+
+PROBLEM:
+────────
+The array index [0] got separated from the split function.
+Current (WRONG): {{split(1.respondentEmail; "@")}}{{[0]}}
+                              ↑ split ends here     ↑ [0] is outside
+
+The [0] should be INSIDE the expression, not outside.
+
+================================================================================
+SOLUTION 1: CORRECT SPLIT SYNTAX (RECOMMENDED)
+================================================================================
+
+The [0] index must be inside the expression:
+
+CORRECT SYNTAX:
+───────────────
+{{split(1.respondentEmail; "@")[0]}}
+
+Notice: [0] is INSIDE the closing braces, right after the split function.
+
+HOW TO FIX IN MAKE.COM:
+────────────────────────
+1. Open Module 2 (Set Variables)
+2. Find "name" variable
+3. In the value field, type:
+   {{split(1.respondentEmail; "@")[0]}}
+
+IMPORTANT: Make sure [0] is typed INSIDE the braces, like this:
+   {{split(1.respondentEmail; "@")[0]}}
+                                 ↑ [0] is inside
+
+NOT like this:
+   {{split(1.respondentEmail; "@")}}[0]
+                                 ↑ [0] is outside ❌
+
+4. Save Module 2
+
+================================================================================
+SOLUTION 2: ALTERNATIVE - USE SUBSTRING FUNCTION
+================================================================================
+
+If split function still doesn't work, use substring:
+
+ALTERNATIVE SYNTAX:
+───────────────────
+{{substring(1.respondentEmail; 0; index(1.respondentEmail; "@"))}}
+
+This extracts everything before "@" symbol.
+
+OR SIMPLER:
+───────────
+{{replace(1.respondentEmail; "@*"; "")}}
+
+This removes "@" and everything after it.
+
+================================================================================
+SOLUTION 3: USE EMAIL AS NAME (SIMPLEST)
+================================================================================
+
+If extracting from email is too complex, just use the email itself:
+
+SIMPLE FIX:
+───────────
+"name": "{{1.respondentEmail}}"
+
+This uses the full email as the name.
+Example: "chairman@falconeyegroup.net"
+
+OR:
+Use a default value:
+"name": "Guest"
+
+OR:
+Use empty string:
+"name": ""
+
+================================================================================
+SOLUTION 4: USE REGULAR EXPRESSION (ADVANCED)
+================================================================================
+
+If Make.com supports regex:
+
+{{replace(1.respondentEmail; "/@.*/"; "")}}
+
+This removes "@" and everything after it using regex.
+
+================================================================================
+RECOMMENDED FIX - STEP BY STEP
+================================================================================
+
+STEP 1: Open Module 2
+─────────────────────
+1. Go to Make.com scenario
+2. Click Module 2 (Set Variables)
+
+STEP 2: Fix Name Variable
+──────────────────────────
+1. Find the "name" variable
+2. Click on the value field
+3. DELETE any existing text
+4. Type EXACTLY this:
+   {{split(1.respondentEmail; "@")[0]}}
+
+IMPORTANT TYPING TIPS:
+- Type: {{split(
+- Then: 1.respondentEmail
+- Then: ; "@"
+- Then: )[0]}}
+- Make sure [0] is BEFORE the closing }}
+
+5. Verify it looks like: {{split(1.respondentEmail; "@")[0]}}
+6. Save
+
+STEP 3: If Split Still Doesn't Work
+─────────────────────────────────────
+Try one of these alternatives:
+
+OPTION A - Use Email Directly:
+   Value: {{1.respondentEmail}}
+
+OPTION B - Use Default:
+   Value: Guest
+
+OPTION C - Use Replace Function:
+   Value: {{replace(1.respondentEmail; "@*"; "")}}
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing:
+
+1. Save Module 2
+2. The error should disappear
+3. Check Module 2 output:
+   □ name variable should show a value (not error)
+   □ Value should be extracted from email (e.g., "chairman")
+
+If you see an error about module 'NaN':
+→ This happens when a module reference is broken
+→ Fix the split syntax first
+→ The NaN error should resolve
+
+================================================================================
+COMPLETE MODULE 2 CONFIGURATION (CORRECTED)
+================================================================================
+
+After fixing syntax error:
+
+{
+  "scope": "execution",
+  "variables": [
+    {
+      "name": "email",
+      "value": "{{1.respondentEmail}}"
+    },
+    {
+      "name": "name",
+      "value": "{{split(1.respondentEmail; \"@\")[0]}}"
+      // OR use: "{{1.respondentEmail}}" if split doesn't work
+    },
+    {
+      "name": "attendance",
+      "value": "{{1.answers.677abd25.textAnswers.answers[0].value}}"
+    },
+    {
+      "name": "comments",
+      "value": ""
+    }
+  ]
+}
+
+================================================================================
+ALTERNATIVE: SIMPLER NAME HANDLING
+================================================================================
+
+If split function is causing issues, use these simpler alternatives:
+
+OPTION 1: Use Full Email as Name
+─────────────────────────────────
+"name": "{{1.respondentEmail}}"
+Result: "chairman@falconeyegroup.net"
+
+OPTION 2: Use Default Name
+───────────────────────────
+"name": "Guest"
+Result: "Guest"
+
+OPTION 3: Leave Empty (If Not Critical)
+────────────────────────────────────────
+"name": ""
+Result: Empty string
+
+OPTION 4: Use First Part Manually
+──────────────────────────────────
+If you know email format, you could hardcode:
+"name": "{{if(contains(1.respondentEmail; \"@\"); \"User\"; \"Guest\")}}"
+Result: "User" if email contains @, otherwise "Guest"
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Split function still gives error
+────────────────────────────────────────
+→ Use simpler alternative: {{1.respondentEmail}}
+→ Or use default: "Guest"
+→ The name field may not be critical for functionality
+
+ISSUE: Module 'NaN' error persists
+───────────────────────────────────
+→ This is caused by invalid expression syntax
+→ Fix the split syntax first
+→ If it persists, use simpler alternative for name
+
+ISSUE: Can't find split function
+─────────────────────────────────
+→ Make.com may not support split function in that module
+→ Use replace function instead
+→ Or use email directly
+
+================================================================================
+QUICK FIX - USE EMAIL DIRECTLY (SAFEST)
+================================================================================
+
+If split is causing issues, just use:
+
+"name": "{{1.respondentEmail}}"
+
+This will use the full email address as the name, which is simple and works.
+
+Then in email templates, you can reference {{2.email}} instead of {{2.name}}
+or use displayName from Module 23 which already handles this logic.
+
+================================================================================
+END
+================================================================================
+

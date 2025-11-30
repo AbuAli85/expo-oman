@@ -1,0 +1,290 @@
+================================================================================
+FIX MODULE 1: TRIGGER NOT FIRING
+Google Forms Watch Responses Not Working
+================================================================================
+
+YOUR MODULE 1 STATUS:
+---------------------
+✅ Parameters: Correct (Limit: 1, Form ID: correct)
+✅ Mappings: Empty (normal for trigger)
+❌ Problem: Not triggering/not receiving responses
+
+================================================================================
+STEP 1: VERIFY FORM IS RECEIVING SUBMISSIONS (2 minutes)
+================================================================================
+
+CHECK:
+------
+1. Open Google Forms
+2. Go to "Responses" tab
+3. Do you see any new form submissions?
+
+IF NO SUBMISSIONS:
+→ The form is not being submitted
+→ Test by submitting the form yourself
+→ Then continue to Step 2
+
+IF YES, SUBMISSIONS EXIST:
+→ Make.com is not picking them up
+→ Go to Step 2
+
+================================================================================
+STEP 2: TEST TRIGGER MANUALLY (2 minutes)
+================================================================================
+
+OPTION A: RUN ONCE (If Available)
+----------------------------------
+1. In Make.com, open Module 1
+2. Look for "Run once" or "Test" button
+3. Click it
+4. Check if it retrieves form responses
+
+OPTION B: SUBMIT FORM AND CHECK
+--------------------------------
+1. Submit a test form response
+2. Wait 1-2 minutes
+3. Go to Make.com execution history
+4. Check if new execution appears
+
+IF STILL NOT WORKING:
+→ Go to Step 3
+
+================================================================================
+STEP 3: CHECK GOOGLE FORMS CONNECTION (2 minutes)
+================================================================================
+
+CHECK:
+------
+1. In Module 1, check the connection icon
+2. Is it green/connected?
+
+IF NOT CONNECTED:
+→ Click on connection
+→ Re-authenticate Google account
+→ Grant permissions
+→ Save
+
+IF CONNECTED:
+→ Go to Step 4
+
+================================================================================
+STEP 4: VERIFY FORM ID (1 minute)
+================================================================================
+
+CHECK:
+------
+1. Open Google Form
+2. Click "Send" button
+3. Click "Link" icon
+4. Copy the form URL
+5. Extract Form ID from URL:
+   https://docs.google.com/forms/d/e/FORM_ID/viewform
+   
+6. Compare with Module 1 Form ID:
+   Current: 1ULw8aIt2VuH4d8xUQDmH4fVbzHxBxacuZZtwT6mPRJI
+   
+IF DIFFERENT:
+→ Update Form ID in Module 1
+→ Save
+
+IF SAME:
+→ Go to Step 5
+
+================================================================================
+STEP 5: CHECK SCENARIO SETTINGS (1 minute)
+================================================================================
+
+CHECK:
+------
+1. In Make.com scenario, click "Settings" (gear icon)
+2. Check:
+   □ "Instant" mode: Should be OFF for Google Forms
+   □ "Error handling": Check settings
+   □ "Data store": Check if enabled
+
+VERIFY:
+-------
+- Google Forms trigger works best with "Instant" OFF
+- Make sure scenario is saved
+
+================================================================================
+STEP 6: RESET TRIGGER (2 minutes)
+================================================================================
+
+IF STILL NOT WORKING:
+---------------------
+1. Delete Module 1
+2. Add new: Google Forms → Watch Responses
+3. Configure:
+   - Connection: Select Google account
+   - Form: Select your form
+   - Limit: 1
+4. Save scenario
+5. Turn scenario ON
+6. Test by submitting form
+
+================================================================================
+STEP 7: CHECK FOR PENDING RESPONSES (2 minutes)
+================================================================================
+
+POSSIBLE ISSUE:
+---------------
+Make.com might have missed responses submitted before scenario was created
+
+SOLUTION:
+---------
+1. In Module 1, check if there's a "Process historical data" option
+2. Or manually trigger by:
+   - Submitting a NEW form response
+   - Then checking execution history
+
+================================================================================
+QUICK FIX PROCEDURE (5 MINUTES)
+================================================================================
+
+STEP 1: Verify Form Submissions (1 min)
+----------------------------------------
+1. Open Google Forms
+2. Check "Responses" tab
+3. Confirm there are submissions
+
+STEP 2: Test Connection (1 min)
+--------------------------------
+1. In Module 1, check connection
+2. If not connected, reconnect
+
+STEP 3: Submit New Test (1 min)
+--------------------------------
+1. Submit a NEW form response
+2. Use email that exists in Google Sheets
+3. Wait 1-2 minutes
+
+STEP 4: Check Execution (1 min)
+--------------------------------
+1. Go to Make.com execution history
+2. Check if new execution appears
+3. If yes, check which module it reaches
+
+STEP 5: Verify Form ID (1 min)
+-------------------------------
+1. Get Form ID from Google Forms URL
+2. Compare with Module 1
+3. Update if different
+
+================================================================================
+COMMON ISSUES AND FIXES
+================================================================================
+
+ISSUE 1: Connection Broken
+--------------------------
+SYMPTOM: Module 1 shows connection error
+
+FIX:
+1. Click on connection in Module 1
+2. Re-authenticate
+3. Grant all permissions
+4. Save
+
+ISSUE 2: Form ID Wrong
+-----------------------
+SYMPTOM: Module 1 can't find form
+
+FIX:
+1. Get correct Form ID from Google Forms
+2. Update in Module 1
+3. Save
+
+ISSUE 3: Scenario Not ON
+------------------------
+SYMPTOM: No executions at all
+
+FIX:
+1. Turn scenario ON (green toggle)
+2. Wait 30 seconds
+3. Test again
+
+ISSUE 4: Instant Mode Enabled
+-----------------------------
+SYMPTOM: Trigger not working properly
+
+FIX:
+1. Go to scenario settings
+2. Turn OFF "Instant" mode
+3. Save
+
+ISSUE 5: No New Submissions
+----------------------------
+SYMPTOM: Form not being submitted
+
+FIX:
+1. Test form submission yourself
+2. Verify form is accessible
+3. Check form settings
+
+================================================================================
+TESTING PROCEDURE
+================================================================================
+
+STEP 1: Prepare Test
+--------------------
+1. Make sure email exists in Google Sheets
+2. Note the email address
+
+STEP 2: Submit Form
+-------------------
+1. Open Google Form
+2. Fill form:
+   - Use email from Google Sheets
+   - Select attendance: "Yes, I'll attend"
+   - Add comment (optional)
+3. Submit
+
+STEP 3: Wait
+------------
+Wait 1-2 minutes for Make.com to process
+
+STEP 4: Check
+-------------
+1. Go to Make.com
+2. Check execution history
+3. Should see new execution
+4. Check which module it reaches
+
+STEP 5: Verify
+--------------
+1. Check Google Sheets
+2. Response column should be updated
+3. Check email inbox
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+PROVIDE THIS INFORMATION:
+-------------------------
+1. Screenshot of Module 1 (showing parameters)
+2. Screenshot of Google Forms "Responses" tab (showing submissions)
+3. Screenshot of Make.com execution history (showing if any executions)
+4. Is scenario ON or OFF?
+5. When did you last submit the form?
+
+This will help identify the exact issue!
+
+================================================================================
+ALTERNATIVE: USE WEBHOOK INSTEAD
+================================================================================
+
+IF GOOGLE FORMS TRIGGER STILL NOT WORKING:
+-------------------------------------------
+Consider using webhook instead:
+
+1. Delete Module 1 (Google Forms trigger)
+2. Add: Webhooks → Custom webhook
+3. Get webhook URL
+4. In Google Forms, use "Apps Script" to send data to webhook
+5. This gives more control and reliability
+
+But first, try the fixes above!
+
+================================================================================
+

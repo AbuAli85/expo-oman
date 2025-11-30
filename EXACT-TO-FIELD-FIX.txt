@@ -1,0 +1,127 @@
+================================================================================
+EXACT FIX FOR TO FIELD ERROR
+Step-by-Step with Screenshots Description
+================================================================================
+
+ERROR: [422] Invalid `to` field
+
+PROBLEM: "To" field shows "8. email" (label) instead of {{8.email}} (variable)
+
+================================================================================
+EXACT FIX STEPS
+================================================================================
+
+MODULE 3 (ENGLISH EMAIL):
+--------------------------
+
+1. Open Module 3 (Resend - Send an Email)
+
+2. Find "To" field
+   - You should see: To Array
+   - Item 1: {"value": "8. email"}
+
+3. Click on Item 1 (the object)
+
+4. You'll see a "value" field
+   - Currently shows: "8. email"
+
+5. Click on the "value" field
+
+6. DELETE everything in it
+
+7. Now you need to map the variable:
+   - Click the mapping button (usually looks like </> or {})
+   - OR manually type: {{8.email}}
+   - Make sure it has curly braces: {{8.email}}
+
+8. Should now show:
+   - value: {{8.email}}
+   - NOT: "8. email"
+
+9. Save Module 3
+
+MODULE 4 (ARABIC EMAIL):
+-------------------------
+
+1. Open Module 4
+2. Repeat steps 2-9 above
+3. Save Module 4
+
+================================================================================
+VERIFY IT'S CORRECT
+================================================================================
+
+After fixing, check:
+
+1. Click "To" field
+2. Click on the object item
+3. "value" field should show: {{8.email}}
+4. With curly braces {{ }}
+
+If you see:
+- {{8.email}} → ✅ CORRECT!
+- "8. email" → ❌ WRONG - Fix it!
+- 8. email → ❌ WRONG - Fix it!
+
+================================================================================
+IF YOU CAN'T FIND THE MAPPING BUTTON
+================================================================================
+
+OPTION 1: Manual Type
+---------------------
+1. Click on "value" field
+2. Delete "8. email"
+3. Type exactly: {{8.email}}
+4. Make sure curly braces are included
+5. Save
+
+OPTION 2: Use Direct Reference
+-------------------------------
+If {{8.email}} doesn't work, try:
+1. "value" field: {{1.1}}
+2. This directly uses Email column from Google Sheets
+3. Save
+
+================================================================================
+ALSO FIX MODULE 8 (IMPORTANT!)
+================================================================================
+
+Make sure Module 8 is setting variables correctly:
+
+1. Open Module 8 (Set Variables)
+2. Check "email" variable:
+   - Value should be: {{1.1}}
+   - NOT: {{1.`1`}} (no backticks)
+3. If it has backticks, remove them
+4. Save
+
+This ensures {{8.email}} will have a value.
+
+================================================================================
+COMPLETE CHECKLIST
+================================================================================
+
+After fixing, verify:
+
+□ Module 8 "email" variable: {{1.1}} (no backticks)
+□ Module 3 "To" field value: {{8.email}} (with curly braces)
+□ Module 4 "To" field value: {{8.email}} (with curly braces)
+□ Scenario is ON
+□ Test lead in Google Sheets has email in Column B
+
+================================================================================
+TEST
+================================================================================
+
+1. Save all changes
+2. Add test lead to Google Sheets
+3. Wait 15 seconds
+4. Check execution logs
+
+Should see:
+✅ No error
+✅ Email sent
+✅ Email received
+
+================================================================================
+

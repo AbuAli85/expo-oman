@@ -1,0 +1,152 @@
+================================================================================
+QUICK FIX FOR EMAIL 1 NOT WORKING
+Most Common Issues & Solutions
+================================================================================
+
+If you added a lead but Email 1 didn't send, check these in order:
+
+================================================================================
+ISSUE 1: SCENARIO NOT ACTIVATED (Most Common)
+================================================================================
+
+CHECK:
+------
+1. Go to Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Is the toggle switch at the top ON (green)?
+
+FIX:
+----
+If OFF: Click the toggle to turn it ON
+Then: Add a new test lead to Google Sheets
+
+================================================================================
+ISSUE 2: WRONG LANGUAGE VALUE
+================================================================================
+
+CHECK:
+------
+1. Open Google Sheets
+2. Check Column D (Language) of your lead
+3. What value is there? "en", "EN", "ar", "AR"?
+
+FIX:
+----
+The filter checks for EXACT match!
+
+If your sheet has "EN" (uppercase):
+→ Change filter to check "EN" (not "en")
+
+OR
+
+Change your sheet value to "en" (lowercase) to match filter
+
+================================================================================
+ISSUE 3: WRONG TO FIELD FORMAT
+================================================================================
+
+CHECK:
+------
+1. Open Module 3 or 4 (Email module)
+2. Check "To" field
+3. What format is it?
+
+FIX:
+----
+Should be: `[{"value": "{{1.1}}"}]`
+NOT: `["{{1.1}}"]` or `["{{1.`1`}}"]`
+
+Change it to: `[{"value": "{{1.1}}"}]`
+
+================================================================================
+ISSUE 4: BACKTICKS IN VARIABLES
+================================================================================
+
+CHECK:
+------
+1. Open Module 3 or 4
+2. Check all variable references
+3. Do you see backticks like `{{1.`1`}}`?
+
+FIX:
+----
+Remove all backticks:
+- `{{1.`3`}}` → `{{1.3}}`
+- `{{1.`1`}}` → `{{1.1}}`
+- `{{1.`0`}}` → `{{1.0}}`
+
+================================================================================
+ISSUE 5: EMAIL COLUMN EMPTY
+================================================================================
+
+CHECK:
+------
+1. Open Google Sheets
+2. Check Column B (Email) of your lead
+3. Is there an email address?
+
+FIX:
+----
+Add a valid email address to Column B
+
+================================================================================
+ISSUE 6: GOOGLE SHEETS CONNECTION
+================================================================================
+
+CHECK:
+------
+1. Open Module 1 (Watch Rows)
+2. Is the connection active?
+3. Click "Run once" - does it work?
+
+FIX:
+----
+If connection error:
+1. Click on connection
+2. Reconnect Google Sheets
+3. Test again
+
+================================================================================
+QUICK TEST PROCEDURE
+================================================================================
+
+1. TURN SCENARIO ON
+   - Make sure toggle is green/enabled
+
+2. ADD TEST LEAD:
+   - Name: "Test User"
+   - Email: your-email@example.com
+   - Language: "en" (lowercase, exact)
+   - Save sheet
+
+3. WAIT 10 SECONDS
+
+4. CHECK:
+   - Execution logs in Make.com
+   - Your email inbox
+   - Google Sheets (Status should update)
+
+5. IF STILL NOT WORKING:
+   - Check execution logs for errors
+   - Follow error message
+   - See EMAIL-1-NOT-WORKING-DEBUG.txt for detailed steps
+
+================================================================================
+MOST LIKELY ISSUE
+================================================================================
+
+Based on common problems, the most likely issue is:
+
+1. Scenario not activated (toggle OFF)
+   → Fix: Turn it ON
+
+2. Language value mismatch
+   → Fix: Make filter match sheet value exactly
+
+3. Wrong `to` field format
+   → Fix: Use `[{"value": "{{1.1}}"}]`
+
+Check these three first!
+
+================================================================================
+

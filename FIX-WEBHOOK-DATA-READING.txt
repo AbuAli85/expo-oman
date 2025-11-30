@@ -1,0 +1,222 @@
+================================================================================
+FIX: NOT READING NEW ROWS FROM SHEET - WEBHOOK DATA STRUCTURE
+================================================================================
+
+The problem is that Module 9 is using WRONG field references to read
+the webhook data, so it can't read the new row information properly.
+
+================================================================================
+THE PROBLEM
+================================================================================
+
+Module 9 (Set Variables) is trying to read webhook data using:
+  • name: {{12.`0`}}  ❌ Wrong syntax
+  • email: {{12.`1`}}  ❌ Wrong syntax
+  • language: {{trim(12.language)}} || "en"  ❌ Wrong syntax
+
+This doesn't match the actual webhook data structure!
+
+================================================================================
+WHAT WEBHOOK ACTUALLY SENDS
+================================================================================
+
+Your Google Apps Script webhook sends data in this format:
+{
+  "timestamp": "...",
+  "name": "fahad alamri",
+  "email": "chairman@falconeyegroup.net",
+  "phone": "",
+  "language": "en",
+  "status": "",
+  ...
+}
+
+OR it might send as an array:
+["fahad alamri", "chairman@falconeyegroup.net", "", "en", ...]
+
+================================================================================
+HOW TO FIX
+================================================================================
+
+STEP 1: Check Webhook Data Structure
+───────────────────────────────────────
+
+1. Open execution in Make.com
+2. Click Module 12 (Webhook)
+3. View output data
+4. Check the actual structure:
+   □ Is it an object with named fields? {name: "...", email: "..."}
+   □ Or is it an array? ["name", "email", ...]
+
+STEP 2: Fix Module 9 Based on Structure
+──────────────────────────────────────────
+
+IF WEBHOOK SENDS OBJECT (named fields):
+─────────────────────────────────────────
+Update Module 9:
+  • name: {{12.name}}
+  • email: {{12.email}}
+  • language: {{12.language || "en"}}
+
+IF WEBHOOK SENDS ARRAY (numbered fields):
+───────────────────────────────────────────
+Update Module 9:
+  • name: {{12[0]}}
+  • email: {{12[1]}}
+  • language: {{12[3] || "en"}}
+
+IF WEBHOOK SENDS NESTED STRUCTURE:
+─────────────────────────────────────
+Check Module 12 output and adjust accordingly.
+Might be: {{12.data.name}}, {{12.body.email}}, etc.
+
+================================================================================
+CHECKING YOUR GOOGLE APPS SCRIPT
+================================================================================
+
+Check your Google Apps Script webhook code:
+
+What format does it send?
+  • JSON object with named fields? → Use {{12.name}}, {{12.email}}
+  • Array? → Use {{12[0]}}, {{12[1]}}
+  • Nested in data/body? → Use {{12.data.name}}
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Check Module 12 Output
+─────────────────────────────────
+
+1. Open Make.com
+2. Go to scenario execution
+3. Click Module 12 (Webhook)
+4. View output/data
+5. Note the structure:
+   □ What fields do you see?
+   □ Is it an object or array?
+   □ What are the exact field names?
+
+STEP 2: Update Module 9
+─────────────────────────
+
+Based on Module 12 output:
+
+IF you see structure like:
+  {
+    "name": "...",
+    "email": "...",
+    "language": "..."
+  }
+
+THEN update Module 9:
+  • name: {{12.name}}
+  • email: {{12.email}}
+  • language: {{if(12.language; 12.language; "en")}}
+
+IF you see structure like:
+  [
+    "name value",
+    "email value",
+    "phone value",
+    "language value"
+  ]
+
+THEN update Module 9:
+  • name: {{12[0]}}
+  • email: {{12[1]}}
+  • language: {{if(12[3]; 12[3]; "en")}}
+
+STEP 3: Use Make.com Field Selector
+───────────────────────────────────────
+
+EASIEST METHOD:
+
+1. Open Module 9 in Make.com
+2. Click on "name" variable value field
+3. Click the "Map" icon (field selector)
+4. Browse Module 12 output
+5. Find the name field
+6. Click on it → Make.com auto-fills correct path
+7. Repeat for email and language
+
+This avoids typing field references manually!
+
+================================================================================
+COMMON WEBHOOK STRUCTURES
+================================================================================
+
+STRUCTURE 1: Flat Object
+───────────────────────────
+{
+  "name": "fahad alamri",
+  "email": "chairman@falconeyegroup.net",
+  "language": "en"
+}
+
+Use: {{12.name}}, {{12.email}}, {{12.language}}
+
+STRUCTURE 2: Nested in "data"
+───────────────────────────────
+{
+  "data": {
+    "name": "fahad alamri",
+    "email": "chairman@falconeyegroup.net",
+    "language": "en"
+  }
+}
+
+Use: {{12.data.name}}, {{12.data.email}}, {{12.data.language}}
+
+STRUCTURE 3: Array
+───────────────────
+["fahad alamri", "chairman@falconeyegroup.net", "", "en"]
+
+Use: {{12[0]}}, {{12[1]}}, {{12[3]}}
+
+STRUCTURE 4: In "body"
+────────────────────────
+{
+  "body": {
+    "name": "...",
+    "email": "...",
+    "language": "..."
+  }
+}
+
+Use: {{12.body.name}}, {{12.body.email}}, {{12.body.language}}
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Open Module 12 output
+□ Check webhook data structure
+□ Identify field names/positions
+□ Update Module 9 to use correct field references
+□ Use field selector if unsure
+□ Test again
+
+================================================================================
+MOST LIKELY FIX
+================================================================================
+
+Based on your Google Apps Script, it likely sends:
+
+{
+  "name": "...",
+  "email": "...",
+  "language": "..."
+}
+
+So update Module 9 to:
+  • name: {{12.name}}
+  • email: {{12.email}}
+  • language: {{if(12.language; 12.language; "en")}}
+
+Remove the backtick syntax ({{12.`0`}}) - it doesn't work!
+
+================================================================================
+END
+================================================================================
+

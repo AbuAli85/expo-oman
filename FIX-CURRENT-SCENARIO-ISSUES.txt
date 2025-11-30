@@ -1,0 +1,245 @@
+================================================================================
+FIX CURRENT SCENARIO ISSUES
+Review and Fix Guide
+================================================================================
+
+GOOD NEWS:
+----------
+✅ You're using Filter Rows modules (Module 8 & 9) - Perfect!
+✅ Row numbers are correctly referenced ({{8.__ROW_NUMBER__}} and {{9.__ROW_NUMBER__}})
+✅ Router filters are correct
+✅ Set Variables module is correct
+✅ HTML templates are added
+
+ISSUES FOUND:
+-------------
+1. ❌ Module 6: "to" field format is wrong
+2. ❌ Module 7: "to" field format is wrong
+3. ⚠️ Module 3: Unnecessary email update in values
+4. ⚠️ Module 5: Unnecessary email update in values
+
+================================================================================
+FIX 1: MODULE 6 (AGREEMENT EMAIL - ROUTE 1)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"to": ["{{4.email}}"]
+
+PROBLEM:
+--------
+Resend API expects array of objects, not array of strings
+
+FIX:
+----
+"to": [
+  {
+    "value": "{{4.email}}"
+  }
+]
+
+HOW TO FIX:
+-----------
+1. Open Module 6
+2. Click "To" field
+3. Delete current value: ["{{4.email}}"]
+4. Click "Add item"
+5. Select "Object"
+6. In "value" field, enter: {{4.email}}
+7. Save
+
+================================================================================
+FIX 2: MODULE 7 (THANK YOU EMAIL - ROUTE 2)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"to": ["{{4.email}}"]
+
+FIX:
+----
+"to": [
+  {
+    "value": "{{4.email}}"
+  }
+]
+
+HOW TO FIX:
+-----------
+1. Open Module 7
+2. Click "To" field
+3. Delete current value: ["{{4.email}}"]
+4. Click "Add item"
+5. Select "Object"
+6. In "value" field, enter: {{4.email}}
+7. Save
+
+================================================================================
+FIX 3: MODULE 3 (OPTIONAL - REMOVE UNNECESSARY EMAIL UPDATE)
+================================================================================
+
+CURRENT:
+--------
+"values": {
+  "1": "{{4.email}}",  ← Unnecessary
+  "10": "Accepted",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+FIX (OPTIONAL):
+---------------
+"values": {
+  "10": "Accepted",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+REASON:
+-------
+You're finding the row by email (Module 8), so you don't need to update the email column.
+This won't break anything, but it's unnecessary.
+
+HOW TO FIX (OPTIONAL):
+----------------------
+1. Open Module 3
+2. In "Values" section
+3. Remove: "1": "{{4.email}}"
+4. Keep only: Response, Response Date, Comments
+5. Save
+
+================================================================================
+FIX 4: MODULE 5 (OPTIONAL - REMOVE UNNECESSARY EMAIL UPDATE)
+================================================================================
+
+CURRENT:
+--------
+"values": {
+  "1": "{{4.email}}",  ← Unnecessary
+  "10": "Rejected",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+FIX (OPTIONAL):
+---------------
+"values": {
+  "10": "Rejected",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+HOW TO FIX (OPTIONAL):
+----------------------
+1. Open Module 5
+2. In "Values" section
+3. Remove: "1": "{{4.email}}"
+4. Keep only: Response, Response Date, Comments
+5. Save
+
+================================================================================
+PRIORITY FIXES
+================================================================================
+
+CRITICAL (Must Fix):
+--------------------
+1. Module 6: Fix "to" field format
+2. Module 7: Fix "to" field format
+
+OPTIONAL (Can Skip):
+--------------------
+3. Module 3: Remove email from values
+4. Module 5: Remove email from values
+
+================================================================================
+QUICK FIX STEPS (5 MINUTES)
+================================================================================
+
+STEP 1: Fix Module 6 (2 min)
+----------------------------
+1. Open Module 6
+2. "To" field: Change from ["{{4.email}}"] to [{"value": "{{4.email}}"}]
+3. Save
+
+STEP 2: Fix Module 7 (2 min)
+----------------------------
+1. Open Module 7
+2. "To" field: Change from ["{{4.email}}"] to [{"value": "{{4.email}}"}]
+3. Save
+
+STEP 3: Optional - Clean up Modules 3 & 5 (1 min)
+-------------------------------------------------
+1. Module 3: Remove "1": "{{4.email}}" from values
+2. Module 5: Remove "1": "{{4.email}}" from values
+3. Save both
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing:
+
+□ Module 6: "To" = [{"value": "{{4.email}}"}]
+□ Module 7: "To" = [{"value": "{{4.email}}"}]
+□ Module 3: Values only have Response, Date, Comments (optional)
+□ Module 5: Values only have Response, Date, Comments (optional)
+□ All modules saved
+□ Scenario is ON
+
+================================================================================
+WHY THESE FIXES ARE NEEDED
+================================================================================
+
+ISSUE 1: Email "to" field format
+---------------------------------
+Problem: Resend API requires array of objects
+- Current: ["{{4.email}}"] (array of strings)
+- Required: [{"value": "{{4.email}}"}] (array of objects)
+
+Without this fix: Emails won't send, you'll get API errors
+
+ISSUE 2: Unnecessary email update
+----------------------------------
+Problem: Updating email column when finding row by email
+- Not breaking anything
+- Just unnecessary
+- Can cause confusion
+
+================================================================================
+YOUR CURRENT FLOW (CORRECT STRUCTURE)
+================================================================================
+
+MODULE 1: Google Forms Watch Responses ✅
+MODULE 4: Set Variables ✅
+MODULE 2: Router ✅
+
+ROUTE 1 (Accept):
+------------------
+Module 8: Filter Rows (find by email) ✅
+  ↓
+Module 3: Update Row (use {{8.__ROW_NUMBER__}}) ✅
+  ↓
+Module 6: Send Agreement Email ❌ (fix "to" field)
+
+ROUTE 2 (Reject):
+------------------
+Module 9: Filter Rows (find by email) ✅
+  ↓
+Module 5: Update Row (use {{9.__ROW_NUMBER__}}) ✅
+  ↓
+Module 7: Send Thank You Email ❌ (fix "to" field)
+
+================================================================================
+SUMMARY
+================================================================================
+
+YOUR SCENARIO IS 95% CORRECT! ✅
+
+Only 2 critical fixes needed:
+1. Module 6: Fix "to" field format
+2. Module 7: Fix "to" field format
+
+After these fixes, your scenario will work perfectly! 🎉
+
+================================================================================
+

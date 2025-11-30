@@ -1,0 +1,285 @@
+================================================================================
+ANALYSIS: GOOGLE SHEET DATA ISSUES
+================================================================================
+
+Looking at your sheet, I can see several issues that need attention.
+
+================================================================================
+CURRENT SHEET STATE
+================================================================================
+
+Row 1: fahad alamri | chairman@falconeyegroup.net | en | Status: "Email 1 Sent"
+  ✓ Properly processed
+  ✓ Has Email 1 Date: 2025-11-29T19:11:14.929Z
+
+Row 2: faahd alamri | luxsess2001@hotmail.com | en | (no status/date)
+  ❌ Not processed yet - missing status and date
+
+Row 3: (empty name) | luxsess2001@gmail.com | Response: "Rejected"
+  ❌ Missing name field
+  ❌ Has "Rejected" response
+  ❌ Missing status/date
+
+Row 4: (empty name) | chairman@falconeyegroup.net | Response: "Rejected"
+  ❌ Missing name field
+  ❌ Duplicate email (same as row 1)
+  ❌ Has "Rejected" response
+
+================================================================================
+ISSUES IDENTIFIED
+================================================================================
+
+ISSUE 1: Missing Name Fields (Rows 3 & 4)
+───────────────────────────────────────────
+Rows 3 and 4 have empty names but have email addresses and responses.
+
+Cause:
+  • Form submission may not have included name
+  • OR name field not mapped correctly
+  • OR form data incomplete
+
+Fix:
+  • Check Google Form - ensure name field is required
+  • Verify form-to-sheet mapping
+  • Check Make.com scenario variable mapping
+
+ISSUE 2: Duplicate Email (Row 4)
+──────────────────────────────────
+Row 4 has same email as Row 1 (chairman@falconeyegroup.net)
+
+Cause:
+  • Same person submitted form again
+  • No duplicate prevention in place
+  • Should update existing row, not create new one
+
+Fix:
+  • Add duplicate check before adding row
+  • Update existing row if email already exists
+  • Check if Email 1 Sent status exists before sending
+
+ISSUE 3: Unprocessed Row (Row 2)
+──────────────────────────────────
+Row 2 has no status or Email 1 Date
+
+Cause:
+  • Email not sent yet
+  • Scenario may not have processed this row
+  • OR email sending failed
+
+Fix:
+  • Check if this row should trigger email
+  • Verify scenario processes all rows
+  • Check for any errors in execution
+
+ISSUE 4: Response Field Filled But No Status
+──────────────────────────────────────────────
+Rows 3 and 4 have "Rejected" in Response column but no Status
+
+Cause:
+  • These might be from form responses (attendance form)
+  • Different workflow than Email 1 invitation
+  • Status column not being updated
+
+Fix:
+  • Ensure status is updated when response is recorded
+  • Check which workflow processes responses
+
+================================================================================
+RECOMMENDED ACTIONS
+================================================================================
+
+ACTION 1: Fix Missing Names
+─────────────────────────────
+
+1. Check Google Form:
+   □ Ensure "Name" field is required
+   □ Verify name field is mapped to Column A
+
+2. For existing rows with missing names:
+   □ Manually add names if known
+   □ OR delete rows if invalid
+   □ OR add name based on email if possible
+
+ACTION 2: Handle Duplicate Emails
+───────────────────────────────────
+
+1. Row 4 is duplicate of Row 1:
+   □ Check if Email 1 already sent (Row 1 has status)
+   □ Delete Row 4 if duplicate
+   □ OR merge data if needed
+
+2. Add duplicate prevention:
+   □ Use Search Rows before Add Row
+   □ Check if email exists
+   □ Update existing row instead of adding new
+
+ACTION 3: Process Row 2
+────────────────────────
+
+Row 2 needs Email 1 invitation sent:
+
+1. Check why it wasn't processed:
+   □ Verify form submission completed
+   □ Check Make.com execution logs
+   □ See if there were errors
+
+2. Trigger manual processing:
+   □ Resubmit form with this email
+   □ OR manually trigger scenario
+   □ OR update row to trigger workflow
+
+ACTION 4: Clean Up Invalid Rows
+─────────────────────────────────
+
+Rows 3 and 4 appear incomplete:
+
+Options:
+  □ Delete rows if invalid/incomplete
+  □ OR complete the data manually
+  □ OR identify which workflow should process them
+
+================================================================================
+WORKFLOW CLARIFICATION
+================================================================================
+
+You have TWO different workflows:
+
+WORKFLOW 1: Email 1 - Invitation
+─────────────────────────────────
+Purpose: Send initial invitation email
+Trigger: New form response or manual entry
+Action: 
+  • Check if email exists
+  • Send invitation email
+  • Update Status = "Email 1 Sent"
+  • Update Email 1 Date
+
+WORKFLOW 2: Response Handler
+─────────────────────────────
+Purpose: Handle form responses (Yes/No attendance)
+Trigger: Form submission with attendance response
+Action:
+  • Update Response column
+  • Update Response Date
+  • Send agreement/thank you email
+  • Update Status accordingly
+
+Your rows 3 & 4 might be from Workflow 2 (response form), not Workflow 1.
+
+================================================================================
+SHEET DATA VALIDATION
+================================================================================
+
+EXPECTED FORMAT:
+────────────────
+
+Each row should have:
+  ✓ Name (Column A) - required
+  ✓ Email (Column B) - required, unique
+  ✓ Phone (Column C) - optional
+  ✓ Language (Column D) - "en" or "ar"
+  ✓ Status (Column E) - "Email 1 Sent", "Email 2 Sent", etc.
+  ✓ Date Added (Column F) - timestamp
+  ✓ Email 1 Date (Column G) - when Email 1 sent
+  ✓ Response (Column K) - "Accepted" or "Rejected" (optional)
+  ✓ Response Date (Column L) - when response received
+
+YOUR CURRENT DATA ISSUES:
+──────────────────────────
+
+Row 1: ✓ Complete and correct
+Row 2: ❌ Missing status/date (unprocessed)
+Row 3: ❌ Missing name, incomplete
+Row 4: ❌ Missing name, duplicate email
+
+================================================================================
+FIX STRATEGY
+================================================================================
+
+IMMEDIATE FIXES:
+────────────────
+
+1. DELETE ROW 4:
+   □ It's a duplicate of Row 1
+   □ Same email already processed
+   □ No need to keep
+
+2. FIX ROW 3:
+   □ Add name if known
+   □ OR delete if invalid
+   □ OR identify which workflow should process
+
+3. PROCESS ROW 2:
+   □ Check why Email 1 not sent
+   □ Verify email address is valid
+   □ Trigger Email 1 workflow if needed
+
+4. ADD VALIDATION:
+   □ Make Name required in form
+   □ Add duplicate check in workflow
+   □ Ensure all fields mapped correctly
+
+LONG-TERM IMPROVEMENTS:
+────────────────────────
+
+1. Add duplicate prevention:
+   □ Search for email before adding
+   □ Update existing row if found
+   □ Skip if Email 1 already sent
+
+2. Add data validation:
+   □ Required fields check
+   □ Email format validation
+   □ Ensure complete data before processing
+
+3. Separate workflows:
+   □ Clearly separate Email 1 workflow
+   □ Clearly separate Response workflow
+   □ Avoid confusion between them
+
+================================================================================
+QUICK CLEANUP STEPS
+================================================================================
+
+STEP 1: Delete Duplicate Row
+──────────────────────────────
+□ Delete Row 4 (duplicate email)
+□ Keep Row 1 (has complete data)
+
+STEP 2: Fix or Remove Invalid Rows
+────────────────────────────────────
+□ Row 3: Add name OR delete if invalid
+□ Verify which workflow should process these
+
+STEP 3: Check Row 2
+────────────────────
+□ Verify email: luxsess2001@hotmail.com
+□ Check if Email 1 should be sent
+□ Trigger workflow if needed
+
+STEP 4: Add Validation
+───────────────────────
+□ Make Name required in Google Form
+□ Add duplicate check in Make.com scenario
+□ Verify all field mappings
+
+================================================================================
+QUESTION FOR YOU
+================================================================================
+
+To help you better, please clarify:
+
+1. Are rows 3 and 4 from a different form (attendance response form)?
+   → If yes, they're in the wrong workflow
+
+2. Why is Row 2 missing status/date?
+   → Was it recently added?
+   → Did Email 1 workflow fail?
+
+3. Should Row 4 update Row 1 instead of creating new row?
+   → If yes, need duplicate prevention logic
+
+================================================================================
+END OF ANALYSIS
+================================================================================
+

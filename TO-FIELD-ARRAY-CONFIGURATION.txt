@@ -1,0 +1,147 @@
+================================================================================
+CONFIGURE "To" FIELD AS ARRAY IN MAKE.COM UI
+================================================================================
+
+CURRENT STATUS:
+--------------
+✅ You've set: "To" → "8. testCol1"
+⚠️ But the "To" field is an ARRAY field, so it needs to be configured differently
+
+================================================================================
+CORRECT CONFIGURATION STEPS
+================================================================================
+
+STEP 1: Open Module 3 (Resend - Send an Email)
+------------------------------------------------
+1. Click on the Resend email module
+2. Find the "To" field
+3. It should show "To Array" (not just "To")
+
+STEP 2: Configure as Array
+---------------------------
+1. Click on "To Array" field
+2. You should see an "Add item" button or a list of items
+3. If there's already an item, click on it
+4. Inside the item, there should be a "value" field
+5. Map "8. testCol1" to the "value" field (not directly to "To Array")
+
+STEP 3: Visual Guide
+---------------------
+The structure should look like:
+
+To Array
+  └─ Item 1
+      └─ value: 8. testCol1
+
+NOT:
+To: 8. testCol1  ← This is wrong for array fields
+
+================================================================================
+IF YOU SEE "To" (NOT "To Array")
+================================================================================
+
+If the UI shows just "To" (singular) instead of "To Array":
+
+OPTION 1: It might be a single string field
+--------------------------------------------
+- Try mapping directly: "To" → "8. testCol1"
+- This should work if Make.com accepts a single string
+- But the error suggests it needs an array format
+
+OPTION 2: Check Field Type
+---------------------------
+- Look at the field label carefully
+- If it says "To Array", follow Step 2 above
+- If it says just "To", try the format below
+
+================================================================================
+ALTERNATIVE: Use Direct Mapping Format
+================================================================================
+
+If Make.com's UI allows direct mapping to "To" field:
+
+1. In the "To" field, try typing: {{8.testCol1}}
+2. Or use the mapping selector and choose: "8. testCol1"
+3. Make.com should automatically wrap it in array format
+
+================================================================================
+VERIFY THE CONFIGURATION
+================================================================================
+
+After configuring, the field should show:
+
+CORRECT:
+--------
+To Array
+  [1] value: 8. testCol1
+
+OR if it's a single field that auto-converts:
+To: 8. testCol1
+
+WRONG:
+------
+To: [array format visible but empty]
+To Array: (empty)
+
+================================================================================
+TEST THE CONFIGURATION
+================================================================================
+
+1. Save the module
+2. Run the scenario
+3. Check if the error is resolved
+4. If still getting error, check Module 8 output to verify testCol1 has a value
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+Try these alternatives:
+
+ALTERNATIVE 1: Use Direct Column Reference
+-------------------------------------------
+Instead of "8. testCol1", try:
+- "1. Email (B)" - direct column reference
+- Or manually type: {{1.1}}
+
+ALTERNATIVE 2: Check Module 8 Output
+------------------------------------
+1. Run scenario
+2. Check Module 8 (Set Variables) output
+3. Verify testCol1 contains an email address
+4. If empty, check which testCol variable has the email
+5. Use that variable instead
+
+ALTERNATIVE 3: Use Different Variable Format
+---------------------------------------------
+In the "To" field, try:
+- {{8.testCol1}} (with dot notation)
+- {{8.`testCol1`}} (with backticks)
+- Or select from the dropdown: "8. testCol1"
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Field shows "To Array" (not just "To")
+□ Clicked "Add item" if array is empty
+□ Mapped "8. testCol1" to the "value" field inside the array item
+□ Saved the module
+□ Verified Module 8 output has email in testCol1
+□ Applied same fix to Module 4 (Arabic Email)
+□ Tested the scenario
+
+================================================================================
+MOST COMMON ISSUE
+================================================================================
+
+The most common mistake is mapping directly to "To Array" instead of mapping to the "value" field inside an array item.
+
+Make sure the structure is:
+To Array → Item → value → 8. testCol1
+
+Not:
+To Array → 8. testCol1 (direct mapping)
+
+================================================================================
+

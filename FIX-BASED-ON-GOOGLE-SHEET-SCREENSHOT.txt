@@ -1,0 +1,215 @@
+================================================================================
+FIX BASED ON GOOGLE SHEET SCREENSHOT
+Complete Analysis and Fix
+================================================================================
+
+WHAT I SEE IN YOUR SCREENSHOT:
+-------------------------------
+✅ Spreadsheet: "UAE Property Expo"
+✅ Two sheets:
+   - "Form Responses 1" (active) - Google Forms responses
+   - "leads" - Your leads database
+✅ Form response visible:
+   - Email: "luxsess2001@gmail.cor" (NOTE: Typo - should be .com)
+   - Attendance: "Yes, I'll attend"
+   - Timestamp: 11/25/2025 23:01:44
+
+================================================================================
+CRITICAL ISSUES FOUND
+================================================================================
+
+ISSUE 1: EMAIL TYPO (CRITICAL)
+-------------------------------
+Form response shows: "luxsess2001@gmail.cor"
+Should be: "luxsess2001@gmail.com"
+
+PROBLEM:
+--------
+- Make.com will search for "luxsess2001@gmail.cor" in "leads" sheet
+- But email in "leads" sheet is probably "luxsess2001@gmail.com"
+- Won't match → Can't find row → Update fails
+
+FIX:
+----
+Option A: Fix in Google Forms (if possible)
+- Check form response - was it typed wrong?
+- If form allows editing, fix it
+
+Option B: Add both emails to "leads" sheet
+- Add row with "luxsess2001@gmail.cor"
+- OR update existing row email to match
+
+Option C: Use correct email in form
+- Make sure form uses correct email format
+
+ISSUE 2: VERIFY "leads" SHEET HAS EMAIL
+----------------------------------------
+The email (with correct spelling) must exist in "leads" sheet
+
+CHECK:
+------
+1. Click on "leads" sheet tab (bottom)
+2. Search for: luxsess2001@gmail.com
+3. Does it exist?
+
+IF NO:
+→ Add it to "leads" sheet
+→ Include: Name, Email, Phone, Language, etc.
+
+IF YES:
+→ Continue
+
+================================================================================
+CORRECT SETUP VERIFICATION
+================================================================================
+
+SHEET 1: "Form Responses 1"
+---------------------------
+✅ Purpose: Google Forms automatically saves responses here
+✅ Contains: Timestamp, Email, Attendance, Comments
+✅ Used by: Google Forms (automatic)
+✅ NOT used by: Make.com scenario
+
+SHEET 2: "leads"
+-----------------
+✅ Purpose: Your main leads database
+✅ Contains: Name, Email, Phone, Language, Status, Response, etc.
+✅ Used by: Make.com scenario
+   - Module 8/9: Search here for email
+   - Module 3/5: Update Response column here
+
+================================================================================
+VERIFY MAKE.COM MODULES USE "leads" SHEET
+================================================================================
+
+CHECK MODULE 8 (Search Rows - Route 1):
+----------------------------------------
+1. Open Make.com scenario
+2. Open Module 8
+3. Check "Sheet Name":
+   □ Should be "leads" (NOT "Form Responses 1")
+   □ If wrong → Change it
+
+CHECK MODULE 9 (Search Rows - Route 2):
+----------------------------------------
+1. Open Module 9
+2. Check "Sheet Name":
+   □ Should be "leads" (NOT "Form Responses 1")
+   □ If wrong → Change it
+
+CHECK MODULE 3 (Update Row - Route 1):
+---------------------------------------
+1. Open Module 3
+2. Check "Sheet Name":
+   □ Should be "leads" (NOT "Form Responses 1")
+   □ If wrong → Change it
+
+CHECK MODULE 5 (Update Row - Route 2):
+---------------------------------------
+1. Open Module 5
+2. Check "Sheet Name":
+   □ Should be "leads" (NOT "Form Responses 1")
+   □ If wrong → Change it
+
+================================================================================
+STEP-BY-STEP FIX (5 MINUTES)
+================================================================================
+
+STEP 1: Check "leads" Sheet (1 min)
+------------------------------------
+1. Click "leads" sheet tab (bottom of Google Sheet)
+2. Search for: luxsess2001@gmail.com
+3. Does it exist?
+
+IF NO:
+→ Add new row with:
+   - Name: (from form or your records)
+   - Email: luxsess2001@gmail.com
+   - Phone: (if available)
+   - Language: en or ar
+   - Other columns: as needed
+
+IF YES:
+→ Continue to Step 2
+
+STEP 2: Fix Email Typo Issue (2 min)
+-------------------------------------
+OPTION A: If email in "leads" is correct (.com):
+→ Form response has typo (.cor)
+→ Add row to "leads" with typo email: luxsess2001@gmail.cor
+→ OR fix form response if possible
+
+OPTION B: If form response is correct:
+→ Update email in "leads" sheet to match form response
+
+STEP 3: Verify Make.com Modules (1 min)
+---------------------------------------
+1. Check Module 8: Sheet Name = "leads"
+2. Check Module 9: Sheet Name = "leads"
+3. Check Module 3: Sheet Name = "leads"
+4. Check Module 5: Sheet Name = "leads"
+5. If any wrong → Change to "leads"
+
+STEP 4: Test (1 min)
+--------------------
+1. Make sure scenario is ON
+2. Submit new form response (with correct email)
+3. OR click "Run once" in Make.com
+4. Check execution history
+
+================================================================================
+EMAIL MATCHING REQUIREMENT
+================================================================================
+
+CRITICAL:
+---------
+The email from form response MUST match email in "leads" sheet EXACTLY:
+- Case-sensitive
+- No extra spaces
+- Exact spelling
+
+CURRENT SITUATION:
+------------------
+Form response: "luxsess2001@gmail.cor"
+"leads" sheet: Probably "luxsess2001@gmail.com"
+
+SOLUTION:
+---------
+1. Check "leads" sheet: What is the actual email?
+2. Make them match:
+   - Either fix form response
+   - Or add/update email in "leads" sheet to match form
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ "leads" sheet: Email exists (luxsess2001@gmail.com or .cor)
+□ Email spelling: Matches between form and "leads" sheet
+□ Module 8: Sheet Name = "leads"
+□ Module 9: Sheet Name = "leads"
+□ Module 3: Sheet Name = "leads"
+□ Module 5: Sheet Name = "leads"
+□ Scenario: Saved and ON
+
+If all checked → Should work! ✅
+
+================================================================================
+RECOMMENDED ACTION
+================================================================================
+
+IMMEDIATE:
+----------
+1. Click "leads" sheet tab
+2. Check if "luxsess2001@gmail.com" exists
+3. If not → Add it
+4. If exists → Verify email spelling matches form response
+
+THEN:
+-----
+1. Verify all Make.com modules use "leads" sheet
+2. Make sure email spelling matches exactly
+3. Test scenario
+
+================================================================================
+

@@ -1,0 +1,145 @@
+================================================================================
+WEBHOOK QUICK REFERENCE CARD
+================================================================================
+
+EMAIL 1 - INVITATION WORKFLOW WEBHOOK CONFIGURATION
+
+================================================================================
+WEBHOOK URL
+================================================================================
+
+https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u
+
+Status: ACTIVE
+Region: EU2 (Europe)
+Endpoint: Custom webhook
+
+================================================================================
+DATA STRUCTURE
+================================================================================
+
+Expected Payload Format (JSON):
+───────────────────────────────────────────────────────────────
+{
+  "timestamp": "2025-01-15T10:30:00.000Z",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "attendance": "Yes, I'll attend",
+  "language": "en",
+  "comments": "Optional comments"
+}
+
+Required Fields:
+───────────────────────────────────────────────────────────────
+✓ email (required)
+✓ name
+✓ attendance
+✓ language
+✓ timestamp
+✓ comments (optional)
+
+================================================================================
+GOOGLE APPS SCRIPT QUICK SETUP
+================================================================================
+
+1. Open Google Sheet → Extensions → Apps Script
+2. Paste code from: GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js
+3. Update:
+   • SHEET_NAME = 'Form Responses 1' (your sheet name)
+   • COLUMN_MAPPING = { ... } (match your form columns)
+4. Save script
+5. Install trigger:
+   • Function: onFormSubmit
+   • Event: From form → On form submit
+6. Authorize script
+7. Test with testWebhook() function
+
+================================================================================
+MAKE.COM SCENARIO CONFIGURATION
+================================================================================
+
+Webhook Module:
+───────────────────────────────────────────────────────────────
+Module Type: Webhooks → Custom webhook
+Position: First module (trigger)
+Status: Must be ACTIVE for webhook to work
+
+Variable Mapping (After Webhook):
+───────────────────────────────────────────────────────────────
+{{webhook.email}} → recipientEmail
+{{webhook.name}} → recipientName
+{{webhook.attendance}} → attendance
+{{webhook.language}} → recipientLanguage
+{{webhook.timestamp}} → invitationDate
+{{webhook.comments}} → comments
+
+================================================================================
+TESTING COMMANDS
+================================================================================
+
+Manual Webhook Test (curl):
+───────────────────────────────────────────────────────────────
+curl -X POST https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u \
+  -H "Content-Type: application/json" \
+  -d '{
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "name": "Test User",
+    "email": "test@example.com",
+    "attendance": "Yes, I'\''ll attend",
+    "language": "en",
+    "comments": "Test submission"
+  }'
+
+Apps Script Test:
+───────────────────────────────────────────────────────────────
+1. Open Apps Script editor
+2. Select function: testWebhook
+3. Click Run (▶️)
+4. Check logs: View → Logs
+
+================================================================================
+TROUBLESHOOTING QUICK FIXES
+================================================================================
+
+Webhook not triggering?
+  → Check scenario is ACTIVE in Make.com
+  → Verify trigger is installed in Apps Script
+  → Check Apps Script logs
+
+Wrong data received?
+  → Verify COLUMN_MAPPING in script
+  → Check your form's column structure
+  → Test with testWebhook() first
+
+Duplicate executions?
+  → Add deduplication in Make.com
+  → Remove old "Watch New Rows" trigger
+  → Use email as unique identifier
+
+Errors in execution?
+  → Check Apps Script logs
+  → Verify column indices are correct
+  → Ensure all required fields present
+
+================================================================================
+FILE REFERENCES
+================================================================================
+
+Full Setup Guide: WEBHOOK-SETUP-GUIDE.txt
+Apps Script Code: GOOGLE-APPS-SCRIPT-WEBHOOK-TRIGGER.js
+Workflow Improvements: EMAIL-1-INVITATION-WORKFLOW-IMPROVEMENTS.txt
+Quick Implementation: EMAIL-1-QUICK-IMPLEMENTATION-GUIDE.txt
+
+================================================================================
+CONTACT INFO
+================================================================================
+
+Make.com Support: https://www.make.com/en/help
+Apps Script Docs: https://developers.google.com/apps-script
+Make.com Community: https://community.make.com
+
+================================================================================
+END OF QUICK REFERENCE
+================================================================================
+
+

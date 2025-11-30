@@ -1,0 +1,278 @@
+================================================================================
+FIX ALL ISSUES IN CURRENT SCENARIO
+Complete Review and Fix Guide
+================================================================================
+
+ISSUES FOUND:
+-------------
+1. ❌ Module 5: Filter references Module 1 (should be removed or use Module 4)
+2. ❌ Module 6: "To" field format wrong (should be array of objects)
+3. ❌ Module 7: "To" field format wrong (should be array of objects)
+4. ⚠️ Module 3: Unnecessary email update in values
+5. ⚠️ Module 5: Unnecessary email update in values
+6. ⚠️ Module 6 & 7: Email template uses {{4.name}} but name variable not set
+
+================================================================================
+FIX 1: MODULE 5 FILTER (CRITICAL)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+Module 5 has filter:
+"filter": {
+  "conditions": [
+    [
+      {
+        "a": "{{1.answers.677abd25.textAnswers.answers[0].value}}",
+        "b": "No, I cannot attend",
+        "o": "text:equal"
+      }
+    ]
+  ]
+}
+
+PROBLEM:
+--------
+- References Module 1 (which is now Module 10)
+- Router already filters, so this is redundant
+
+FIX:
+----
+Remove the filter from Module 5 entirely
+OR change to: {{4.attendance}} = "No, I cannot attend"
+
+HOW TO FIX:
+-----------
+1. Open Module 5
+2. Remove the filter (or update to use {{4.attendance}})
+3. Router already handles the filtering
+4. Save
+
+================================================================================
+FIX 2: MODULE 6 "TO" FIELD (CRITICAL)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"to": ["{{4.email}}"]
+
+FIX:
+----
+"to": [
+  {
+    "value": "{{4.email}}"
+  }
+]
+
+HOW TO FIX:
+-----------
+1. Open Module 6
+2. "To" field: Change from ["{{4.email}}"] to [{"value": "{{4.email}}"}]
+3. Save
+
+================================================================================
+FIX 3: MODULE 7 "TO" FIELD (CRITICAL)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+"to": ["{{4.email}}"]
+
+FIX:
+----
+"to": [
+  {
+    "value": "{{4.email}}"
+  }
+]
+
+HOW TO FIX:
+-----------
+1. Open Module 7
+2. "To" field: Change from ["{{4.email}}"] to [{"value": "{{4.email}}"}]
+3. Save
+
+================================================================================
+FIX 4: MODULE 3 VALUES (OPTIONAL)
+================================================================================
+
+CURRENT:
+--------
+"values": {
+  "1": "{{4.email}}",  ← Unnecessary
+  "10": "Accepted",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+FIX (OPTIONAL):
+---------------
+"values": {
+  "10": "Accepted",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+HOW TO FIX (OPTIONAL):
+----------------------
+1. Open Module 3
+2. Remove "1": "{{4.email}}" from values
+3. Keep only: Response, Date, Comments
+4. Save
+
+================================================================================
+FIX 5: MODULE 5 VALUES (OPTIONAL)
+================================================================================
+
+CURRENT:
+--------
+"values": {
+  "1": "{{4.email}}",  ← Unnecessary
+  "10": "Rejected",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+FIX (OPTIONAL):
+---------------
+"values": {
+  "10": "Rejected",
+  "11": "{{now}}",
+  "12": "{{4.comments}}"
+}
+
+HOW TO FIX (OPTIONAL):
+----------------------
+1. Open Module 5
+2. Remove "1": "{{4.email}}" from values
+3. Keep only: Response, Date, Comments
+4. Save
+
+================================================================================
+FIX 6: ADD NAME VARIABLE (IF NEEDED FOR EMAIL)
+================================================================================
+
+CURRENT:
+--------
+Module 4 only sets: email, attendance, comments
+Email templates use: {{4.name}}
+
+OPTION A: Get Name from Google Sheets
+--------------------------------------
+1. After Module 4, add: Google Sheets → Search Rows
+2. Search: Email = {{4.email}}
+3. Get: Name = {{searchResult.0}}
+4. Use in email: {{searchResult.0}}
+
+OPTION B: Add Name to Module 4
+-------------------------------
+1. Open Module 4
+2. Add variable:
+   - Name: "name"
+   - Value: (get from form if available, or from sheet)
+3. Use in email: {{4.name}}
+
+OPTION C: Remove Name from Email Template
+------------------------------------------
+1. Open Module 6 and 7
+2. In HTML, change "Dear {{4.name}}," to "Dear Client,"
+3. Save
+
+================================================================================
+QUICK FIX CHECKLIST (10 MINUTES)
+================================================================================
+
+CRITICAL FIXES:
+---------------
+□ Module 5: Remove filter (or fix to use {{4.attendance}})
+□ Module 6: "To" = [{"value": "{{4.email}}"}]
+□ Module 7: "To" = [{"value": "{{4.email}}"}]
+
+OPTIONAL FIXES:
+---------------
+□ Module 3: Remove "1": "{{4.email}}" from values
+□ Module 5: Remove "1": "{{4.email}}" from values
+□ Module 6 & 7: Fix name in email template (or add name variable)
+
+SAVE:
+-----
+□ Save scenario
+□ Turn scenario ON
+□ Test
+
+================================================================================
+STEP-BY-STEP FIX PROCEDURE
+================================================================================
+
+STEP 1: Fix Module 5 Filter (2 min)
+------------------------------------
+1. Open Module 5
+2. Remove the filter condition
+   - OR change {{1.answers...}} to {{4.attendance}}
+3. Router already filters, so this is redundant
+4. Save
+
+STEP 2: Fix Module 6 "To" Field (2 min)
+----------------------------------------
+1. Open Module 6
+2. "To" field: Change to [{"value": "{{4.email}}"}]
+3. Save
+
+STEP 3: Fix Module 7 "To" Field (2 min)
+----------------------------------------
+1. Open Module 7
+2. "To" field: Change to [{"value": "{{4.email}}"}]
+3. Save
+
+STEP 4: Fix Name in Email Templates (3 min)
+--------------------------------------------
+Option A: Get from Google Sheets
+1. After Module 4, add Search Rows module
+2. Search by email
+3. Get name from result
+4. Use in email templates
+
+Option B: Remove name from templates
+1. Open Module 6 and 7
+2. Change "Dear {{4.name}}," to "Dear Client,"
+3. Save
+
+STEP 5: Optional - Clean Up Values (1 min)
+------------------------------------------
+1. Module 3: Remove "1": "{{4.email}}" from values
+2. Module 5: Remove "1": "{{4.email}}" from values
+3. Save
+
+================================================================================
+WHAT'S CORRECT IN YOUR SCENARIO
+================================================================================
+
+✅ Module 10: Google Forms trigger (correct)
+✅ Module 4: Set Variables uses {{10.respondentEmail}} (correct)
+✅ Module 2: Router Route 1 filter uses {{4.attendance}} (correct)
+✅ Module 8: Filter Rows uses "leads" sheet (correct)
+✅ Module 9: Filter Rows uses "leads" sheet (correct)
+✅ Module 3: Update Row uses "leads" sheet (correct)
+✅ Module 5: Update Row uses "leads" sheet (correct)
+
+================================================================================
+SUMMARY OF FIXES
+================================================================================
+
+MUST FIX:
+---------
+1. Module 5: Remove or fix filter
+2. Module 6: Fix "To" field format
+3. Module 7: Fix "To" field format
+
+SHOULD FIX:
+-----------
+4. Module 6 & 7: Fix name in email template
+
+OPTIONAL:
+---------
+5. Module 3: Remove email from values
+6. Module 5: Remove email from values
+
+================================================================================
+

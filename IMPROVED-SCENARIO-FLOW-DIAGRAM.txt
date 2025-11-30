@@ -1,0 +1,351 @@
+================================================================================
+IMPROVED SCENARIO FLOW DIAGRAM
+Handle Expo Form Responses - Visual Flow
+================================================================================
+
+This diagram shows the improved flow with all modules and their connections.
+
+================================================================================
+MAIN FLOW
+================================================================================
+
+    [1] Google Forms → Watch Responses
+         │
+         │ (New form response received)
+         │
+         ▼
+    [2] Tools → Set Multiple Variables
+         │ Variables: email, name, attendance, comments
+         │ Scope: One execution
+         │
+         │
+         ▼
+    [3] Google Sheets → Search Rows
+         │ Search: Email = {{2.email}}
+         │ Limit: 1
+         │
+         │
+         ▼
+    [4] Array → Array Aggregator
+         │ Aggregates search results
+         │
+         │
+         ▼
+    [5] Tools → Set Multiple Variables
+         │ Variables: rowNumber, rowExists
+         │ Scope: One execution
+         │
+         │
+         ▼
+    [6] Flow Control → Router
+         │
+         ├─────────────────────────────────────┐
+         │                                     │
+         │                                     │
+         ▼                                     ▼
+    ROUTE 1: Row Exists              ROUTE 2: Fallback
+    (Filter: rowExists = "true")     (No filter)
+         │                                     │
+         │                                     │
+         ▼                                     ▼
+    [7] Google Sheets → Update Row    [10] Google Sheets → Add Row
+         │ Mode: rowNumber                     │ Adds new row
+         │ Row: {{5.rowNumber}}                │
+         │                                     │
+         │                                     │
+         ▼                                     ▼
+    [8] Array → Array Aggregator      [11] Array → Array Aggregator
+         │                                     │
+         │                                     │
+         ▼                                     ▼
+    [9] Resend → Send Email            [12] Resend → Send Email
+         │                                     │
+         │ (Email sent)                        │ (Email sent)
+         │                                     │
+         └─────────────────────────────────────┘
+                      │
+                      ▼
+              [END - Execution Complete]
+
+================================================================================
+DETAILED MODULE DESCRIPTIONS
+================================================================================
+
+[1] Google Forms → Watch Responses
+──────────────────────────────────
+Trigger: New response submitted
+Output: Form response data
+Connects to: Module 2
+
+[2] Tools → Set Multiple Variables
+───────────────────────────────────
+Action: Store form data in variables
+Variables:
+  - email: {{1.respondentEmail}}
+  - name: {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+  - attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+  - comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+Scope: One execution (prevents leakage)
+Connects to: Module 3
+
+[3] Google Sheets → Search Rows
+────────────────────────────────
+Action: Search for existing row by email
+Search: Column 1 (Email) = {{2.email}}
+Limit: 1 (only need first match)
+Output: Array of matching rows (or empty)
+Connects to: Module 4
+
+[4] Array → Array Aggregator
+─────────────────────────────
+Action: Aggregate search results
+Input: {{3}} (search results)
+Output: Single bundle with search results
+Purpose: Ensures we have one bundle to work with
+Connects to: Module 5
+
+[5] Tools → Set Multiple Variables
+───────────────────────────────────
+Action: Extract row information
+Variables:
+  - rowNumber: {{4[0].rowNumber}} (row number if found)
+  - rowExists: {{if(4.length > 0; "true"; "false")}}
+Scope: One execution
+Purpose: Store whether row exists and its row number
+Connects to: Module 6
+
+[6] Flow Control → Router
+─────────────────────────
+Action: Route based on row existence
+Route 1: rowExists = "true" → Update existing row
+Route 2: Fallback → Add new row
+Connects to: Module 7 (Route 1) or Module 10 (Route 2)
+
+ROUTE 1: Update Existing Row
+═════════════════════════════
+
+[7] Google Sheets → Update Row
+──────────────────────────────
+Action: Update existing row
+Mode: rowNumber (direct reference)
+Row Number: {{5.rowNumber}}
+Updates:
+  - Column 10: Response (Accepted/Rejected)
+  - Column 11: Response Date ({{now}})
+  - Column 12: Comments ({{2.comments}})
+Connects to: Module 8
+
+[8] Array → Array Aggregator
+─────────────────────────────
+Action: Aggregate update result
+Input: {{7}} (update result)
+Output: Single bundle
+Purpose: Ensure email sends only after update completes
+Connects to: Module 9
+
+[9] Resend → Send Email
+───────────────────────
+Action: Send email notification
+To: {{2.email}}
+Subject: Dynamic based on attendance
+Content: HTML template (Agreement or Thank You)
+Connects to: END
+
+ROUTE 2: Add New Row
+═════════════════════
+
+[10] Google Sheets → Add Row
+────────────────────────────
+Action: Add new row to sheet
+Values:
+  - Column 1: Email ({{2.email}})
+  - Column 2: Name ({{2.name}})
+  - Column 10: Response (Accepted/Rejected)
+  - Column 11: Response Date ({{now}})
+  - Column 12: Comments ({{2.comments}})
+Connects to: Module 11
+
+[11] Array → Array Aggregator
+──────────────────────────────
+Action: Aggregate add result
+Input: {{10}} (add result)
+Output: Single bundle
+Purpose: Ensure email sends only after add completes
+Connects to: Module 12
+
+[12] Resend → Send Email
+────────────────────────
+Action: Send email notification
+To: {{2.email}}
+Subject: Dynamic based on attendance
+Content: HTML template (Agreement or Thank You)
+Connects to: END
+
+================================================================================
+DECISION POINTS
+================================================================================
+
+Decision Point 1: Does Row Exist?
+───────────────────────────────────
+Location: After Module 5
+Condition: {{5.rowExists}} = "true"
+  ├─ TRUE → Route 1 (Update Existing Row)
+  └─ FALSE → Route 2 (Add New Row)
+
+Decision Point 2: Attendance Response
+─────────────────────────────────────
+Location: Within email templates
+Condition: {{2.attendance}} = "Yes, I'll attend"
+  ├─ TRUE → Send Agreement email
+  └─ FALSE → Send Thank You email
+
+================================================================================
+DATA FLOW
+================================================================================
+
+Form Response Data:
+──────────────────
+{{1.respondentEmail}} → {{2.email}}
+{{1.answers.*.value}} → {{2.name}}, {{2.attendance}}, {{2.comments}}
+
+Search Results:
+───────────────
+{{3}} → {{4}} → {{5.rowNumber}}, {{5.rowExists}}
+
+Update/Add Results:
+───────────────────
+{{7}} or {{10}} → {{8}} or {{11}} → {{9}} or {{12}}
+
+================================================================================
+ERROR HANDLING FLOW
+================================================================================
+
+If Module 3 (Search) Fails:
+────────────────────────────
+→ Error caught by Make.com error handler
+→ Retries up to maxErrors (3)
+→ If all retries fail, execution stops
+→ Error logged in Make.com execution history
+
+If Module 7 (Update) Fails:
+────────────────────────────
+→ Error caught by Make.com error handler
+→ Retries up to maxErrors (3)
+→ If all retries fail, execution stops
+→ Email not sent (aggregator ensures this)
+
+If Module 10 (Add) Fails:
+─────────────────────────
+→ Error caught by Make.com error handler
+→ Retries up to maxErrors (3)
+→ If all retries fail, execution stops
+→ Email not sent (aggregator ensures this)
+
+If Module 9/12 (Email) Fails:
+──────────────────────────────
+→ Error caught by Make.com error handler
+→ Retries up to maxErrors (3)
+→ Sheet update/add already completed
+→ User may not receive email (check logs)
+
+================================================================================
+PERFORMANCE CHARACTERISTICS
+================================================================================
+
+Best Case (Row Exists):
+───────────────────────
+1. Form trigger: ~1 second
+2. Set variables: ~0.1 seconds
+3. Search rows: ~0.5 seconds
+4. Aggregate: ~0.1 seconds
+5. Set variables: ~0.1 seconds
+6. Router: ~0.1 seconds
+7. Update row: ~0.5 seconds
+8. Aggregate: ~0.1 seconds
+9. Send email: ~1 second
+Total: ~3.5 seconds
+
+Worst Case (New Row):
+─────────────────────
+1. Form trigger: ~1 second
+2. Set variables: ~0.1 seconds
+3. Search rows: ~0.5 seconds (no results)
+4. Aggregate: ~0.1 seconds
+5. Set variables: ~0.1 seconds
+6. Router: ~0.1 seconds
+7. Add row: ~0.5 seconds
+8. Aggregate: ~0.1 seconds
+9. Send email: ~1 second
+Total: ~3.5 seconds
+
+Operations Count:
+────────────────
+- Per execution: ~9 operations
+- Reduced from original: ~11 operations
+- Savings: ~18% fewer operations
+
+================================================================================
+VISUAL REPRESENTATION (ASCII)
+================================================================================
+
+    ┌─────────────────┐
+    │  Google Forms   │
+    │  Watch Response │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Set Variables   │
+    │ (execution)     │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Search Rows     │
+    │ (by email)      │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Array Agg       │
+    │ (search results)│
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Set Variables   │
+    │ (row info)      │
+    └────────┬────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │    Router       │
+    └───┬─────────┬───┘
+        │         │
+    ┌───▼───┐ ┌───▼────┐
+    │Route 1│ │Route 2│
+    │Exists │ │New    │
+    └───┬───┘ └───┬────┘
+        │         │
+    ┌───▼───┐ ┌───▼────┐
+    │Update │ │Add Row │
+    │Row    │ │        │
+    └───┬───┘ └───┬────┘
+        │         │
+    ┌───▼───┐ ┌───▼────┐
+    │Agg    │ │Agg     │
+    └───┬───┘ └───┬────┘
+        │         │
+    ┌───▼───┐ ┌───▼────┐
+    │Email  │ │Email   │
+    └───┬───┘ └───┬────┘
+        │         │
+        └────┬────┘
+             │
+             ▼
+        [COMPLETE]
+
+================================================================================
+END OF FLOW DIAGRAM
+================================================================================
+

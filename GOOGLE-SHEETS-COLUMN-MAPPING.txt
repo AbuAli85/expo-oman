@@ -1,0 +1,168 @@
+================================================================================
+GOOGLE SHEETS COLUMN MAPPING
+Reference Guide for Email Automation
+================================================================================
+
+YOUR GOOGLE SHEETS STRUCTURE:
+------------------------------
+
+Column A (Index 0): Name
+Column B (Index 1): Email
+Column C (Index 2): Phone
+Column D (Index 3): Language
+Column E (Index 4): Status
+Column F (Index 5): Date Added
+Column G (Index 6): Email 1 Date
+Column H (Index 7): Email 2 Date
+Column I (Index 8): Email 3 Date
+Column J (Index 9): Notes
+
+================================================================================
+MAKE.COM MODULE MAPPING
+================================================================================
+
+MODULE 1 (Google Sheets Watch Rows):
+------------------------------------
+Outputs data as:
+- {{1.0}} = Name (Column A)
+- {{1.1}} = Email (Column B)
+- {{1.2}} = Phone (Column C)
+- {{1.3}} = Language (Column D)
+- {{1.4}} = Status (Column E)
+- {{1.5}} = Date Added (Column F)
+- {{1.6}} = Email 1 Date (Column G)
+- {{1.7}} = Email 2 Date (Column H)
+- {{1.8}} = Email 3 Date (Column I)
+- {{1.9}} = Notes (Column J)
+
+MODULE 8 (Set Variables):
+-------------------------
+Should map:
+- name: {{1.0}} (Name from Column A)
+- email: {{1.1}} (Email from Column B)
+- language: {{1.3}} (Language from Column D)
+
+Then outputs:
+- {{8.name}} = Name
+- {{8.email}} = Email
+- {{8.language}} = Language
+
+MODULE 3 & 4 (Send Email):
+---------------------------
+"To" field should use: {{8.email}}
+Subject should use: {{8.name}}
+Language filter: {{8.language}} = "en" or "ar"
+
+MODULE 5 & 7 (Update Row):
+---------------------------
+Updates:
+- Column E (Status): "Email 1 Sent"
+- Column G (Email 1 Date): {{now}}
+
+================================================================================
+VERIFY YOUR SETTINGS
+================================================================================
+
+MODULE 8 (Set Variables) - CHECK:
+---------------------------------
+Variable "name":
+  Value: {{1.0}} ✅ (NOT {{1.`0`}})
+
+Variable "email":
+  Value: {{1.1}} ✅ (NOT {{1.`1`}})
+
+Variable "language":
+  Value: {{1.3}} ✅ (NOT {{1.`3`}})
+
+MODULE 3 (English Email) - CHECK:
+----------------------------------
+"To" field:
+  Array Item 1 → value: {{8.email}} ✅
+  (NOT "8. email")
+
+Subject:
+  {{8.name}}, You're Invited... ✅
+  (NOT "8. name,")
+
+Filter:
+  {{8.language}} = "en" ✅
+
+MODULE 4 (Arabic Email) - CHECK:
+----------------------------------
+"To" field:
+  Array Item 1 → value: {{8.email}} ✅
+  (NOT "8. email")
+
+Subject:
+  {{8.name}}، أنت مدعو!... ✅
+  (NOT "8. name,")
+
+Filter:
+  {{8.language}} = "ar" ✅
+
+MODULE 5 & 7 (Update Row) - CHECK:
+-----------------------------------
+Values to update:
+  "4": "Email 1 Sent" ✅ (Column E - Status)
+  "6": "{{now}}" ✅ (Column G - Email 1 Date)
+
+================================================================================
+COMMON ERRORS TO AVOID
+================================================================================
+
+❌ WRONG:
+---------
+- {{1.`1`}} (backticks)
+- "8. email" (label, not variable)
+- "8. name," (label, not variable)
+- {{1.1}} in "To" field (should use {{8.email}})
+
+✅ CORRECT:
+-----------
+- {{1.1}} (no backticks)
+- {{8.email}} (variable from Module 8)
+- {{8.name}} (variable from Module 8)
+- {{8.language}} (variable from Module 8)
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+For Email 1 to work:
+
+□ Module 8 "email" variable = {{1.1}} (no backticks)
+□ Module 3 "To" field value = {{8.email}} (with curly braces)
+□ Module 4 "To" field value = {{8.email}} (with curly braces)
+□ Module 3 Subject = {{8.name}}, You're Invited...
+□ Module 4 Subject = {{8.name}}، أنت مدعو!...
+□ Module 3 Filter = {{8.language}} = "en"
+□ Module 4 Filter = {{8.language}} = "ar"
+□ Module 5 & 7 Update: Column E = "Email 1 Sent", Column G = {{now}}
+□ Scenario is ON
+□ Google Sheets has headers in Row 1
+
+================================================================================
+TEST DATA EXAMPLE
+================================================================================
+
+Add this to your Google Sheets:
+
+Row 2:
+- Column A: Imran Khattak
+- Column B: Globo.asia@gmail.com
+- Column C: (empty or phone number)
+- Column D: en
+- Column E: (empty - will be updated)
+- Column F: (empty or date)
+- Column G: (empty - will be updated)
+- Column H: (empty)
+- Column I: (empty)
+- Column J: (empty)
+
+Expected Result:
+- Email sent to: Globo.asia@gmail.com
+- Column E updated to: "Email 1 Sent"
+- Column G updated to: current date/time
+
+================================================================================
+

@@ -1,0 +1,173 @@
+================================================================================
+QUICK TEST: GOOGLE APPS SCRIPT
+================================================================================
+
+You tried to run onFormSubmit() manually, but it only works with form submissions.
+Use one of these test functions instead!
+
+================================================================================
+OPTION 1: TEST WITH YOUR ACTUAL SHEET DATA (RECOMMENDED)
+================================================================================
+
+1. In Apps Script editor, select function: testLastRow
+2. Click Run (▶️) button
+3. Authorize if prompted
+4. Check logs (View → Logs)
+
+This will:
+  ✓ Read the last row from your sheet
+  ✓ Extract the data
+  ✓ Send it to Make.com webhook
+  ✓ Show you what data was sent
+
+================================================================================
+OPTION 2: TEST WEBHOOK CONNECTION ONLY
+================================================================================
+
+1. Select function: testWebhook
+2. Click Run (▶️)
+3. Check logs
+
+This sends test data to verify webhook connection works.
+
+================================================================================
+OPTION 3: CHECK SHEET STRUCTURE
+================================================================================
+
+1. Select function: diagnoseSheetStructure
+2. Click Run (▶️)
+3. Check logs
+
+This shows your sheet column structure to verify mapping is correct.
+
+================================================================================
+STEP-BY-STEP: TEST WITH ACTUAL DATA
+================================================================================
+
+STEP 1: Select Function
+─────────────────────────
+1. In Apps Script editor
+2. Find function dropdown at top
+3. Select: testLastRow
+
+STEP 2: Run Function
+──────────────────────
+1. Click Run (▶️) button
+2. If prompted to authorize:
+   - Click "Review Permissions"
+   - Choose your account
+   - Click "Allow"
+
+STEP 3: Check Logs
+───────────────────
+1. Click View → Logs (or press Ctrl+Enter)
+2. You'll see output like:
+
+   === TESTING WITH LAST ROW DATA ===
+   Processing last row (X) from sheet...
+   
+   === EXTRACTED DATA ===
+   Name: "fahad alamri"
+   Email: "chairman@falconeyegroup.net"
+   Language: "en"
+   ...
+   
+   ✓ Successfully sent data to webhook!
+
+STEP 4: Check Make.com
+───────────────────────
+1. Open Make.com
+2. Go to your scenario
+3. Check execution history
+4. Should see new execution from webhook!
+
+================================================================================
+WHAT EACH TEST FUNCTION DOES
+================================================================================
+
+testLastRow()
+──────────────
+✓ Reads last row from your sheet
+✓ Extracts data using column mapping
+✓ Sends to Make.com webhook
+✓ Shows you the exact data sent
+
+Use this to test with your real data!
+
+testWebhook()
+──────────────
+✓ Sends hardcoded test data
+✓ Tests webhook connection only
+✓ Doesn't use your sheet data
+
+Use this to test webhook is working.
+
+diagnoseSheetStructure()
+──────────────────────────
+✓ Shows your sheet structure
+✓ Lists all columns and headers
+✓ Verifies column mapping
+
+Use this to verify columns match.
+
+onFormSubmit()
+───────────────
+✗ Can't run manually!
+✓ Only works when form submits
+✓ Automatically triggered
+
+Don't try to run this manually!
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Select function: testLastRow
+□ Click Run (▶️)
+□ Authorize if prompted
+□ Check logs (View → Logs)
+□ Verify data extracted correctly
+□ Check Make.com for execution
+□ If successful → Install trigger!
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If testLastRow() shows errors:
+
+ERROR: "Sheet 'leads' not found"
+─────────────────────────────────
+→ Check SHEET_NAME in script matches your sheet name exactly
+→ Run diagnoseSheetStructure() to see available sheets
+
+ERROR: "No data rows found"
+────────────────────────────
+→ Your sheet needs at least one data row
+→ Add a test row with name and email
+
+ERROR: "Email is required but not found"
+──────────────────────────────────────────
+→ Check your sheet has data in Email column (Column B)
+→ Verify column mapping is correct
+
+If webhook sends but Make.com doesn't receive:
+────────────────────────────────────────────────
+→ Check webhook URL is correct
+→ Verify Make.com scenario is active
+→ Check Module 12 (webhook) in Make.com
+
+================================================================================
+AFTER TESTING SUCCESSFULLY
+================================================================================
+
+Once testLastRow() works:
+
+1. Install trigger (clock icon → Add Trigger)
+2. Test with real form submission
+3. Verify Make.com receives data correctly
+
+================================================================================
+END
+================================================================================
+

@@ -1,0 +1,238 @@
+================================================================================
+CRITICAL ISSUES IN EMAIL 1 - INVITATION SCENARIO
+================================================================================
+
+Analyzed your scenario JSON. Found 5 critical issues that need fixing!
+
+================================================================================
+ISSUE 1: MODULE 9 - WRONG FIELD REFERENCES ❌
+================================================================================
+
+Module 9 (Set Variables) is using wrong field references:
+
+CURRENT (WRONG):
+─────────────────
+name: {{12.`0`}}
+email: {{12.`1`}}
+language: {{trim(12.language)}} || "en"
+
+PROBLEMS:
+──────────
+1. Using backtick syntax (12.`0`) - doesn't work
+2. Assuming webhook sends array format
+3. Language syntax is wrong (|| doesn't work like that in Make.com)
+
+SHOULD BE (CORRECT):
+─────────────────────
+name: {{12.name}}
+email: {{12.email}}
+language: {{if(trim(12.language); trim(12.language); "en")}}
+
+OR if webhook sends different format, use:
+name: {{12[0]}}
+email: {{12[1]}}
+
+================================================================================
+ISSUE 2: EMAIL "TO" FIELD FORMAT ❌
+================================================================================
+
+Modules 3 and 4 (Email modules) have wrong "To" field format:
+
+CURRENT (WRONG):
+─────────────────
+"to": ["{{9.email}}"]
+
+This is an array format which causes 422 error in Resend API.
+
+SHOULD BE (CORRECT):
+─────────────────────
+"to": "{{9.email}}"
+
+Fix in BOTH modules:
+  • Module 3 (English email)
+  • Module 4 (Arabic email)
+
+================================================================================
+ISSUE 3: UPDATE ROW - WRONG ROW NUMBER SYNTAX ❌
+================================================================================
+
+Modules 5 and 7 (Update Row) use wrong syntax:
+
+CURRENT (WRONG):
+─────────────────
+Module 5: {{13.`__ROW_NUMBER__`}}
+Module 7: {{14.`__ROW_NUMBER__`}}
+
+Backticks around field names don't work!
+
+SHOULD BE (CORRECT):
+─────────────────────
+Module 5: {{13.__ROW_NUMBER__}}
+Module 7: {{14.__ROW_NUMBER__}}
+
+================================================================================
+ISSUE 4: LANGUAGE VARIABLE SYNTAX ERROR ❌
+================================================================================
+
+CURRENT (WRONG):
+─────────────────
+language: {{trim(12.language)}} || "en"
+
+The || operator doesn't work like this in Make.com expressions.
+
+SHOULD BE (CORRECT):
+─────────────────────
+Option 1: {{if(trim(12.language); trim(12.language); "en")}}
+Option 2: {{trim(12.language) || "en"}} (if supported)
+Option 3: {{12.language || "en"}} (simple)
+
+================================================================================
+ISSUE 5: ROUTER FILTERS MAY OVERLAP ⚠️
+================================================================================
+
+Module 3 filter: {{9.language}} contains "en"
+Module 4 filter: {{9.language}} contains "ar"
+
+If language value contains both strings, both emails might send.
+
+SHOULD BE (BETTER):
+─────────────────────
+Module 3: {{9.language}} equals "en" (case insensitive)
+Module 4: {{9.language}} equals "ar" (case insensitive)
+
+This ensures mutually exclusive filters.
+
+================================================================================
+COMPLETE FIX CHECKLIST
+================================================================================
+
+FIX 1: Module 9 (Set Variables)
+─────────────────────────────────
+□ Change name: {{12.`0`}} → {{12.name}}
+□ Change email: {{12.`1`}} → {{12.email}}
+□ Change language: {{trim(12.language)}} || "en" → {{if(trim(12.language); trim(12.language); "en")}}
+
+FIX 2: Module 3 (English Email)
+─────────────────────────────────
+□ Change "to": ["{{9.email}}"] → "to": "{{9.email}}"
+□ Update filter: "contains" → "equals" (case insensitive)
+
+FIX 3: Module 4 (Arabic Email)
+─────────────────────────────────
+□ Change "to": ["{{9.email}}"] → "to": "{{9.email}}"
+□ Update filter: "contains" → "equals" (case insensitive)
+
+FIX 4: Module 5 (Update Row - English Route)
+──────────────────────────────────────────────
+□ Change rowNumber: {{13.`__ROW_NUMBER__`}} → {{13.__ROW_NUMBER__}}
+
+FIX 5: Module 7 (Update Row - Arabic Route)
+──────────────────────────────────────────────
+□ Change rowNumber: {{14.`__ROW_NUMBER__`}} → {{14.__ROW_NUMBER__}}
+
+================================================================================
+DETAILED FIX INSTRUCTIONS
+================================================================================
+
+STEP 1: Fix Module 9 (Set Variables)
+───────────────────────────────────────
+
+1. Open Module 9 in Make.com
+2. Update variables:
+
+   Variable 1: name
+   FROM: {{12.`0`}}
+   TO: {{12.name}}
+   (OR check webhook structure first)
+
+   Variable 2: email
+   FROM: {{12.`1`}}
+   TO: {{12.email}}
+
+   Variable 3: language
+   FROM: {{trim(12.language)}} || "en"
+   TO: {{if(trim(12.language); trim(12.language); "en")}}
+
+3. Save module
+
+STEP 2: Fix Module 3 (English Email)
+───────────────────────────────────────
+
+1. Open Module 3
+2. Find "To" field
+3. Change from: ["{{9.email}}"]
+   To: "{{9.email}}"
+4. Update filter:
+   FROM: {{9.language}} contains "en"
+   TO: {{9.language}} equals "en" (case insensitive)
+5. Save module
+
+STEP 3: Fix Module 4 (Arabic Email)
+───────────────────────────────────────
+
+1. Open Module 4
+2. Find "To" field
+3. Change from: ["{{9.email}}"]
+   To: "{{9.email}}"
+4. Update filter:
+   FROM: {{9.language}} contains "ar"
+   TO: {{9.language}} equals "ar" (case insensitive)
+5. Save module
+
+STEP 4: Fix Module 5 (Update Row)
+───────────────────────────────────
+
+1. Open Module 5
+2. Find "Row number" field
+3. Change from: {{13.`__ROW_NUMBER__`}}
+   To: {{13.__ROW_NUMBER__}}
+4. Save module
+
+STEP 5: Fix Module 7 (Update Row)
+───────────────────────────────────
+
+1. Open Module 7
+2. Find "Row number" field
+3. Change from: {{14.`__ROW_NUMBER__`}}
+   To: {{14.__ROW_NUMBER__}}
+4. Save module
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, verify:
+
+□ Module 9 variables map correctly (check webhook structure)
+□ Module 3 "To" field is string, not array
+□ Module 4 "To" field is string, not array
+□ Module 5 row number syntax is correct
+□ Module 7 row number syntax is correct
+□ Router filters are mutually exclusive
+
+================================================================================
+WEBHOOK DATA STRUCTURE CHECK
+================================================================================
+
+Before fixing Module 9, check what your webhook actually receives:
+
+1. Open execution log
+2. Check Module 12 (Webhook) output
+3. See actual data structure:
+
+If webhook sends:
+  {
+    "name": "...",
+    "email": "...",
+    "language": "..."
+  }
+Then use: {{12.name}}, {{12.email}}, {{12.language}}
+
+If webhook sends array:
+  ["name", "email", "language"]
+Then use: {{12[0]}}, {{12[1]}}, {{12[2]}}
+
+================================================================================
+END
+================================================================================
+

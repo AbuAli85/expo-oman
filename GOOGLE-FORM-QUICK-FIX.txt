@@ -1,0 +1,64 @@
+================================================================================
+QUICK FIX: GOOGLE FORM
+5-Minute Fix
+================================================================================
+
+YOUR FORM NEEDS:
+----------------
+✅ Email field (Required)
+✅ Name field (Required)
+✅ Attendance question (you have this!)
+✅ Comments field (Optional)
+
+================================================================================
+QUICK STEPS
+================================================================================
+
+STEP 1: Add Email Field (1 min)
+--------------------------------
+1. Click "Add question"
+2. Select "Short answer"
+3. Question: "Email Address"
+4. Check "Required"
+
+STEP 2: Add Name Field (1 min)
+-------------------------------
+1. Click "Add question"
+2. Select "Short answer"
+3. Question: "Full Name"
+4. Check "Required"
+
+STEP 3: Keep Attendance Question (1 min)
+------------------------------------------
+Your question is good! Just make sure:
+- Type: Multiple choice
+- Required: Yes
+
+STEP 4: Add Comments (1 min)
+-----------------------------
+1. Click "Add question"
+2. Select "Paragraph"
+3. Question: "Any comments?"
+4. Required: No
+
+STEP 5: Delete Empty Question (1 min)
+-------------------------------------
+If you have empty second question:
+- Click it → Trash icon → Delete
+
+================================================================================
+FINAL FORM STRUCTURE
+================================================================================
+
+1. Email Address (Short answer, Required)
+2. Full Name (Short answer, Required)
+3. Will you attend the expo? (Multiple choice, Required)
+4. Any comments? (Paragraph, Optional)
+
+DONE!
+
+================================================================================
+
+
+
+

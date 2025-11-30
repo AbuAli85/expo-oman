@@ -1,0 +1,104 @@
+================================================================================
+QUICK CHECK: IS EMAIL 1 SETTINGS CORRECT?
+3 Critical Checks
+================================================================================
+
+Check these 3 things right now:
+
+================================================================================
+CHECK 1: MODULE 3 "TO" FIELD (MOST CRITICAL!)
+================================================================================
+
+1. Open Module 3 (English Email)
+2. Click "To" field
+3. What do you see?
+
+IF YOU SEE:
+-----------
+[{"value": "{{1.1}}"}]
+→ ✅ CORRECT! Continue to Check 2
+
+IF YOU SEE:
+-----------
+["{{1.1}}"]
+OR
+["{{1.`1`}}"]
+OR
+{{1.1}}
+→ ❌ WRONG! Fix it to: [{"value": "{{1.1}}"}]
+
+================================================================================
+CHECK 2: NO BACKTICKS IN VARIABLES
+================================================================================
+
+1. Open Module 3
+2. Check Subject field
+3. Do you see {{1.`0`}} or {{1.0}}?
+
+IF YOU SEE:
+-----------
+{{1.0}}
+→ ✅ CORRECT! Continue to Check 3
+
+IF YOU SEE:
+-----------
+{{1.`0`}}
+→ ❌ WRONG! Change to {{1.0}}
+
+Also check:
+- Filter: {{1.3}} (not {{1.`3`}})
+- HTML: {{1.0}} (not {{1.`0`}})
+
+================================================================================
+CHECK 3: LANGUAGE FILTER MATCHES
+================================================================================
+
+1. Check your Google Sheets
+2. Column D (Language) - what value?
+   - "en" or "EN"?
+   - "ar" or "AR"?
+
+3. Check Module 2 (Router) or Module 3 filter
+4. What does it check for?
+
+IF THEY MATCH:
+--------------
+Sheet has "en" AND filter checks "en"
+→ ✅ CORRECT!
+
+IF THEY DON'T MATCH:
+---------------------
+Sheet has "EN" but filter checks "en"
+→ ❌ WRONG! Make them match exactly!
+
+================================================================================
+RESULT
+================================================================================
+
+IF ALL 3 CHECKS ARE ✅:
+-----------------------
+Your settings are CORRECT!
+If still not working, check:
+- Scenario is ON
+- Execution logs for errors
+- Google Sheets has valid data
+
+IF ANY CHECK IS ❌:
+------------------
+Your settings are WRONG!
+Fix the wrong items first, then test again.
+
+================================================================================
+MOST LIKELY ISSUE
+================================================================================
+
+Based on your original JSON, the most likely issue is:
+
+CHECK 1: "To" field is probably:
+["{{1.`1`}}"] or ["{{1.1}}"]
+→ Should be: [{"value": "{{1.1}}"}]
+
+This is the #1 reason emails don't send!
+
+================================================================================
+

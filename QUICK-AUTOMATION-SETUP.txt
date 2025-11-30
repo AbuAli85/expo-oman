@@ -1,0 +1,133 @@
+================================================================================
+QUICK AUTOMATION SETUP - 3 SCENARIOS
+================================================================================
+
+Create 3 separate scenarios in Make.com for complete automation:
+
+================================================================================
+SCENARIO 1: EMAIL 1 - INVITATION (IMMEDIATE)
+================================================================================
+
+TRIGGER:
+--------
+Google Sheets → Watch Rows
+- Triggers when new row added
+
+FLOW:
+-----
+1. Watch Rows (trigger)
+2. Router (Language check)
+   - Route 1: English → Send English Email 1
+   - Route 2: Arabic → Send Arabic Email 1
+3. Update Row
+   - Status = "Email 1 Sent"
+   - Email 1 Date = {{now}}
+
+RESULT:
+-------
+Email 1 sent immediately when lead added ✅
+
+================================================================================
+SCENARIO 2: EMAIL 2 - REMINDER (3 DAYS LATER)
+================================================================================
+
+TRIGGER:
+--------
+Schedule → Every day at 9:00 AM
+
+FLOW:
+-----
+1. Schedule (daily 9:00 AM)
+2. Set Variable: threeDaysAgo = {{addDays(now; -3)}}
+3. Google Sheets → Search Rows
+   - Filter: Status = "Email 1 Sent"
+   - Filter: Email 1 Date < {{threeDaysAgo}}
+4. Router (Language check)
+   - Route 1: English → Send English Email 2
+   - Route 2: Arabic → Send Arabic Email 2
+5. Update Row
+   - Status = "Email 2 Sent"
+   - Email 2 Date = {{now}}
+
+RESULT:
+-------
+Email 2 sent daily to leads who got Email 1 (3+ days ago) ✅
+
+================================================================================
+SCENARIO 3: EMAIL 3 - FINAL CALL (4 DAYS LATER)
+================================================================================
+
+TRIGGER:
+--------
+Schedule → Every day at 9:00 AM
+
+FLOW:
+-----
+1. Schedule (daily 9:00 AM)
+2. Google Sheets → Search Rows
+   - Filter: Status = "Email 2 Sent"
+3. Router (Language check)
+   - Route 1: English → Send English Email 3
+   - Route 2: Arabic → Send Arabic Email 3
+4. Update Row
+   - Status = "Email 3 Sent"
+   - Email 3 Date = {{now}}
+
+RESULT:
+-------
+Email 3 sent daily to leads who got Email 2 ✅
+
+================================================================================
+TIMELINE EXAMPLE
+================================================================================
+
+Day 0: Lead "John" added
+→ Email 1 sent immediately ✅
+
+Day 3: Scenario 2 runs
+→ Finds "John" (Email 1 sent 3 days ago)
+→ Email 2 sent ✅
+
+Day 7: Scenario 3 runs
+→ Finds "John" (Email 2 sent 4 days ago)
+→ Email 3 sent ✅
+
+Campaign Complete! 🎉
+
+================================================================================
+QUICK SETUP STEPS
+================================================================================
+
+1. Create Scenario 1 (Email 1)
+   - Add Google Sheets Watch trigger
+   - Add router + email modules
+   - Add update module
+   - Activate ✅
+
+2. Create Scenario 2 (Email 2)
+   - Add Schedule trigger (daily 9 AM)
+   - Add date variable
+   - Add search + router + emails
+   - Add update modules
+   - Activate ✅
+
+3. Create Scenario 3 (Email 3)
+   - Add Schedule trigger (daily 9 AM)
+   - Add search + router + emails
+   - Add update modules
+   - Activate ✅
+
+Total Time: ~30-45 minutes to set up all 3 scenarios
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+✅ All 3 scenarios run independently
+✅ Each scenario handles its own timing
+✅ No need for "Wait" modules
+✅ Schedule triggers handle the delays
+✅ System is fully automated
+
+================================================================================
+

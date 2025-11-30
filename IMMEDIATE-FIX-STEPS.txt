@@ -1,0 +1,158 @@
+================================================================================
+IMMEDIATE FIX: Email "to" Field Error
+================================================================================
+
+CURRENT STATUS:
+--------------
+✅ Your Make.com UI shows: "To Array" → "1. Email (B)"
+✅ This correctly maps to column B (Email)
+❌ But you're getting: [422] The `to` field must be a `string`
+
+================================================================================
+ROOT CAUSE
+================================================================================
+
+The error means that `{{1.1}}` is resolving to:
+- An empty string ""
+- null or undefined
+- Or not a valid email format
+
+When Make.com tries to send this to Resend API, it fails because the value is invalid.
+
+================================================================================
+IMMEDIATE FIX OPTIONS
+================================================================================
+
+OPTION 1: Use Set Variables Output (RECOMMENDED)
+-------------------------------------------------
+Since you have Module 8 (Set Variables) that stores testCol1 = {{1.`1`}}:
+
+1. In Module 3 (English Email) - "To Array" field:
+   - Remove: "1. Email (B)"
+   - Add: "8. testCol1" (or whatever variable name you used)
+
+2. This uses the value from your Set Variables module, which might be more reliable.
+
+OPTION 2: Verify Column Index
+-------------------------------
+1. Run the scenario once
+2. Click on Module 8 (Set Variables) in execution log
+3. Check which variable (testCol0, testCol1, testCol2, testCol3) contains the email
+4. Update the email module to use that column index
+
+OPTION 3: Check for Empty Email Values
+----------------------------------------
+1. Open your Google Sheet
+2. Check the rows that match your filter:
+   - Status (E) = "Email 2 Sent"
+   - Email 2 Date (H) > fourDaysAgo
+3. Verify column B (Email) has valid email addresses (not empty)
+4. If any rows have empty emails, they will cause this error
+
+OPTION 4: Add Filter to Skip Empty Emails
+------------------------------------------
+1. Add a filter in the router or before the email module
+2. Condition: Email is not empty
+3. This will skip rows without email addresses
+
+================================================================================
+STEP-BY-STEP FIX (Try This First)
+================================================================================
+
+STEP 1: Check Module 8 Output
+-------------------------------
+1. Run your scenario
+2. Click on "Tools - Set multiple variables" (Module 8)
+3. Check the output values:
+   - testCol0 = ?
+   - testCol1 = ? ← Should contain email
+   - testCol2 = ?
+   - testCol3 = ?
+
+STEP 2: Update Email Module
+----------------------------
+If testCol1 has the email:
+1. In Module 3 (Resend - Send an Email)
+2. Click on "To Array" field
+3. Remove the current mapping
+4. Click "Add item"
+5. Select: "8. testCol1" (or the variable that contains email)
+6. Save
+
+If testCol1 is empty but another variable has email:
+- Use that variable instead (testCol0, testCol2, etc.)
+
+STEP 3: Do Same for Module 4 (Arabic Email)
+---------------------------------------------
+1. Update Module 4 with the same fix
+2. Use the same variable that contains the email
+
+STEP 4: Test
+------------
+1. Run the scenario again
+2. Should work now! ✅
+
+================================================================================
+ALTERNATIVE: Direct Column Reference Fix
+================================================================================
+
+If you want to keep using {{1.1}} directly:
+
+1. Make sure your Google Sheets filter returns rows with valid emails
+2. In the "To Array" field, try:
+   - "1. Email (B)" ← Current (should work if email exists)
+   - Or manually type: {{1.1}}
+   - Or try: {{1.`1`}} (with backticks)
+
+3. If still failing, the issue is that {{1.1}} is empty for the filtered rows
+   - Check your Google Sheet data
+   - Make sure column B has email addresses for rows matching your filter
+
+================================================================================
+DEBUGGING: Why is {{1.1}} Empty?
+================================================================================
+
+Possible reasons:
+
+1. Your filter returns rows where Email column (B) is empty
+   - Check Google Sheets: Are there rows with Status="Email 2 Sent" but no email?
+
+2. Column index is wrong
+   - If headers are included, column B should be {{1.1}}
+   - But if Make.com counts differently, try {{1.0}} or {{1.2}}
+
+3. The filter date condition is wrong
+   - Your filter uses: Email 2 Date (H) > {{7.threeDaysAgo}}
+   - But you set variable "fourDaysAgo" in Module 7
+   - Check if the variable name matches: Should it be {{7.fourDaysAgo}}?
+
+4. No rows match the filter
+   - If no rows match, the email module runs with empty data
+   - Check your filter conditions
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Run scenario and check Module 8 output
+□ Verify which variable contains the email address
+□ Update Module 3 "To Array" to use that variable
+□ Update Module 4 "To Array" to use that variable
+□ Verify Google Sheets has valid emails in column B
+□ Check filter conditions match your data
+□ Test the scenario again
+
+================================================================================
+MOST LIKELY SOLUTION
+================================================================================
+
+Since you already have Module 8 (Set Variables) testing the columns:
+
+1. Use "8. testCol1" in the "To Array" field instead of "1. Email (B)"
+2. This uses the value from your Set Variables module
+3. If testCol1 is empty, check which testCol variable has the email and use that
+
+This is the quickest fix! ✅
+
+================================================================================
+

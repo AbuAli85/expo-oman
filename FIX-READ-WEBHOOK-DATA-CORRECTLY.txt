@@ -1,0 +1,173 @@
+================================================================================
+FIX: NOT READING NEW ROWS - WRONG WEBHOOK FIELD REFERENCES
+================================================================================
+
+The problem: Module 9 is using WRONG field references to read webhook data,
+so it can't read the new row information from the sheet.
+
+================================================================================
+THE PROBLEM
+================================================================================
+
+Module 9 (Set Variables) currently uses:
+  ❌ name: {{12.`0`}}
+  ❌ email: {{12.`1`}}
+  ❌ language: {{trim(12.language)}} || "en"
+
+These field references are WRONG!
+
+Your Google Apps Script webhook sends data as a JSON object:
+{
+  "name": "fahad alamri",
+  "email": "chairman@falconeyegroup.net",
+  "language": "en",
+  ...
+}
+
+So you need to use NAMED fields, not numbered indices!
+
+================================================================================
+THE FIX
+================================================================================
+
+Update Module 9 to use the CORRECT field names:
+
+CURRENT (WRONG):
+─────────────────
+name: {{12.`0`}}
+email: {{12.`1`}}
+language: {{trim(12.language)}} || "en"
+
+CHANGE TO (CORRECT):
+─────────────────────
+name: {{12.name}}
+email: {{12.email}}
+language: {{if(trim(12.language); trim(12.language); "en")}}
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Open Module 9
+──────────────────────
+
+1. Open scenario in Make.com editor
+2. Click Module 9 (Set Variables)
+
+STEP 2: Update Variable 1 (name)
+──────────────────────────────────
+
+1. Find "name" variable
+2. Click the value field
+3. DELETE: {{12.`0`}}
+4. TYPE: {{12.name}}
+5. OR use field selector:
+   - Click map icon
+   - Browse Module 12 output
+   - Click on "name" field
+   - Make.com auto-fills it
+
+STEP 3: Update Variable 2 (email)
+───────────────────────────────────
+
+1. Find "email" variable
+2. Click the value field
+3. DELETE: {{12.`1`}}
+4. TYPE: {{12.email}}
+5. OR use field selector to map correctly
+
+STEP 4: Update Variable 3 (language)
+──────────────────────────────────────
+
+1. Find "language" variable
+2. Click the value field
+3. DELETE: {{trim(12.language)}} || "en"
+4. TYPE: {{if(trim(12.language); trim(12.language); "en")}}
+
+This ensures:
+  • Uses language from webhook if available
+  • Defaults to "en" if empty or null
+
+STEP 5: Save Module 9
+──────────────────────
+
+1. Click Save
+2. Test the scenario
+
+================================================================================
+USING FIELD SELECTOR (EASIEST METHOD)
+================================================================================
+
+1. Open Module 9
+2. For each variable:
+   a. Click the value field
+   b. Click the "Map" icon (field selector button)
+   c. Browse Module 12 (Webhook) output
+   d. Find the field you need (name, email, language)
+   e. Click on it
+   f. Make.com automatically fills in the correct path
+
+This is easier and ensures correctness!
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, test:
+
+1. Trigger the scenario with a test form submission
+2. Check Module 9 output:
+   □ name should have value (not null)
+   □ email should have value (not null)
+   □ language should have value (not null)
+
+3. If all have values → Working correctly!
+4. If still null → Check Module 12 output structure
+
+================================================================================
+WHAT WEBHOOK ACTUALLY SENDS
+================================================================================
+
+Based on your Google Apps Script, the webhook sends:
+
+{
+  "timestamp": "2025-01-15T10:30:00.000Z",
+  "name": "fahad alamri",
+  "email": "chairman@falconeyegroup.net",
+  "phone": "",
+  "language": "en",
+  "status": "",
+  "attendance": "",
+  "response": "",
+  "responseDate": "",
+  "comments": ""
+}
+
+So in Make.com, access it as:
+  • {{12.name}}
+  • {{12.email}}
+  • {{12.language}}
+  • {{12.timestamp}}
+  etc.
+
+NOT as:
+  • {{12.`0`}} ❌
+  • {{12.`1`}} ❌
+  • {{12[0]}} ❌
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Open Module 9
+□ Change name: {{12.`0`}} → {{12.name}}
+□ Change email: {{12.`1`}} → {{12.email}}
+□ Change language: Use if() statement for default
+□ Save module
+□ Test scenario
+□ Verify variables have values
+
+================================================================================
+END
+================================================================================
+

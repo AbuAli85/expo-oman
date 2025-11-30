@@ -1,0 +1,248 @@
+================================================================================
+FIX YOUR CURRENT EMAIL 1 CONFIGURATION
+Issues Found & Fixes Needed
+================================================================================
+
+I've analyzed your current configuration. Here are the issues and fixes:
+
+================================================================================
+ISSUE 1: WRONG "TO" FIELD FORMAT (CRITICAL!)
+================================================================================
+
+CURRENT (WRONG):
+----------------
+Module 3 (English): "to": ["{{8.email}}"]
+Module 4 (Arabic): "to": ["{{8.email}}"]
+
+PROBLEM:
+--------
+Resend API expects an array of objects, not array of strings.
+
+FIX:
+----
+Module 3: "to": [{"value": "{{8.email}}"}]
+Module 4: "to": [{"value": "{{8.email}}"}]
+
+HOW TO FIX IN MAKE.COM:
+------------------------
+1. Open Module 3 (English Email)
+2. Click "To" field
+3. Delete current: ["{{8.email}}"]
+4. Click "Add item" → "Object"
+5. Add: {"value": "{{8.email}}"}
+6. Should show: [{"value": "{{8.email}}"}]
+7. Save
+
+Repeat for Module 4 (Arabic Email).
+
+================================================================================
+ISSUE 2: ROUTER HAS NO FILTERS (CRITICAL!)
+================================================================================
+
+CURRENT:
+--------
+Module 2 (Router) has: "mapper": null
+No filters on Route 1 or Route 2
+
+PROBLEM:
+--------
+Without filters, BOTH routes execute for EVERY lead!
+This means:
+- English email sent to ALL leads
+- Arabic email sent to ALL leads
+- Every lead gets 2 emails!
+
+FIX:
+----
+Add filters to router routes:
+
+Route 1 (English):
+------------------
+Add filter:
+- Field: {{8.language}}
+- Operator: equals
+- Value: "en"
+
+Route 2 (Arabic):
+-----------------
+Add filter:
+- Field: {{8.language}}
+- Operator: equals
+- Value: "ar"
+
+HOW TO FIX IN MAKE.COM:
+------------------------
+1. Open Module 2 (Router)
+2. Click Route 1
+3. Add filter:
+   - Click "Add filter"
+   - Field: {{8.language}}
+   - Operator: equals
+   - Value: "en"
+4. Click Route 2
+5. Add filter:
+   - Click "Add filter"
+   - Field: {{8.language}}
+   - Operator: equals
+   - Value: "ar"
+6. Save
+
+================================================================================
+ISSUE 3: SUBJECT LINE SPACING
+================================================================================
+
+CURRENT:
+--------
+Module 3: "{{8.name}},You're Invited..." (no space after comma)
+Module 4: "{{8.name}},أنت مدعو!..." (no space after comma)
+
+FIX:
+----
+Module 3: "{{8.name}}, You're Invited to Showcase your project at UAE Property Expo Muscat Oman"
+Module 4: "{{8.name}}، أنت مدعو! معرض عقارات الإمارات – مسقط"
+
+HOW TO FIX:
+-----------
+1. Open Module 3
+2. Subject field: Add space after comma
+3. Open Module 4
+4. Subject field: Add space after comma (or Arabic comma)
+5. Save
+
+================================================================================
+ISSUE 4: MODULE 8 HAS BACKTICKS (MINOR)
+================================================================================
+
+CURRENT:
+--------
+Module 8 (Set Variables) uses:
+- "value": "{{1.`3`}}" (backticks)
+- "value": "{{1.`1`}}" (backticks)
+- "value": "{{1.`0`}}" (backticks)
+
+PROBLEM:
+--------
+Backticks might cause issues, but since you're using {{8.email}}, {{8.name}}, {{8.language}} in modules 3/4, this might work.
+
+RECOMMENDED FIX:
+----------------
+Remove backticks in Module 8:
+- "value": "{{1.3}}"
+- "value": "{{1.1}}"
+- "value": "{{1.0}}"
+
+HOW TO FIX:
+-----------
+1. Open Module 8 (Set Variables)
+2. For each variable:
+   - language: Change {{1.`3`}} to {{1.3}}
+   - email: Change {{1.`1`}} to {{1.1}}
+   - name: Change {{1.`0`}} to {{1.0}}
+3. Save
+
+================================================================================
+PRIORITY FIXES (Do These First!)
+================================================================================
+
+FIX 1: Router Filters (MOST CRITICAL!)
+---------------------------------------
+Without this, every lead gets 2 emails!
+
+Add filters:
+- Route 1: {{8.language}} = "en"
+- Route 2: {{8.language}} = "ar"
+
+FIX 2: To Field Format (CRITICAL!)
+-----------------------------------
+Without this, emails won't send!
+
+Change:
+- Module 3: ["{{8.email}}"] → [{"value": "{{8.email}}"}]
+- Module 4: ["{{8.email}}"] → [{"value": "{{8.email}}"}]
+
+FIX 3: Subject Spacing (IMPORTANT)
+-----------------------------------
+For professional appearance:
+- Add space after comma in subjects
+
+FIX 4: Module 8 Backticks (OPTIONAL)
+------------------------------------
+Remove backticks for consistency
+
+================================================================================
+COMPLETE FIX CHECKLIST
+================================================================================
+
+MODULE 2 (Router):
+-------------------
+□ Route 1 has filter: {{8.language}} = "en"
+□ Route 2 has filter: {{8.language}} = "ar"
+
+MODULE 3 (English Email):
+--------------------------
+□ To field: [{"value": "{{8.email}}"}]
+□ Subject: Has space after comma
+□ HTML: Uses {{8.name}} (correct)
+
+MODULE 4 (Arabic Email):
+--------------------------
+□ To field: [{"value": "{{8.email}}"}]
+□ Subject: Has space after comma
+□ HTML: Uses {{8.name}} (correct)
+
+MODULE 8 (Set Variables):
+--------------------------
+□ language: {{1.3}} (no backticks)
+□ email: {{1.1}} (no backticks)
+□ name: {{1.0}} (no backticks)
+
+================================================================================
+WHAT'S CORRECT IN YOUR CONFIG
+================================================================================
+
+✅ Module 1 (Watch Rows): Correct
+✅ Module 8 (Set Variables): Good approach (using variables)
+✅ Module 3/4 HTML: Using {{8.name}} correctly
+✅ Module 5/7 (Update Row): Correct
+✅ Using {{8.email}}, {{8.name}}, {{8.language}}: Good approach
+
+================================================================================
+AFTER FIXING
+================================================================================
+
+After making these fixes:
+
+1. Save all changes
+2. Turn scenario ON
+3. Test with a lead:
+   - Name: "Test User"
+   - Email: your-email@example.com
+   - Language: "en"
+4. Check:
+   □ Only ONE email sent (English)
+   □ Email received
+   □ Google Sheets updated
+
+Test with Arabic:
+- Language: "ar"
+- Should get Arabic email only
+
+================================================================================
+QUICK SUMMARY
+================================================================================
+
+MUST FIX (Critical):
+--------------------
+1. Router filters (prevents duplicate emails)
+2. To field format (enables email sending)
+
+SHOULD FIX (Important):
+------------------------
+3. Subject spacing (professional appearance)
+
+OPTIONAL:
+---------
+4. Remove backticks in Module 8 (consistency)
+
+================================================================================
+

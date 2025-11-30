@@ -1,0 +1,236 @@
+================================================================================
+FIX: Missing value of required parameter 'to'
+================================================================================
+
+CURRENT ERROR:
+--------------
+"Validation failed for 1 parameter(s). Missing value of required parameter 'to'."
+
+This means: {{8.testCol1}} is resolving to EMPTY or NULL
+
+================================================================================
+ROOT CAUSE
+================================================================================
+
+The variable {{8.testCol1}} is empty because:
+1. Module 8 (Set Variables) might not be capturing the email correctly
+2. The column reference {{1.`1`}} in Module 8 might be wrong
+3. The Google Sheets search (Module 1) might not be returning data
+4. The email column might be empty in the filtered rows
+
+================================================================================
+IMMEDIATE FIX: Check Module 8 Output
+================================================================================
+
+STEP 1: Run the Scenario
+--------------------------
+1. Run your scenario once
+2. Let it execute (even if it fails)
+
+STEP 2: Check Module 8 Output
+------------------------------
+1. Click on "Tools - Set multiple variables" (Module 8) in the execution log
+2. Look at the output values:
+   - testCol0 = ? (should be Name)
+   - testCol1 = ? (should be Email - CHECK THIS!)
+   - testCol2 = ? (should be Phone)
+   - testCol3 = ? (should be Language)
+
+STEP 3: Identify Which Variable Has Email
+------------------------------------------
+- If testCol1 is EMPTY, check testCol0, testCol2, testCol3
+- Find which variable actually contains the email address
+- Note the variable name (e.g., testCol0, testCol2, etc.)
+
+STEP 4: Update Email Module
+----------------------------
+1. In Module 3 (Resend - Send an Email)
+2. Change "To" field from "8. testCol1" to the variable that has email
+3. For example: "8. testCol0" or "8. testCol2" (whichever has the email)
+
+================================================================================
+ALTERNATIVE FIX: Use Direct Column Reference
+================================================================================
+
+If Module 8 variables are all empty, use direct column reference:
+
+STEP 1: Check Module 1 Output
+-------------------------------
+1. Click on "Google Sheets - Search Rows" (Module 1) in execution log
+2. Check what data is returned
+3. Verify column B (Email) has values
+
+STEP 2: Try Different Column References
+----------------------------------------
+In Module 3, try these in the "To" field (one at a time):
+
+OPTION A: Direct column reference
+- "1. Email (B)" 
+- Or manually type: {{1.1}}
+
+OPTION B: Try different column indices
+- {{1.0}} (column A - Name)
+- {{1.1}} (column B - Email) ← Most likely
+- {{1.2}} (column C - Phone)
+- {{1.3}} (column D - Language)
+
+OPTION C: With backticks (like Module 8 uses)
+- {{1.`1`}} (with backticks)
+
+================================================================================
+DEBUG: Why is Module 8 Empty?
+================================================================================
+
+Check Module 8 configuration:
+
+1. Open Module 8 (Set Variables)
+2. Check the variable mappings:
+   - testCol0 = {{1.`0`}}
+   - testCol1 = {{1.`1`}} ← Should map to Email column
+   - testCol2 = {{1.`2`}}
+   - testCol3 = {{1.`3`}}
+
+3. Verify these map to the correct columns:
+   - {{1.`0`}} = Column A (Name)
+   - {{1.`1`}} = Column B (Email) ← This should have email
+   - {{1.`2`}} = Column C (Phone)
+   - {{1.`3`}} = Column D (Language)
+
+4. If Module 1 returns no data, Module 8 will also be empty
+
+================================================================================
+CHECK: Is Module 1 Returning Data?
+================================================================================
+
+STEP 1: Check Module 1 Filter
+-------------------------------
+Your filter conditions:
+- Status (E) = "Email 2 Sent"
+- Email 2 Date (H) > {{7.threeDaysAgo}}
+
+ISSUE: You set variable "fourDaysAgo" in Module 7, but filter uses "threeDaysAgo"
+- Variable name mismatch!
+- Module 7 sets: fourDaysAgo
+- Filter uses: {{7.threeDaysAgo}} ← This doesn't exist!
+
+FIX: Update the filter to use the correct variable name:
+- Change {{7.threeDaysAgo}} to {{7.fourDaysAgo}}
+
+OR update Module 7 to set "threeDaysAgo" instead of "fourDaysAgo"
+
+STEP 2: Verify Filter Returns Rows
+-----------------------------------
+1. Check Module 1 output in execution log
+2. If it shows 0 rows, your filter is too restrictive
+3. Adjust the filter conditions
+
+STEP 3: Check Email Column Has Data
+------------------------------------
+1. Open your Google Sheet
+2. Manually check rows that match your filter
+3. Verify column B (Email) has email addresses (not empty)
+
+================================================================================
+QUICK FIX OPTIONS (Try in Order)
+================================================================================
+
+FIX 1: Use Direct Column Reference
+------------------------------------
+In Module 3 "To" field:
+- Change from: "8. testCol1"
+- Change to: "1. Email (B)"
+- Or type: {{1.1}}
+
+FIX 2: Fix Variable Name Mismatch
+-----------------------------------
+In Module 1 filter:
+- Change: {{7.threeDaysAgo}}
+- To: {{7.fourDaysAgo}}
+- (Or rename Module 7 variable to "threeDaysAgo")
+
+FIX 3: Check Which testCol Has Email
+--------------------------------------
+1. Run scenario
+2. Check Module 8 output
+3. Use the testCol variable that has email (might be testCol0, testCol2, etc.)
+
+FIX 4: Simplify Filter for Testing
+-----------------------------------
+Temporarily simplify Module 1 filter:
+- Remove date condition
+- Just filter: Status = "Email 2 Sent"
+- This will help verify if the issue is with the filter or the mapping
+
+================================================================================
+STEP-BY-STEP DEBUGGING PROCESS
+================================================================================
+
+1. Run scenario
+2. Check Module 1 (Google Sheets) - Does it return rows?
+   - If NO → Fix filter conditions
+   - If YES → Continue to step 3
+
+3. Check Module 1 output - What data is in each column?
+   - Column 0 (A) = ?
+   - Column 1 (B) = ? ← Should be email
+   - Column 2 (C) = ?
+   - Column 3 (D) = ?
+
+4. Check Module 8 output - Which variable has email?
+   - testCol0 = ?
+   - testCol1 = ? ← Check this
+   - testCol2 = ?
+   - testCol3 = ?
+
+5. If testCol1 is empty but Module 1 column 1 has email:
+   - Module 8 mapping is wrong
+   - Fix Module 8 to use correct column reference
+
+6. If Module 1 also has empty email column:
+   - Your Google Sheet data is the issue
+   - Check the actual sheet data
+
+7. Update Module 3 to use the correct reference:
+   - Either fix Module 8 and use "8. testCol1"
+   - Or use direct reference "1. Email (B)" or {{1.1}}
+
+================================================================================
+MOST LIKELY ISSUES
+================================================================================
+
+ISSUE 1: Variable Name Mismatch (MOST LIKELY)
+----------------------------------------------
+Module 7 sets: "fourDaysAgo"
+Filter uses: {{7.threeDaysAgo}} ← Wrong variable name!
+
+Fix: Change filter to {{7.fourDaysAgo}}
+
+ISSUE 2: Module 8 Column Mapping Wrong
+--------------------------------------
+Module 8 uses: {{1.`1`}} with backticks
+But Make.com might need: {{1.1}} without backticks
+
+Fix: Update Module 8 to use {{1.1}} instead of {{1.`1`}}
+
+ISSUE 3: No Rows Match Filter
+------------------------------
+Filter is too restrictive, returns 0 rows
+
+Fix: Simplify filter or check your data
+
+================================================================================
+RECOMMENDED IMMEDIATE ACTION
+================================================================================
+
+1. Fix the variable name mismatch in Module 1 filter:
+   - Change {{7.threeDaysAgo}} to {{7.fourDaysAgo}}
+
+2. In Module 3, try direct column reference:
+   - Change "To" from "8. testCol1" to "1. Email (B)"
+
+3. Run scenario and check if it works
+
+4. If still failing, check Module 8 output to see which variable has email
+
+================================================================================
+

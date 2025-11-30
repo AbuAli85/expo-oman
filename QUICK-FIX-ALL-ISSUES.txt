@@ -1,0 +1,35 @@
+================================================================================
+QUICK FIX: ALL ISSUES
+5-Minute Solution
+================================================================================
+
+CRITICAL FIXES (MUST DO):
+--------------------------
+
+1. MODULE 5: Remove Filter (1 min)
+   □ Open Module 5
+   □ Remove filter condition
+   □ Save
+
+2. MODULE 6: Fix "To" Field (1 min)
+   □ "To": [{"value": "{{4.email}}"}]
+   □ Save
+
+3. MODULE 7: Fix "To" Field (1 min)
+   □ "To": [{"value": "{{4.email}}"}]
+   □ Save
+
+4. EMAIL TEMPLATES: Fix Name (2 min)
+   □ Change "Dear {{4.name}}," to "Dear Client,"
+   □ OR add name variable to Module 4
+   □ Save
+
+================================================================================
+AFTER FIXES:
+------------
+□ Save scenario
+□ Turn ON
+□ Test
+
+================================================================================
+

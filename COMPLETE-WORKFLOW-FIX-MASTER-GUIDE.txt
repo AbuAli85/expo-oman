@@ -1,0 +1,636 @@
+================================================================================
+COMPLETE WORKFLOW FIX - MASTER GUIDE
+Make All Workflows Work Together Without Issues
+================================================================================
+
+OVERVIEW:
+---------
+This guide will help you fix ALL 4 workflows and ensure they work together
+seamlessly without any errors or misalignments.
+
+YOUR 4 WORKFLOWS:
+─────────────────
+1. ✅ Email 1 - Invitation (WEBHOOK triggered)
+2. ⏰ Email 2 - Reminder (SCHEDULED trigger)
+3. ⏰ Email 3 - Final Call (SCHEDULED trigger)
+4. 🔄 Response Form - Accept/Reject (WEBHOOK triggered)
+
+================================================================================
+CURRENT STATUS & ISSUES
+================================================================================
+
+WORKFLOW 1: EMAIL 1 - INVITATION ✅ MOSTLY WORKING
+───────────────────────────────────────────────────
+Status: ✅ Configured but needs verification
+Webhook: ✅ m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+Google Apps Script: ✅ Ready
+Issues:
+  □ Needs final testing
+  □ Verify webhook receives data correctly
+
+WORKFLOW 2: EMAIL 2 - REMINDER ⏰ NEEDS SETUP
+──────────────────────────────────────────────
+Status: ⚠️ Needs to be created/verified
+Trigger: ⏰ Scheduled (Daily 9:00 AM)
+Issues:
+  □ Scenario may not exist
+  □ Schedule may not be set
+  □ Need to verify it runs correctly
+
+WORKFLOW 3: EMAIL 3 - FINAL CALL ⏰ NEEDS SETUP
+───────────────────────────────────────────────
+Status: ⚠️ Needs to be created/verified
+Trigger: ⏰ Scheduled (Daily 9:00 AM)
+Issues:
+  □ Scenario may not exist
+  □ Schedule may not be set
+  □ Need to verify it runs correctly
+
+WORKFLOW 4: RESPONSE FORM - ACCEPT/REJECT ❌ HAS CRITICAL ERRORS
+─────────────────────────────────────────────────────────────────
+Status: ❌ Has multiple critical errors
+Scenario: "Handle Expo Form Responses - Improved"
+Current Issues:
+  ❌ Module 2: All variables getting same value
+  ❌ Module 7: Missing rowNumber error
+  ❌ Module 22: Invalid variable name error
+  ❌ Module 23: Syntax errors
+  ❌ Form structure doesn't match expectations
+
+================================================================================
+COMPLETE FIX PLAN - STEP BY STEP
+================================================================================
+
+PHASE 1: FIX RESPONSE FORM WORKFLOW (CRITICAL) 🔴
+──────────────────────────────────────────────────
+
+STEP 1.1: Fix Module 2 - Variable Mappings
+───────────────────────────────────────────
+File: MODULE-2-FINAL-FIX-FOR-ACTUAL-FORM.txt
+
+Action:
+1. Open Make.com scenario "Handle Expo Form Responses - Improved"
+2. Click Module 2 (Set Variables)
+3. Update variables:
+
+   Variable: email
+   Value: {{1.respondentEmail}}
+   ✅ Keep as is
+
+   Variable: name
+   Value: {{split(1.respondentEmail; "@")[0]}}
+   ✅ Change to extract from email
+
+   Variable: attendance
+   Value: {{1.answers.677abd25.textAnswers.answers[0].value}}
+   ✅ Keep as is
+
+   Variable: comments
+   Value: ""
+   ✅ Change to empty string
+
+4. Save Module 2
+
+Verification:
+□ Test Module 2 output
+□ Verify all 4 variables have different values
+□ email: Shows email address
+□ name: Shows name extracted from email (not "Yes, I'll attend")
+□ attendance: Shows "Yes, I'll attend" or "No, I cannot attend"
+□ comments: Shows "" (empty)
+
+───────────────────────────────────────────
+
+STEP 1.2: Fix Module 22 - Invalid Variable Name
+────────────────────────────────────────────────
+File: FIX-MODULE-22-VARIABLE-NAME-ERROR.txt
+
+Action:
+1. Click Module 22 (Set Variable)
+2. Change:
+   Variable name: FROM expression TO "finalName" (static text)
+   Variable value: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+OR better: DELETE Module 22 entirely (not needed)
+
+3. Save
+
+Verification:
+□ Module 22 error disappears
+□ Or Module 22 is deleted
+
+────────────────────────────────────────────────
+
+STEP 1.3: Fix Module 23 - DisplayName Syntax
+─────────────────────────────────────────────
+Action:
+1. Click Module 23 (Set Variable displayName)
+2. Update value:
+   FROM: {{if(5.rowExists = "true"; 5.sheetName; 2.name | "Guest")}}
+   
+   TO: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+3. Save
+
+Verification:
+□ Syntax error fixed
+□ displayName sets correctly
+
+─────────────────────────────────────────────
+
+STEP 1.4: Fix Module 7 - Update Row (MISSING ROW NUMBER)
+──────────────────────────────────────────────────────────
+File: FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt
+
+Action:
+OPTION A (RECOMMENDED): Change to Search Rows Mode
+1. Click Module 7 (Google Sheets - Update Row)
+2. Change Mode from "select" to "fromAll" or "Search Rows"
+3. Add Search Filter:
+   - Column: B (Email)
+   - Operator: equals
+   - Value: {{2.email}}
+4. Remove/clear "Row number" field
+5. Keep Values section as is:
+   - Column 10 (K): {{if(2.attendance = "Yes, I'll attend"; "Accepted"; "Rejected")}}
+   - Column 11 (L): {{now}}
+   - Column 12 (M): {{2.comments}}
+6. Save
+
+OPTION B: Fix Row Number Variable
+1. Click Module 5 (Set Variables)
+2. Change rowNumber variable:
+   FROM: {{12.array[0].__IMTINDEX__}}
+   TO: {{12.array[0].__ROW_NUMBER__}}
+3. Save Module 5
+4. Module 7 should work with corrected rowNumber
+
+Verification:
+□ Module 7 executes without "missing rowNumber" error
+□ Google Sheets updates correctly:
+  □ Column K (Response) updated
+  □ Column L (Response Date) updated
+  □ Column M (Comments) updated
+
+──────────────────────────────────────────────────────────
+
+STEP 1.5: Test Response Form Workflow
+──────────────────────────────────────
+Action:
+1. Submit a test form response
+2. Check execution log:
+   □ Module 1 executes (Google Forms trigger)
+   □ Module 2 executes (variables set correctly)
+   □ Module 11 executes (search rows)
+   □ Module 5 executes (rowExists set)
+   □ Module 6 routes correctly
+   □ Module 7 executes (update row - NO ERROR)
+   □ Module 16 or 17 executes (email sent)
+3. Verify Google Sheets:
+   □ Response column (K) updated
+   □ Response Date column (L) updated
+   □ Comments column (M) updated
+4. Verify email sent correctly
+
+──────────────────────────────────────
+
+PHASE 2: VERIFY EMAIL 1 WORKFLOW ✅
+────────────────────────────────────
+
+STEP 2.1: Verify Webhook Configuration
+───────────────────────────────────────
+Action:
+1. Open Make.com scenario "Email 1 - Invitation"
+2. Check Module 1 (Webhook):
+   □ Webhook URL: https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+   □ Scenario is ACTIVE (turned on)
+3. Check Google Apps Script:
+   □ WEBHOOK_URL matches Make.com webhook
+   □ Script is saved
+   □ Trigger is installed (onFormSubmit)
+
+Verification:
+□ Webhook URLs match
+□ Scenario is active
+
+───────────────────────────────────────
+
+STEP 2.2: Test Email 1 Workflow
+────────────────────────────────
+Action:
+1. In Google Apps Script, run testWebhook() function
+2. Check Make.com execution log
+3. Verify:
+   □ Webhook received data
+   □ Email sent (Module 4 or 5)
+   □ Google Sheets updated:
+     □ Status = "Email 1 Sent"
+     □ Email 1 Date = current timestamp
+
+Verification:
+□ Email 1 workflow works end-to-end
+
+────────────────────────────────
+
+PHASE 3: SETUP EMAIL 2 WORKFLOW ⏰
+───────────────────────────────────
+
+STEP 3.1: Create/Verify Email 2 Scenario
+─────────────────────────────────────────
+Action:
+1. Check if scenario "Email 2 - Reminder" exists in Make.com
+2. If not, create it:
+
+   MODULE STRUCTURE:
+   ─────────────────
+   Module 1: Schedule → Every day at 9:00 AM
+   Module 2: Set Variable
+     - threeDaysAgo: {{addDays(now; -3)}}
+   Module 3: Google Sheets → Search Rows
+     - Filter: Status = "Email 1 Sent"
+     - Filter: Email 1 Date < {{threeDaysAgo}}
+     - Limit: 50 (or as needed)
+   Module 4: Router (Language: EN/AR)
+   Module 5/6: Send Email 2 (EN or AR)
+   Module 7: Update Row
+     - Status = "Email 2 Sent"
+     - Email 2 Date = {{now}}
+
+3. Configure all modules
+4. Save scenario
+5. Turn scenario ON (activate it)
+
+Verification:
+□ Scenario exists
+□ Schedule is set to daily 9:00 AM
+□ All modules configured
+□ Scenario is ACTIVE
+
+─────────────────────────────────────────
+
+STEP 3.2: Test Email 2 Workflow
+────────────────────────────────
+Action:
+1. Create test data in Google Sheets:
+   - Row with Status = "Email 1 Sent"
+   - Email 1 Date = 4 days ago (to trigger immediately)
+2. Manually run scenario OR wait for schedule
+3. Verify:
+   □ Email 2 sent to test lead
+   □ Google Sheets updated:
+     □ Status = "Email 2 Sent"
+     □ Email 2 Date = current timestamp
+
+Verification:
+□ Email 2 workflow works correctly
+
+────────────────────────────────
+
+PHASE 4: SETUP EMAIL 3 WORKFLOW ⏰
+───────────────────────────────────
+
+STEP 4.1: Create/Verify Email 3 Scenario
+─────────────────────────────────────────
+Action:
+1. Check if scenario "Email 3 - Final Call" exists in Make.com
+2. If not, create it:
+
+   MODULE STRUCTURE:
+   ─────────────────
+   Module 1: Schedule → Every day at 9:00 AM
+   Module 2: Set Variable
+     - fourDaysAgo: {{addDays(now; -4)}}
+   Module 3: Google Sheets → Search Rows
+     - Filter: Status = "Email 2 Sent"
+     - Filter: Email 2 Date < {{fourDaysAgo}}
+     - Limit: 50 (or as needed)
+   Module 4: Router (Language: EN/AR)
+   Module 5/6: Send Email 3 (EN or AR)
+   Module 7: Update Row
+     - Status = "Email 3 Sent"
+     - Email 3 Date = {{now}}
+
+3. Configure all modules
+4. Save scenario
+5. Turn scenario ON (activate it)
+
+Verification:
+□ Scenario exists
+□ Schedule is set to daily 9:00 AM
+□ All modules configured
+□ Scenario is ACTIVE
+
+─────────────────────────────────────────
+
+STEP 4.2: Test Email 3 Workflow
+────────────────────────────────
+Action:
+1. Create test data in Google Sheets:
+   - Row with Status = "Email 2 Sent"
+   - Email 2 Date = 5 days ago (to trigger immediately)
+2. Manually run scenario OR wait for schedule
+3. Verify:
+   □ Email 3 sent to test lead
+   □ Google Sheets updated:
+     □ Status = "Email 3 Sent"
+     □ Email 3 Date = current timestamp
+
+Verification:
+□ Email 3 workflow works correctly
+
+────────────────────────────────
+
+PHASE 5: ALIGN ALL WORKFLOWS 🔄
+────────────────────────────────
+
+STEP 5.1: Verify Google Sheets Column Structure
+───────────────────────────────────────────────
+Action:
+1. Open Google Sheet: leads
+2. Verify all columns exist:
+   □ Column A: Name
+   □ Column B: Email
+   □ Column C: Phone
+   □ Column D: Language
+   □ Column E: Status
+   □ Column F: Date Added
+   □ Column G: Email 1 Date
+   □ Column H: Email 2 Date
+   □ Column I: Email 3 Date
+   □ Column J: Notes
+   □ Column K: Response
+   □ Column L: Response Date
+   □ Column M: Comments
+
+Verification:
+□ All columns exist
+□ Headers match expected names
+
+───────────────────────────────────────────────
+
+STEP 5.2: Verify Status Flow Logic
+───────────────────────────────────
+Ensure status transitions work correctly:
+
+Email 1 Workflow:
+  - New lead → Status = "Email 1 Sent"
+  - Sets Email 1 Date
+
+Email 2 Workflow:
+  - Finds: Status = "Email 1 Sent" AND Email 1 Date < 3 days ago
+  - Updates: Status = "Email 2 Sent"
+  - Sets Email 2 Date
+
+Email 3 Workflow:
+  - Finds: Status = "Email 2 Sent" AND Email 2 Date < 4 days ago
+  - Updates: Status = "Email 3 Sent"
+  - Sets Email 3 Date
+
+Response Form Workflow:
+  - Updates: Response (K) = "Accepted" or "Rejected"
+  - Sets: Response Date (L) = {{now}}
+  - Sets: Comments (M) = comments
+
+Verification:
+□ Status flow logic is correct
+□ No conflicts between workflows
+
+───────────────────────────────────
+
+STEP 5.3: Verify Email Templates Alignment
+──────────────────────────────────────────
+Action:
+1. Check Email 1 templates (EN/AR):
+   □ Accept/Reject buttons link to Response Form webhook
+   □ Buttons work correctly
+   □ Templates match branding
+
+2. Check Email 2 templates (EN/AR):
+   □ Accept/Reject buttons link to Response Form webhook
+   □ Templates match branding
+
+3. Check Email 3 templates (EN/AR):
+   □ Accept/Reject buttons link to Response Form webhook
+   □ Templates match branding
+
+4. Check Response emails (Accept/Reject):
+   □ Personalization works
+   □ Templates match branding
+
+Verification:
+□ All email templates aligned
+□ Buttons link to correct webhook
+□ Personalization works
+
+──────────────────────────────────────────
+
+STEP 5.4: Verify Webhook URLs
+──────────────────────────────
+Action:
+1. Email 1 Webhook:
+   □ Google Apps Script: m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+   □ Make.com Scenario: Same URL
+
+2. Response Form Webhook:
+   □ Created in Make.com scenario
+   □ Used in Email 1, 2, 3 buttons
+   □ URLs match
+
+Verification:
+□ All webhook URLs correct
+□ No conflicts
+
+──────────────────────────────
+
+PHASE 6: COMPREHENSIVE TESTING ✅
+──────────────────────────────────
+
+STEP 6.1: Test Complete Flow - New Lead
+────────────────────────────────────────
+1. Submit new form response (or simulate)
+2. Verify:
+   □ Google Apps Script triggers
+   □ Email 1 workflow executes
+   □ Email 1 sent immediately
+   □ Google Sheets updated:
+     □ Name, Email added
+     □ Status = "Email 1 Sent"
+     □ Email 1 Date = current time
+3. Wait 3 days (or adjust test data)
+4. Verify:
+   □ Email 2 workflow runs (scheduled)
+   □ Email 2 sent
+   □ Status = "Email 2 Sent"
+   □ Email 2 Date = current time
+5. Wait 4 more days (or adjust test data)
+6. Verify:
+   □ Email 3 workflow runs (scheduled)
+   □ Email 3 sent
+   □ Status = "Email 3 Sent"
+   □ Email 3 Date = current time
+
+────────────────────────────────────────
+
+STEP 6.2: Test Response Form Flow
+──────────────────────────────────
+1. Click "Accept" button in Email 1
+2. Verify:
+   □ Response Form workflow executes
+   □ Google Sheets updated:
+     □ Response (K) = "Accepted"
+     □ Response Date (L) = current time
+   □ Acceptance email sent
+3. Test with "Reject" button
+4. Verify:
+   □ Response (K) = "Rejected"
+   □ Rejection email sent
+
+──────────────────────────────────
+
+STEP 6.3: Test Edge Cases
+──────────────────────────
+1. Test with missing data:
+   □ Form without email
+   □ Form without attendance response
+2. Test duplicate submissions:
+   □ Same email submits twice
+   □ Verify handling
+3. Test with existing rows:
+   □ Response form updates existing row
+   □ New form adds new row
+4. Test scheduled scenarios:
+   □ Verify Email 2 triggers at right time
+   □ Verify Email 3 triggers at right time
+
+──────────────────────────
+
+================================================================================
+MASTER CHECKLIST - ALL WORKFLOWS
+================================================================================
+
+RESPONSE FORM WORKFLOW (Handle Expo Form Responses):
+─────────────────────────────────────────────────────
+□ Module 2: Variables fixed (name, comments)
+□ Module 22: Fixed or deleted
+□ Module 23: displayName syntax fixed
+□ Module 7: Update Row fixed (Search Rows mode or rowNumber)
+□ Tested: Form submission works
+□ Tested: Google Sheets updates correctly
+□ Tested: Emails send correctly
+
+EMAIL 1 WORKFLOW (Invitation):
+──────────────────────────────
+□ Webhook URL matches in script and Make.com
+□ Google Apps Script trigger installed
+□ Scenario is active
+□ Tested: New form submission triggers workflow
+□ Tested: Email 1 sent
+□ Tested: Google Sheets updated (Status, Email 1 Date)
+
+EMAIL 2 WORKFLOW (Reminder):
+─────────────────────────────
+□ Scenario exists: "Email 2 - Reminder"
+□ Schedule: Daily 9:00 AM
+□ Search filters configured correctly
+□ Email templates configured
+□ Update Row configured
+□ Scenario is active
+□ Tested: Sends to leads who got Email 1 (3+ days ago)
+
+EMAIL 3 WORKFLOW (Final Call):
+───────────────────────────────
+□ Scenario exists: "Email 3 - Final Call"
+□ Schedule: Daily 9:00 AM
+□ Search filters configured correctly
+□ Email templates configured
+□ Update Row configured
+□ Scenario is active
+□ Tested: Sends to leads who got Email 2 (4+ days ago)
+
+ALIGNMENT & INTEGRATION:
+────────────────────────
+□ All Google Sheets columns exist
+□ Status flow logic correct
+□ Email templates aligned
+□ Webhook URLs correct
+□ No conflicts between workflows
+□ Complete flow tested end-to-end
+
+================================================================================
+PRIORITY ORDER
+================================================================================
+
+🔴 CRITICAL (Fix Immediately):
+1. Fix Response Form Workflow (Module 2, 7, 22, 23)
+2. Verify Email 1 Workflow works
+
+🟡 IMPORTANT (Fix Soon):
+3. Create/Verify Email 2 Workflow
+4. Create/Verify Email 3 Workflow
+
+🟢 OPTIONAL (Improvements):
+5. Add error handling
+6. Add logging/monitoring
+7. Optimize performance
+
+================================================================================
+TROUBLESHOOTING COMMON ISSUES
+================================================================================
+
+ISSUE: Workflows conflict with each other
+──────────────────────────────────────────
+→ Verify status values are unique and don't overlap
+→ Ensure search filters are specific
+→ Test one workflow at a time
+
+ISSUE: Emails sent multiple times
+─────────────────────────────────
+→ Check router filters
+→ Verify status updates prevent duplicates
+→ Check scheduled scenarios don't overlap
+
+ISSUE: Google Sheets not updating
+─────────────────────────────────
+→ Verify spreadsheet connection
+→ Check column indexes
+→ Verify search filters find correct rows
+
+ISSUE: Scheduled scenarios not running
+──────────────────────────────────────
+→ Verify scenarios are ACTIVE (turned on)
+→ Check schedule time
+→ Verify Make.com subscription allows scheduled runs
+
+================================================================================
+FINAL VERIFICATION
+================================================================================
+
+After all fixes, verify:
+
+✅ Response Form: Submit form → Sheet updates → Email sent
+✅ Email 1: New lead → Email 1 sent → Sheet updated
+✅ Email 2: Scheduled → Finds eligible leads → Email 2 sent
+✅ Email 3: Scheduled → Finds eligible leads → Email 3 sent
+✅ All workflows work together without conflicts
+✅ No errors in execution logs
+✅ Google Sheets updates correctly
+✅ Emails send correctly
+✅ Status flow works correctly
+
+================================================================================
+SUPPORT FILES
+================================================================================
+
+Reference these files for detailed instructions:
+
+- MODULE-2-FINAL-FIX-FOR-ACTUAL-FORM.txt
+- FIX-MODULE-22-VARIABLE-NAME-ERROR.txt
+- FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt
+- SCENARIO-ANALYSIS-AND-FIXES.txt
+- ALL-WORKFLOWS-WEBHOOK-GUIDE.txt
+- WORKFLOW-STATUS-SUMMARY.txt
+
+================================================================================
+END
+================================================================================
+

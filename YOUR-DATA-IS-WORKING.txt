@@ -1,0 +1,56 @@
+================================================================================
+GOOD NEWS: YOUR DATA IS WORKING!
+Module 1 (Watch Rows) is correctly retrieving data
+================================================================================
+
+Your output shows:
+✅ Name: "Imran Khattak" (Column 0/A)
+✅ Email: "Globo.asia@gmail.com" (Column 1/B)
+✅ Language: "en" (Column 3/D)
+✅ Row: 2
+
+This means:
+✅ Google Sheets connection works
+✅ Watch Rows module works
+✅ Data is being retrieved correctly
+
+The issue is in the NEXT modules (Router or Email).
+
+================================================================================
+WHAT TO CHECK NEXT
+================================================================================
+
+Since Module 1 works, check these:
+
+1. MODULE 2 (Router):
+   - Does it route to Route 1 (English)?
+   - Filter should check: `{{1.3}}` = "en"
+
+2. MODULE 3 (English Email):
+   - To field: `[{"value": "{{1.1}}"}]`
+   - No backticks in variables
+   - Filter (if exists): `{{1.3}}` = "en"
+
+3. MODULE 5 (Update Row):
+   - Row number: `{{1.__ROW_NUMBER__}}`
+   - Status: "Email 1 Sent"
+
+================================================================================
+QUICK FIX
+================================================================================
+
+Most likely issue: Module 3 "To" field format
+
+FIX:
+----
+1. Open Module 3 (English Email)
+2. "To" field should be: `[{"value": "{{1.1}}"}]`
+3. Save
+4. Test again
+
+================================================================================
+
+
+
+
+

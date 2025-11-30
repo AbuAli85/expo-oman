@@ -1,0 +1,56 @@
+================================================================================
+QUICK DEBUG CHECKLIST
+5-Minute Check
+================================================================================
+
+Run through this checklist quickly:
+
+□ 1. Scenario is ON (green button in Make.com)
+□ 2. Latest execution shows Module 1 ran (check execution history)
+□ 3. Module 8 variables have values (check execution log for Module 8)
+□ 4. Module 3 "To" field = {{8.email}} (not "8. email")
+□ 5. Module 4 "To" field = {{8.email}} (not "8. email")
+□ 6. Module 8 has no backticks: {{1.1}} not {{1.`1`}}
+□ 7. Router has filters: {{8.language}} = "en" and "ar"
+□ 8. Test lead in Google Sheets has valid email and language
+
+IF ALL CHECKED:
+---------------
+→ Check execution logs for error messages
+→ Tell me which module failed and what error it shows
+
+================================================================================
+MOST COMMON ISSUE
+================================================================================
+
+90% of the time, it's one of these:
+
+1. "To" field still shows "8. email" instead of {{8.email}}
+   → Fix: Change "value" field to {{8.email}}
+
+2. Module 8 has backticks: {{1.`1`}}
+   → Fix: Remove backticks: {{1.1}}
+
+3. Router has no filters
+   → Fix: Add filters to both routes
+
+4. Scenario is OFF
+   → Fix: Turn it ON
+
+================================================================================
+TELL ME THIS:
+================================================================================
+
+1. Open execution history
+2. Click latest execution
+3. Which module is RED (failed)?
+4. What error message does it show?
+5. Copy the exact error message
+
+This will tell us exactly what's wrong!
+
+================================================================================
+
+
+
+

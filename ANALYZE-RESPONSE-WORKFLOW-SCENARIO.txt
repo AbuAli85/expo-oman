@@ -1,0 +1,349 @@
+================================================================================
+ANALYSIS: "Handle Expo Form Responses - Improved" Scenario
+================================================================================
+
+This is your attendance response workflow that processes "Yes, I'll attend" 
+and "No, I cannot attend" responses from the form.
+
+================================================================================
+CURRENT WORKFLOW STRUCTURE
+================================================================================
+
+Module 1: Google Forms → Watch Responses (Trigger)
+    ↓
+Module 2: Set Variables
+    • email = {{1.respondentEmail}}
+    • name = {{1.answers...}}
+    • attendance = {{1.answers...}}
+    • comments = {{1.answers...}}
+    ↓
+Module 11: Filter Rows (Search for email in sheet)
+    ↓
+Module 12: Array Aggregator
+    ↓
+Module 5: Set Variables
+    • rowNumber = {{12.array[0].__IMTINDEX__}}
+    • rowExists = {{if(12.length > 0; "true"; "false")}}
+    ↓
+Module 6: Router (by email existence)
+    ├─ Route 1: Email Exists → Module 7 (Update Row)
+    │                           ↓
+    │                        Module 13 (Array Aggregator)
+    │                           ↓
+    │                        Module 15 (Router - by attendance)
+    │                           ├─ Route 1: Module 16 (Agreement Email)
+    │                           └─ Route 2: Module 17 (Thank You Email)
+    │
+    └─ Route 2: Email Not Found → Module 10 (Add Row)
+                                    ↓
+                                 Module 14 (Array Aggregator)
+                                    ↓
+                                 Module 18 (Router - by attendance)
+                                    ├─ Route 1: Module 19 (Agreement Email)
+                                    └─ Route 2: Module 20 (Thank You Email)
+
+================================================================================
+ISSUES IDENTIFIED
+================================================================================
+
+ISSUE 1: Email "To" Field Format
+───────────────────────────────────
+All email modules (16, 17, 19, 20) use:
+  "to": ["{{2.email}}"]
+
+This is array of strings format which causes 422 error.
+Should be: "{{2.email}}" (simple string)
+
+ISSUE 2: Router 15 & 18 Filters
+─────────────────────────────────
+Router 15 and Router 18 both route by attendance, but:
+  • No explicit filter conditions shown
+  • Need to verify they're filtering correctly
+  • Risk of both routes executing (sending duplicate emails)
+
+ISSUE 3: Module 7 Filter
+──────────────────────────
+Module 7 has filter:
+  {{5.rowExists}} equals "true"
+
+This is correct - only updates if row exists.
+
+ISSUE 4: Potential Duplicate Email Sending
+───────────────────────────────────────────
+If Router 15 and Router 18 don't have proper filters:
+  • Both email routes might execute
+  • Duplicate emails sent to same recipient
+
+================================================================================
+DETAILED ANALYSIS BY MODULE
+================================================================================
+
+MODULE 1: Google Forms Trigger ✓
+──────────────────────────────────
+✓ Correctly configured
+✓ Watches form responses
+✓ Form ID specified
+
+MODULE 2: Set Variables ✓
+──────────────────────────
+✓ Extracts: email, name, attendance, comments
+✓ Uses correct form field IDs
+✓ Variables set correctly
+
+MODULE 11: Filter Rows ✓
+─────────────────────────
+✓ Searches by email: Column B equals {{2.email}}
+✓ Should find existing row if email exists
+✓ Returns row data if found
+
+MODULE 12: Array Aggregator ✓
+──────────────────────────────
+✓ Aggregates search results
+✓ Used to check if rows found
+
+MODULE 5: Set Variables ⚠️
+───────────────────────────
+Variables:
+  • rowNumber = {{12.array[0].__IMTINDEX__}}
+  • rowExists = {{if(12.length > 0; "true"; "false")}}
+
+⚠️ POTENTIAL ISSUE:
+  If no rows found, {{12.array[0]}} might be undefined
+  Could cause errors when accessing __IMTINDEX__
+
+Better approach:
+  • Check if array exists before accessing [0]
+  • Use safe access pattern
+
+MODULE 6: Router ✓
+───────────────────
+Routes by email existence:
+  Route 1: Email exists → Update existing row
+  Route 2: Email not found → Add new row
+
+✓ Logic is correct
+
+MODULE 7: Update Row ✓
+───────────────────────
+Updates columns:
+  • Column 10 (Response) = "Accepted" or "Rejected"
+  • Column 11 (Response Date) = {{now}}
+  • Column 12 (Comments) = {{2.comments}}
+
+✓ Updates correct columns
+✓ Uses rowNumber from Module 5
+✓ Has filter: rowExists = "true"
+
+MODULE 10: Add Row ✓
+─────────────────────
+Adds new row with:
+  • Column 0 (Name) = {{2.name}}
+  • Column 1 (Email) = {{2.email}}
+  • Column 10 (Response) = "Accepted" or "Rejected"
+  • Column 11 (Response Date) = {{now}}
+  • Column 12 (Comments) = {{2.comments}}
+
+✓ Adds correct columns
+✓ Includes all necessary data
+
+MODULE 15: Router (Update Path) ⚠️
+────────────────────────────────────
+Routes by attendance:
+  Route 1: ? → Module 16 (Agreement Email)
+  Route 2: ? → Module 17 (Thank You Email)
+
+⚠️ NO FILTER CONDITIONS SHOWN
+  • Need to verify filters are set
+  • Should filter by {{2.attendance}}
+  • Routes must be mutually exclusive
+
+MODULE 18: Router (Add Path) ⚠️
+─────────────────────────────────
+Routes by attendance:
+  Route 1: ? → Module 19 (Agreement Email)
+  Route 2: ? → Module 20 (Thank You Email)
+
+⚠️ NO FILTER CONDITIONS SHOWN
+  • Need to verify filters are set
+  • Should filter by {{2.attendance}}
+  • Routes must be mutually exclusive
+
+MODULES 16, 17, 19, 20: Email Modules ❌
+─────────────────────────────────────────
+All use: "to": ["{{2.email}}"]
+
+❌ WRONG FORMAT - causes 422 error
+Should be: "to": "{{2.email}}" (simple string)
+
+================================================================================
+CRITICAL FIXES NEEDED
+================================================================================
+
+FIX 1: Email "To" Field (All Email Modules)
+──────────────────────────────────────────────
+
+Change in ALL email modules (16, 17, 19, 20):
+
+Current (WRONG):
+  "to": ["{{2.email}}"]
+
+Change to (CORRECT):
+  "to": "{{2.email}}"
+
+Or if array format required:
+  "to": [{"value": "{{2.email}}"}]
+
+STEP-BY-STEP:
+─────────────
+1. Click Module 16 (Agreement Email - Update path)
+2. Find "To" field
+3. Change from: ["{{2.email}}"]
+4. Change to: {{2.email}}
+5. Save
+
+Repeat for:
+  • Module 17 (Thank You Email - Update path)
+  • Module 19 (Agreement Email - Add path)
+  • Module 20 (Thank You Email - Add path)
+
+FIX 2: Router 15 Filter Conditions
+─────────────────────────────────────
+
+Verify Router 15 has explicit filters:
+
+Route 1 (Agreement Email):
+  Filter: {{2.attendance}} equals "Yes, I'll attend"
+  → Module 16 executes
+
+Route 2 (Thank You Email):
+  Filter: {{2.attendance}} equals "No, I cannot attend"
+  → Module 17 executes
+
+Ensure filters are:
+  ✓ Mutually exclusive
+  ✓ Case-insensitive matching
+  ✓ Exact value match
+
+FIX 3: Router 18 Filter Conditions
+─────────────────────────────────────
+
+Verify Router 18 has explicit filters:
+
+Route 1 (Agreement Email):
+  Filter: {{2.attendance}} equals "Yes, I'll attend"
+  → Module 19 executes
+
+Route 2 (Thank You Email):
+  Filter: {{2.attendance}} equals "No, I cannot attend"
+  → Module 20 executes
+
+Ensure filters are:
+  ✓ Mutually exclusive
+  ✓ Case-insensitive matching
+  ✓ Exact value match
+
+FIX 4: Safe Row Number Access
+───────────────────────────────
+
+In Module 5, improve rowNumber variable:
+
+Current:
+  rowNumber = {{12.array[0].__IMTINDEX__}}
+
+Better (if supported):
+  rowNumber = {{12.array[0].__IMTINDEX__ || ""}}
+
+Or handle in Router:
+  Only access rowNumber in Route 1 (when row exists)
+
+================================================================================
+EXPECTED BEHAVIOR
+================================================================================
+
+WHEN EMAIL EXISTS IN SHEET:
+────────────────────────────
+1. Form submitted
+2. Search finds email
+3. Route 1: Update Row (Module 7)
+4. Router 15: Routes by attendance
+   • If "Yes" → Email 16 (Agreement)
+   • If "No" → Email 17 (Thank You)
+5. Only ONE email sent
+
+WHEN EMAIL NOT IN SHEET:
+─────────────────────────
+1. Form submitted
+2. Search finds nothing
+3. Route 2: Add Row (Module 10)
+4. Router 18: Routes by attendance
+   • If "Yes" → Email 19 (Agreement)
+   • If "No" → Email 20 (Thank You)
+5. Only ONE email sent
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After fixes, verify:
+
+□ Module 16: "To" field = {{2.email}} (not array)
+□ Module 17: "To" field = {{2.email}} (not array)
+□ Module 19: "To" field = {{2.email}} (not array)
+□ Module 20: "To" field = {{2.email}} (not array)
+□ Router 15 Route 1: Filter = attendance equals "Yes, I'll attend"
+□ Router 15 Route 2: Filter = attendance equals "No, I cannot attend"
+□ Router 18 Route 1: Filter = attendance equals "Yes, I'll attend"
+□ Router 18 Route 2: Filter = attendance equals "No, I cannot attend"
+□ Filters are mutually exclusive
+□ Only ONE email sends per execution
+
+================================================================================
+TESTING SCENARIOS
+================================================================================
+
+TEST 1: Existing Email, "Yes" Response
+────────────────────────────────────────
+□ Submit form with existing email
+□ Response: "Yes, I'll attend"
+□ Expected:
+  ✓ Row updated with "Accepted"
+  ✓ Router 15 → Route 1
+  ✓ Email 16 sent (Agreement email)
+  ✓ Email 17 NOT sent
+
+TEST 2: Existing Email, "No" Response
+───────────────────────────────────────
+□ Submit form with existing email
+□ Response: "No, I cannot attend"
+□ Expected:
+  ✓ Row updated with "Rejected"
+  ✓ Router 15 → Route 2
+  ✓ Email 17 sent (Thank You email)
+  ✓ Email 16 NOT sent
+
+TEST 3: New Email, "Yes" Response
+───────────────────────────────────
+□ Submit form with new email
+□ Response: "Yes, I'll attend"
+□ Expected:
+  ✓ New row added
+  ✓ Response = "Accepted"
+  ✓ Router 18 → Route 1
+  ✓ Email 19 sent (Agreement email)
+  ✓ Email 20 NOT sent
+
+TEST 4: New Email, "No" Response
+──────────────────────────────────
+□ Submit form with new email
+□ Response: "No, I cannot attend"
+□ Expected:
+  ✓ New row added
+  ✓ Response = "Rejected"
+  ✓ Router 18 → Route 2
+  ✓ Email 20 sent (Thank You email)
+  ✓ Email 19 NOT sent
+
+================================================================================
+END OF ANALYSIS
+================================================================================
+

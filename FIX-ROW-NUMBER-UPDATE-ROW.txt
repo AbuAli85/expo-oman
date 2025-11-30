@@ -1,0 +1,212 @@
+================================================================================
+FIX: ROW NUMBER IN UPDATE ROW MODULE
+Google Sheets Update Row Configuration
+================================================================================
+
+PROBLEM:
+--------
+"Row number*" field in Update Row module needs configuration
+When using "Search Rows" mode, you don't need row number directly
+
+================================================================================
+TWO METHODS TO UPDATE ROWS
+================================================================================
+
+METHOD 1: SEARCH ROWS (RECOMMENDED FOR YOUR CASE)
+--------------------------------------------------
+Use this when you need to FIND a row by email, then update it.
+
+Configuration:
+- Mode: Search Rows
+- Search Filter: Email (Column 1) = {{2.email}}
+- Values to Update: Response, Response Date, Comments
+- Row Number: NOT NEEDED (automatically found by search)
+
+METHOD 2: UPDATE BY ROW NUMBER
+-------------------------------
+Use this when you know the exact row number.
+
+Configuration:
+- Mode: Select
+- Row Number: {{1.__ROW_NUMBER__}} (or specific number)
+- Values to Update: Response, Response Date, Comments
+
+================================================================================
+FOR YOUR SCENARIO: USE METHOD 1 (SEARCH ROWS)
+================================================================================
+
+You need to find the row by email address, so use Search Rows:
+
+MODULE 4 (Route 1 - Accept):
+-----------------------------
+1. Module: Google Sheets → Update Row
+2. Mode: Search Rows (NOT "Select")
+3. Spreadsheet: Your leads sheet
+4. Sheet: leads
+5. Search Filter:
+   - Column: Email (or index 1)
+   - Operator: equals
+   - Value: {{2.email}}
+6. Values to Update:
+   - Column K (Response): "Accepted"
+   - Column L (Response Date): {{now}}
+   - Column M (Comments): {{2.comments}}
+7. Row Number: LEAVE EMPTY (not needed with Search Rows)
+
+MODULE 6 (Route 2 - Reject):
+------------------------------
+Same as above, but:
+- Response: "Rejected"
+
+================================================================================
+STEP-BY-STEP CONFIGURATION
+================================================================================
+
+STEP 1: Open Update Row Module
+-------------------------------
+1. Click on Module 4 (or Module 6)
+2. Module: Google Sheets → Update Row
+
+STEP 2: Configure Mode
+----------------------
+1. Find "Mode" or "Search Method" field
+2. Select: "Search Rows" (NOT "Select" or "Update Row")
+3. This allows you to find row by email
+
+STEP 3: Configure Search Filter
+---------------------------------
+1. Find "Search Filter" or "Filters" section
+2. Add filter:
+   - Column: Email (Column B, index 1)
+   - Operator: equals
+   - Value: {{2.email}}
+3. This finds the row with matching email
+
+STEP 4: Configure Values to Update
+-----------------------------------
+1. Find "Values" or "Values to Update" section
+2. Add:
+   - Column K (index 10): "Accepted" (or "Rejected" for Route 2)
+   - Column L (index 11): {{now}}
+   - Column M (index 12): {{2.comments}}
+
+STEP 5: Row Number Field
+-------------------------
+1. If you see "Row Number" field:
+   - LEAVE IT EMPTY
+   - OR set to: {{searchResult.__ROW_NUMBER__}}
+   - With Search Rows mode, it's usually not needed
+
+STEP 6: Save
+------------
+1. Save the module
+2. Test by submitting a form response
+
+================================================================================
+ALTERNATIVE: IF SEARCH ROWS NOT AVAILABLE
+================================================================================
+
+If your Update Row module doesn't have "Search Rows" mode:
+
+OPTION 1: Use Search Rows Module First
+---------------------------------------
+1. Add: Google Sheets → Search Rows
+   - Find row by email: {{2.email}}
+   - Returns: {{searchResult.__ROW_NUMBER__}}
+
+2. Then: Google Sheets → Update Row
+   - Mode: Select
+   - Row Number: {{searchResult.__ROW_NUMBER__}}
+   - Values: Response, Date, Comments
+
+OPTION 2: Use Update Rows (Multiple)
+-------------------------------------
+1. Module: Google Sheets → Update Rows
+2. Filter: Email = {{2.email}}
+3. Values: Response, Date, Comments
+4. Updates all matching rows
+
+================================================================================
+VERIFY COLUMN INDEXES
+================================================================================
+
+Your Google Sheets columns:
+- A (0): Name
+- B (1): Email
+- C (2): Phone
+- D (3): Language
+- E (4): Status
+- F (5): Date Added
+- G (6): Email 1 Date
+- H (7): Email 2 Date
+- I (8): Email 3 Date
+- J (9): Notes
+- K (10): Response ← NEW
+- L (11): Response Date ← NEW
+- M (12): Comments ← NEW
+
+Make sure columns K, L, M exist in your sheet!
+
+================================================================================
+COMPLETE MODULE CONFIGURATION
+================================================================================
+
+MODULE 4 (Update Row - Accept):
+--------------------------------
+Module: Google Sheets → Update Row
+Mode: Search Rows
+Spreadsheet: Your leads sheet
+Sheet: leads
+Search Filter:
+  - Column: 1 (Email)
+  - Operator: equals
+  - Value: {{2.email}}
+Values:
+  - "10": "Accepted"
+  - "11": "{{now}}"
+  - "12": "{{2.comments}}"
+Row Number: (empty or not needed)
+
+MODULE 6 (Update Row - Reject):
+--------------------------------
+Same as Module 4, but:
+  - "10": "Rejected"
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: "Row number is required"
+--------------------------------
+→ You're using "Select" mode
+→ Change to "Search Rows" mode
+→ OR add Search Rows module first
+
+ISSUE: "No rows found"
+----------------------
+→ Check email format matches exactly
+→ Check search filter is correct
+→ Verify email exists in sheet
+
+ISSUE: "Column index out of range"
+-----------------------------------
+→ Columns K, L, M don't exist
+→ Add them to Google Sheets first
+→ Or use correct column indexes
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Mode set to "Search Rows" (not "Select")
+□ Search Filter: Email (Column 1) = {{2.email}}
+□ Values to Update:
+  □ Column K (10): "Accepted" or "Rejected"
+  □ Column L (11): {{now}}
+  □ Column M (12): {{2.comments}}
+□ Row Number: Empty (or not needed)
+□ Columns K, L, M exist in Google Sheets
+□ Module saved
+
+================================================================================
+

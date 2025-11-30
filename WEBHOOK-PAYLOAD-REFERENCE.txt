@@ -1,0 +1,291 @@
+================================================================================
+WEBHOOK PAYLOAD STRUCTURE REFERENCE
+Make.com Webhook Data Format - Email 1 Invitation Workflow
+================================================================================
+
+This document describes the JSON payload structure sent from Google Apps Script
+to Make.com webhook when a form is submitted.
+
+WEBHOOK PURPOSE:
+---------------
+✅ This webhook is specifically for "Email 1 - Invitation" workflow ONLY
+❌ NOT used for Email 2, Email 3, or Response Form workflows
+
+WEBHOOK URL:
+-----------
+https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+================================================================================
+PAYLOAD STRUCTURE
+================================================================================
+
+The webhook sends a JSON object with the following structure:
+
+{
+    "timestamp": "2025-11-29T21:14:40.121Z",
+    "name": "Test User",
+    "email": "test@example.com",
+    "phone": "+968 1234 5678",
+    "language": "en",
+    "status": "",
+    "attendance": "Yes, I'll attend",
+    "response": "Yes, I'll attend",
+    "responseDate": "",
+    "comments": "This is a test submission from Apps Script"
+}
+
+================================================================================
+FIELD DESCRIPTIONS
+================================================================================
+
+timestamp (string, ISO 8601 format)
+  - When the form response was created
+  - Format: "2025-11-29T21:14:40.121Z"
+  - Source: Column F (Date Added) or current time if empty
+
+name (string)
+  - Full name of the respondent
+  - Source: Column A (Name)
+  - Always trimmed and converted to string
+
+email (string)
+  - Email address of the respondent
+  - Source: Column B (Email)
+  - Always trimmed, lowercased
+  - REQUIRED FIELD - webhook won't send if empty
+
+phone (string)
+  - Phone number
+  - Source: Column C (Phone)
+  - May be empty
+  - Always trimmed and converted to string
+
+language (string)
+  - Language preference: "en" or "ar"
+  - Source: Column D (Language)
+  - Default: "en" if empty
+  - Always lowercased and trimmed
+
+status (string)
+  - Current status of the lead
+  - Source: Column E (Status)
+  - Examples: "Email 1 Sent", "Email 2 Sent", "Email 3 Sent"
+  - May be empty
+
+attendance (string)
+  - Form response/attendance status
+  - Source: Column K (Response)
+  - Examples: "Yes, I'll attend", "No, I cannot attend"
+  - For backward compatibility with Make.com scenarios
+  - Same value as "response" field
+
+response (string)
+  - Form response/attendance status
+  - Source: Column K (Response)
+  - Examples: "Yes, I'll attend", "No, I cannot attend"
+  - Same value as "attendance" field
+
+responseDate (string)
+  - Date when the response was submitted
+  - Source: Column L (Response Date)
+  - ISO 8601 format if Date object, or string as-is
+  - May be empty
+
+comments (string)
+  - Additional comments from respondent
+  - Source: Column M (Comments)
+  - Always trimmed and converted to string
+  - May be empty
+
+================================================================================
+GOOGLE SHEET COLUMN MAPPING
+================================================================================
+
+Column A (1): Name           → payload.name
+Column B (2): Email          → payload.email (REQUIRED)
+Column C (3): Phone          → payload.phone
+Column D (4): Language       → payload.language (default: "en")
+Column E (5): Status         → payload.status
+Column F (6): Date Added     → payload.timestamp
+Column G (7): Email 1 Date   → (not sent in webhook)
+Column H (8): Email 2 Date   → (not sent in webhook)
+Column I (9): Email 3 Date   → (not sent in webhook)
+Column J (10): Notes         → (not sent in webhook)
+Column K (11): Response      → payload.response & payload.attendance
+Column L (12): Response Date → payload.responseDate
+Column M (13): Comments      → payload.comments
+
+================================================================================
+MAKE.COM SCENARIO VARIABLE MAPPING
+================================================================================
+
+In your Make.com scenario, access these fields as:
+
+Module 1 (Webhook Trigger):
+  - {{1.timestamp}}      → Timestamp
+  - {{1.name}}           → Name
+  - {{1.email}}          → Email (use this for searching/updating)
+  - {{1.phone}}          → Phone
+  - {{1.language}}       → Language
+  - {{1.status}}         → Status
+  - {{1.attendance}}     → Attendance response
+  - {{1.response}}       → Response (same as attendance)
+  - {{1.responseDate}}   → Response Date
+  - {{1.comments}}       → Comments
+
+Module 2 (Set Variables):
+  Set variables with scope "execution" or "scenario":
+  - email: {{1.email}}
+  - name: {{1.name}}
+  - attendance: {{1.attendance}}
+  - comments: {{1.comments}}
+  - language: {{1.language}}
+
+Module 3 (Search Rows):
+  Search filter:
+  - Column: 1 (or "Email" if using column name)
+  - Operator: equals
+  - Value: {{2.email}} (or {{1.email}})
+
+Module 7/5 (Update Row):
+  Values to update:
+  - Column 11 (K): {{2.attendance}} or {{1.response}}
+  - Column 12 (L): {{now}}
+  - Column 13 (M): {{2.comments}} or {{1.comments}}
+
+================================================================================
+EXAMPLE PAYLOADS
+================================================================================
+
+EXAMPLE 1: Form Response - Accepting
+-------------------------------------
+{
+    "timestamp": "2025-11-29T21:14:40.121Z",
+    "name": "Ahmed Al-Rashid",
+    "email": "ahmed@example.com",
+    "phone": "+968 9123 4567",
+    "language": "en",
+    "status": "Email 2 Sent",
+    "attendance": "Yes, I'll attend",
+    "response": "Yes, I'll attend",
+    "responseDate": "2025-11-29T21:14:40.121Z",
+    "comments": "Looking forward to the event!"
+}
+
+EXAMPLE 2: Form Response - Declining
+-------------------------------------
+{
+    "timestamp": "2025-11-29T22:00:00.000Z",
+    "name": "Fatima Al-Zahra",
+    "email": "fatima@example.com",
+    "phone": "",
+    "language": "ar",
+    "status": "",
+    "attendance": "No, I cannot attend",
+    "response": "No, I cannot attend",
+    "responseDate": "",
+    "comments": "Sorry, I have a conflict."
+}
+
+EXAMPLE 3: Minimal Payload (Required Fields Only)
+--------------------------------------------------
+{
+    "timestamp": "2025-11-29T23:00:00.000Z",
+    "name": "Test User",
+    "email": "test@example.com",
+    "phone": "",
+    "language": "en",
+    "status": "",
+    "attendance": "",
+    "response": "",
+    "responseDate": "",
+    "comments": ""
+}
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+1. EMAIL IS REQUIRED
+   - If email is empty or missing, webhook will NOT send
+   - Email is always lowercased and trimmed
+
+2. TIMESTAMP FORMAT
+   - ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
+   - Uses Date Added column if available, otherwise current time
+
+3. LANGUAGE VALUES
+   - Always lowercased: "en" or "ar"
+   - Defaults to "en" if empty or invalid
+
+4. ATTENDANCE vs RESPONSE
+   - Both fields contain the same value
+   - "attendance" is for backward compatibility
+   - Use either field in Make.com - they're identical
+
+5. EMPTY VALUES
+   - Empty fields are sent as empty strings ""
+   - Date fields may be empty strings or ISO dates
+   - Phone, comments, status may be empty
+
+6. DATA VALIDATION
+   - All string values are trimmed (whitespace removed)
+   - Email is lowercased
+   - Language is lowercased
+   - All values converted to strings (even if number/date)
+
+================================================================================
+TROUBLESHOOTING IN MAKE.COM
+================================================================================
+
+ISSUE: Email variable is empty
+-------------------------------
+→ Check webhook received data: {{1.email}}
+→ Verify column B (Email) has data in Google Sheet
+→ Webhook won't send if email is empty
+
+ISSUE: Can't find row by email
+-------------------------------
+→ Use {{1.email}} or {{2.email}} in Search Rows
+→ Email from webhook is already lowercased
+→ Make sure Search Rows searches Column B (index 1)
+
+ISSUE: Update Row fails - missing rowNumber
+--------------------------------------------
+→ Change Update Row mode to "Search Rows"
+→ OR pass rowNumber from Search Rows: {{3[0].__ROW_NUMBER__}}
+
+ISSUE: Language not matching
+-----------------------------
+→ Webhook sends lowercase: "en" or "ar"
+→ Router conditions should check: {{1.language}} = "en"
+
+ISSUE: Attendance/Response values
+----------------------------------
+→ Use {{1.attendance}} or {{1.response}} (same value)
+→ Values: "Yes, I'll attend" or "No, I cannot attend"
+
+================================================================================
+TESTING
+================================================================================
+
+TEST 1: Use testWebhook() function in Apps Script
+  - Sends test payload to webhook
+  - Check Make.com execution log
+  - Verify all fields are received correctly
+
+TEST 2: Use testLastRow() function in Apps Script
+  - Processes actual last row from sheet
+  - Shows extracted data in logs
+  - Sends to webhook for testing
+
+TEST 3: Submit test form
+  - Submit a test form response
+  - Check Apps Script execution log
+  - Check Make.com execution log
+  - Verify data flow end-to-end
+
+================================================================================
+END
+================================================================================
+

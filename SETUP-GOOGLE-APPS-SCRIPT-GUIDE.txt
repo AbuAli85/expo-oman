@@ -1,0 +1,214 @@
+================================================================================
+SETUP GUIDE: GOOGLE APPS SCRIPT FOR WEBHOOK TRIGGER
+================================================================================
+
+This guide will help you install and configure the Google Apps Script
+to trigger your Make.com webhook when new rows are added to your sheet.
+
+================================================================================
+STEP 1: OPEN APPS SCRIPT
+================================================================================
+
+1. Open your Google Sheet
+2. Click Extensions → Apps Script
+3. This opens the Apps Script editor
+
+================================================================================
+STEP 2: REPLACE THE CODE
+================================================================================
+
+1. In Apps Script editor, DELETE all existing code
+2. Copy the ENTIRE script from: GOOGLE-APPS-SCRIPT-FIXED-AND-READY.js
+3. Paste it into the Apps Script editor
+4. Click Save (or Ctrl+S / Cmd+S)
+
+================================================================================
+STEP 3: VERIFY SHEET NAME
+================================================================================
+
+1. In the script, find this line:
+   const SHEET_NAME = 'leads';
+
+2. Check if your sheet name is exactly 'leads'
+   □ If yes → Leave as is
+   □ If different → Change to your exact sheet name
+
+3. Save the script
+
+================================================================================
+STEP 4: VERIFY COLUMN MAPPING
+================================================================================
+
+Run diagnostic function to verify columns:
+
+1. In Apps Script editor, select function: diagnoseSheetStructure
+2. Click Run (▶️) button
+3. Authorize if prompted
+4. Check logs: View → Logs
+5. Verify column mapping matches your sheet
+
+If columns don't match:
+  □ Update COLUMN_MAPPING in the script
+  □ Save script
+  □ Test again
+
+================================================================================
+STEP 5: TEST WEBHOOK CONNECTION
+================================================================================
+
+1. Select function: testWebhook
+2. Click Run (▶️)
+3. Check logs for success/failure
+4. Check Make.com for new execution
+
+If successful:
+  ✓ Logs show: "Test successful!"
+  ✓ Make.com shows new execution
+  ✓ You're ready to install trigger!
+
+If failed:
+  ✗ Check webhook URL is correct
+  ✗ Check Make.com scenario is active
+  ✗ Check logs for error message
+
+================================================================================
+STEP 6: TEST WITH ACTUAL DATA
+================================================================================
+
+1. Select function: testLastRow
+2. Click Run (▶️)
+3. This processes the last row from your sheet
+4. Check logs for extracted data
+5. Check Make.com for execution
+
+Verify:
+  □ Data extracted correctly
+  □ Email field populated
+  □ Language field populated
+  □ Webhook sent successfully
+
+================================================================================
+STEP 7: INSTALL THE TRIGGER
+================================================================================
+
+1. Click the clock icon (⏰) in Apps Script toolbar
+   (Left sidebar, near the bottom)
+
+2. Click "+ Add Trigger" button
+
+3. Configure the trigger:
+   - Function to run: onFormSubmit
+   - Event source: From form
+   - Event type: On form submit
+   - Failure notification settings: Notify me immediately
+
+4. Click "Save"
+
+5. Authorize if prompted:
+   - Click "Review Permissions"
+   - Choose your Google account
+   - Click "Allow" or "Advanced" → "Go to [Project Name] (unsafe)" → "Allow"
+
+6. Trigger is now installed!
+
+================================================================================
+STEP 8: TEST WITH REAL FORM
+================================================================================
+
+1. Submit a test form response
+2. Check Apps Script logs:
+   View → Execution log
+   Should show: "Successfully sent data to webhook!"
+
+3. Check Make.com:
+   Go to your scenario
+   Check execution history
+   Should see new execution triggered
+
+4. Verify data received correctly in Make.com
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+Before going live, verify:
+
+□ Script saved successfully
+□ Sheet name matches exactly
+□ Column mapping verified (diagnoseSheetStructure)
+□ Webhook connection tested (testWebhook)
+□ Real data tested (testLastRow)
+□ Trigger installed
+□ Test form submission works
+□ Make.com receives data correctly
+□ Variables populated correctly in Make.com
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Sheet not found
+───────────────────────
+Solution:
+  • Check SHEET_NAME matches exactly (case-sensitive)
+  • Run diagnoseSheetStructure() to see available sheets
+  • Update SHEET_NAME if needed
+
+ISSUE: Columns don't match
+───────────────────────────
+Solution:
+  • Run diagnoseSheetStructure()
+  • Check which column has which header
+  • Update COLUMN_MAPPING accordingly
+  • If Google Forms added Timestamp column, add 1 to all numbers
+
+ISSUE: Webhook not receiving data
+──────────────────────────────────
+Solution:
+  • Test webhook: Run testWebhook()
+  • Check webhook URL is correct
+  • Verify Make.com scenario is active
+  • Check Make.com webhook is active
+  • Check logs for error messages
+
+ISSUE: Trigger not firing
+──────────────────────────
+Solution:
+  • Check trigger is installed (clock icon)
+  • Verify function name is exactly: onFormSubmit
+  • Check event source: "From form"
+  • Verify form is linked to correct sheet
+  • Check execution log for errors
+
+ISSUE: Data not showing in Make.com
+────────────────────────────────────
+Solution:
+  • Check Module 12 (webhook) output
+  • Verify field references in Module 9
+  • Use Make.com field selector to map correctly
+  • Check logs for data extraction errors
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Webhook URL:
+  https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u
+
+Sheet Name:
+  leads
+
+Key Functions:
+  • diagnoseSheetStructure() - Check column mapping
+  • testWebhook() - Test webhook connection
+  • testLastRow() - Test with actual sheet data
+  • onFormSubmit() - Main trigger function (automatic)
+
+Make.com Module References:
+  • Module 12: Webhook (receives data)
+  • Module 9: Set Variables (use {{12.name}}, {{12.email}}, {{12.language}})
+
+================================================================================
+END OF SETUP GUIDE
+================================================================================
+

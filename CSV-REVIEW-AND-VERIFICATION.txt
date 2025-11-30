@@ -1,0 +1,209 @@
+================================================================================
+CSV FILE REVIEW: UAE Property Expo - leads.csv
+Is Your Sheet Structure Correct?
+================================================================================
+
+I've reviewed your CSV file. Here's the analysis:
+
+================================================================================
+YOUR CSV STRUCTURE
+================================================================================
+
+HEADER ROW:
+-----------
+Name,Email,Phone,Language,Status,Date Added,Email 1 Date,Email 2 Date,Email 3 Date,Notes
+
+DATA ROW:
+---------
+fahad alamri,luxsess2001@hotmail.com,96895153930,en,,,,,,
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+COLUMN A: Name ✅ CORRECT
+--------------------------
+Value: "fahad alamri"
+Status: ✅ Has a name
+Note: Will be used in email: "Dear fahad alamri,"
+
+COLUMN B: Email ✅ CORRECT
+---------------------------
+Value: "luxsess2001@hotmail.com"
+Status: ✅ Valid email format
+Note: This is where Email 1 will be sent
+
+COLUMN C: Phone ✅ CORRECT
+---------------------------
+Value: "96895153930"
+Status: ✅ Has phone number
+Note: Optional but good to have
+
+COLUMN D: Language ✅ CORRECT
+-----------------------------
+Value: "en"
+Status: ✅ Correct value (lowercase "en")
+Note: Matches filter in Make.com ({{8.language}} = "en")
+This will route to English email (Route 1)
+
+COLUMN E: Status ✅ CORRECT
+----------------------------
+Value: (empty)
+Status: ✅ Correct for new lead
+Note: Will be updated to "Email 1 Sent" after email is sent
+
+COLUMN F: Date Added ✅ CORRECT
+--------------------------------
+Value: (empty)
+Status: ✅ Will be auto-filled when imported
+Note: Optional tracking column
+
+COLUMN G: Email 1 Date ✅ CORRECT
+----------------------------------
+Value: (empty)
+Status: ✅ Correct for new lead
+Note: Will be updated to {{now}} after Email 1 is sent
+
+COLUMN H: Email 2 Date ✅ CORRECT
+----------------------------------
+Value: (empty)
+Status: ✅ Correct for new lead
+Note: Will be filled after Email 2 is sent (3 days later)
+
+COLUMN I: Email 3 Date ✅ CORRECT
+----------------------------------
+Value: (empty)
+Status: ✅ Correct for new lead
+Note: Will be filled after Email 3 is sent (7 days later)
+
+COLUMN J: Notes ✅ CORRECT
+---------------------------
+Value: (empty)
+Status: ✅ Optional column
+Note: For any additional notes
+
+================================================================================
+OVERALL ASSESSMENT
+================================================================================
+
+✅ YOUR CSV STRUCTURE IS CORRECT!
+
+All columns are in the right order:
+- Column A: Name ✅
+- Column B: Email ✅
+- Column C: Phone ✅
+- Column D: Language ✅
+- Column E: Status ✅
+- Column F: Date Added ✅
+- Column G: Email 1 Date ✅
+- Column H: Email 2 Date ✅
+- Column I: Email 3 Date ✅
+- Column J: Notes ✅
+
+All data values are correct:
+- Name: "fahad alamri" ✅
+- Email: "luxsess2001@hotmail.com" ✅
+- Language: "en" ✅ (matches filter)
+- Status: Empty ✅ (correct for new lead)
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+NOTE 1: Language Value
+-----------------------
+Your CSV has: "en" (lowercase)
+Make.com filter checks: {{8.language}} = "en"
+✅ They match perfectly!
+
+If you add Arabic leads, use: "ar" (lowercase)
+
+NOTE 2: Email Address
+---------------------
+Email: luxsess2001@hotmail.com
+✅ Valid format
+✅ Will receive Email 1 automatically
+
+NOTE 3: Phone Number
+--------------------
+Phone: 96895153930
+✅ Has value (optional but good)
+Note: Consider formatting as: +968 95153930 (with country code)
+
+NOTE 4: Empty Columns
+---------------------
+Status, Date Added, Email dates are empty
+✅ This is CORRECT for new leads
+✅ They will be auto-filled by Make.com
+
+================================================================================
+READY TO IMPORT
+================================================================================
+
+Your CSV is ready to import to Google Sheets!
+
+IMPORT STEPS:
+-------------
+1. Open Google Sheets
+2. File → Import
+3. Upload "UAE Property Expo - leads.csv"
+4. Make sure columns align correctly:
+   - Column A = Name
+   - Column B = Email
+   - Column D = Language
+5. Save the sheet
+
+AFTER IMPORT:
+-------------
+1. Make.com will detect the new row
+2. Email 1 will be sent to luxsess2001@hotmail.com
+3. Google Sheets will update:
+   - Status = "Email 1 Sent"
+   - Email 1 Date = current date/time
+
+================================================================================
+IF ADDING MORE LEADS
+================================================================================
+
+When adding more leads to your CSV, follow this format:
+
+EXAMPLE ROWS:
+-------------
+Name,Email,Phone,Language,Status,Date Added,Email 1 Date,Email 2 Date,Email 3 Date,Notes
+fahad alamri,luxsess2001@hotmail.com,96895153930,en,,,,,,
+John Smith,john@example.com,+968 12345678,en,,,,,,
+أحمد محمد,ahmed@example.com,+968 87654321,ar,,,,,,
+
+IMPORTANT:
+----------
+- Language must be "en" or "ar" (lowercase, exact match)
+- Email must be valid format
+- Status should be empty for new leads
+- Date columns will be auto-filled
+
+================================================================================
+VERIFICATION SUMMARY
+================================================================================
+
+✅ CSV Structure: CORRECT
+✅ Column Order: CORRECT
+✅ Column Names: CORRECT
+✅ Data Values: CORRECT
+✅ Language Value: CORRECT ("en" matches filter)
+✅ Email Format: CORRECT
+✅ Empty Columns: CORRECT (will be auto-filled)
+
+RESULT: Your CSV is PERFECT and ready to use! 🎉
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Import CSV to Google Sheets
+2. Verify columns align correctly
+3. Make sure Make.com scenario is ON
+4. Email 1 will send automatically
+5. Check Google Sheets - Status should update to "Email 1 Sent"
+
+================================================================================
+

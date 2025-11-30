@@ -1,0 +1,371 @@
+================================================================================
+ADD ACCEPT/REJECT WORKFLOW TO EMAIL
+Client Form with Accept/Reject Links
+================================================================================
+
+You want to add:
+1. Link in email to accept or reject
+2. Form/page for client to respond
+3. If accept: continue to agreement
+4. If reject: handle differently
+
+================================================================================
+OPTION 1: SIMPLE - USE GOOGLE FORMS (EASIEST)
+================================================================================
+
+STEP 1: Create Google Form
+---------------------------
+1. Go to Google Forms
+2. Create new form: "UAE Property Expo - Response"
+3. Add question:
+   - "Will you attend the expo?"
+   - Type: Multiple choice
+   - Options: "Yes, I'll attend" / "No, I cannot attend"
+4. Add fields:
+   - Name (pre-filled from email)
+   - Email (pre-filled from email)
+   - Additional comments (optional)
+5. Get form link
+
+STEP 2: Add Link to Email
+--------------------------
+In Module 3 (English Email) and Module 4 (Arabic Email):
+
+Update the "Register Now" button link:
+- FROM: href="#"
+- TO: href="YOUR_GOOGLE_FORM_LINK?entry.XXXXX={{1.0}}&entry.YYYYY={{1.1}}"
+
+Replace:
+- YOUR_GOOGLE_FORM_LINK = your form URL
+- entry.XXXXX = field ID for Name
+- entry.YYYYY = field ID for Email
+
+STEP 3: Create Response Handler Scenario
+----------------------------------------
+Create NEW scenario: "Handle Expo Response"
+
+Trigger: Google Forms → Watch Responses
+Action: Check response
+- If "Yes" → Send agreement email
+- If "No" → Send thank you email
+
+STEP 4: Update Google Sheets
+----------------------------
+Add new column: "Response" (Column K)
+Update based on form response
+
+================================================================================
+OPTION 2: ADVANCED - CUSTOM WEBPAGE (MORE CONTROL)
+================================================================================
+
+STEP 1: Create Landing Page
+----------------------------
+Create a webpage with:
+- Accept button → Links to agreement form
+- Reject button → Links to feedback form
+- Personalized with client name
+
+STEP 2: Add Tracking to Links
+------------------------------
+In email, use UTM parameters:
+- Accept link: https://yoursite.com/accept?email={{8.email}}&token=UNIQUE_TOKEN
+- Reject link: https://yoursite.com/reject?email={{8.email}}&token=UNIQUE_TOKEN
+
+STEP 3: Create Webhook Handler
+-------------------------------
+Create NEW scenario: "Handle Accept/Reject"
+
+Trigger: Webhooks → Custom webhook
+- URL: https://hook.eu2.make.com/YOUR_WEBHOOK_ID
+- Method: POST
+
+STEP 4: Process Response
+-------------------------
+In webhook handler:
+- Check response (accept/reject)
+- Update Google Sheets
+- Send appropriate email
+
+================================================================================
+OPTION 3: RECOMMENDED - MAKE.COM WEBHOOK + SIMPLE PAGE
+================================================================================
+
+This is the BEST option for Make.com integration!
+
+STEP 1: Create Webhook in Make.com
+-----------------------------------
+1. Create NEW scenario: "Handle Expo Response"
+2. Add trigger: Webhooks → Custom webhook
+3. Copy the webhook URL
+4. Note: You'll get a URL like:
+   https://hook.eu2.make.com/YOUR_WEBHOOK_ID
+
+STEP 2: Create Simple HTML Page
+--------------------------------
+Create a simple HTML page with buttons:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UAE Property Expo - Response</title>
+</head>
+<body>
+    <h1>Thank you for your interest!</h1>
+    <p>Dear {{name}},</p>
+    <p>Please let us know if you'll attend:</p>
+    
+    <a href="https://hook.eu2.make.com/YOUR_WEBHOOK_ID?email={{email}}&response=accept&name={{name}}">
+        <button>Yes, I'll Attend</button>
+    </a>
+    
+    <a href="https://hook.eu2.make.com/YOUR_WEBHOOK_ID?email={{email}}&response=reject&name={{name}}">
+        <button>No, I Cannot Attend</button>
+    </a>
+</body>
+</html>
+```
+
+STEP 3: Update Email Links
+---------------------------
+In Module 3 and Module 4, update the "Register Now" button:
+
+English Email:
+```html
+<a href="https://yoursite.com/response?email={{8.email}}&name={{8.name}}&token=TOKEN" 
+   style="...">
+   Register Now
+</a>
+```
+
+Arabic Email:
+```html
+<a href="https://yoursite.com/response?email={{8.email}}&name={{8.name}}&token=TOKEN" 
+   style="...">
+   سجل الآن
+</a>
+```
+
+STEP 4: Configure Webhook Handler
+---------------------------------
+In "Handle Expo Response" scenario:
+
+1. Webhook trigger receives:
+   - email
+   - response (accept/reject)
+   - name
+
+2. Add Router:
+   - Route 1: If response = "accept"
+   - Route 2: If response = "reject"
+
+3. Route 1 (Accept):
+   - Update Google Sheets: Response = "Accepted"
+   - Send agreement email
+   - OR redirect to agreement form
+
+4. Route 2 (Reject):
+   - Update Google Sheets: Response = "Rejected"
+   - Send thank you email
+   - OR ask for feedback
+
+================================================================================
+DETAILED IMPLEMENTATION: OPTION 3 (RECOMMENDED)
+================================================================================
+
+SCENARIO 1: EMAIL 1 - INVITATION (EXISTING)
+--------------------------------------------
+Module 1: Google Sheets Watch Rows
+Module 8: Set Variables
+Module 2: Router
+Module 3/4: Send Email with link to response page
+
+SCENARIO 2: HANDLE EXPO RESPONSE (NEW)
+---------------------------------------
+Module 1: Webhooks → Custom webhook
+Module 2: Router
+   Route 1: If response = "accept"
+   Route 2: If response = "reject"
+
+Route 1 (Accept):
+   Module 3: Update Google Sheets
+      - Response = "Accepted"
+      - Response Date = {{now}}
+   Module 4: Send Agreement Email
+      - OR redirect to agreement form
+      - OR send agreement document
+
+Route 2 (Reject):
+   Module 5: Update Google Sheets
+      - Response = "Rejected"
+      - Response Date = {{now}}
+   Module 6: Send Thank You Email
+      - OR ask for feedback
+
+================================================================================
+UPDATE EMAIL TEMPLATES
+================================================================================
+
+MODULE 3 (English Email):
+--------------------------
+Update the "Register Now" button:
+
+```html
+<a href="https://yoursite.com/response?email={{8.email}}&name={{8.name}}&lang=en" 
+   style="display: inline-block; padding: 16px 45px; background: linear-gradient(135deg, #C40021 0%, #a0001a 100%); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 15px rgba(196, 0, 33, 0.4);">
+   Register Now
+</a>
+```
+
+MODULE 4 (Arabic Email):
+-------------------------
+Update the "سجل الآن" button:
+
+```html
+<a href="https://yoursite.com/response?email={{8.email}}&name={{8.name}}&lang=ar" 
+   style="display: inline-block; padding: 16px 45px; background: linear-gradient(135deg, #C40021 0%, #a0001a 100%); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 15px rgba(196, 0, 33, 0.4);">
+   سجل الآن
+</a>
+```
+
+================================================================================
+CREATE RESPONSE HANDLER SCENARIO
+================================================================================
+
+SCENARIO: "Handle Expo Response"
+
+MODULE 1: Webhooks → Custom webhook
+------------------------------------
+- Method: GET (for simple links)
+- OR Method: POST (for forms)
+
+MODULE 2: Router
+-----------------
+Route 1 Filter: {{query.response}} = "accept"
+Route 2 Filter: {{query.response}} = "reject"
+
+ROUTE 1 (ACCEPT):
+-----------------
+Module 3: Google Sheets → Update Row
+   - Find row by email: {{query.email}}
+   - Update:
+     * Response (Column K): "Accepted"
+     * Response Date (Column L): {{now}}
+
+Module 4: Resend → Send Agreement Email
+   - To: {{query.email}}
+   - Subject: "Agreement - UAE Property Expo"
+   - Include agreement details/form
+
+OR
+
+Module 4: HTTP → Make a Request
+   - Redirect to agreement form
+   - URL: https://yoursite.com/agreement?email={{query.email}}
+
+ROUTE 2 (REJECT):
+------------------
+Module 5: Google Sheets → Update Row
+   - Find row by email: {{query.email}}
+   - Update:
+     * Response (Column K): "Rejected"
+     * Response Date (Column L): {{now}}
+
+Module 6: Resend → Send Thank You Email
+   - To: {{query.email}}
+   - Subject: "Thank You - UAE Property Expo"
+   - Thank them for interest
+
+================================================================================
+UPDATE GOOGLE SHEETS STRUCTURE
+================================================================================
+
+Add new columns:
+
+Column K: Response
+   - Values: "Accepted", "Rejected", "Pending"
+
+Column L: Response Date
+   - Date when response received
+
+Column M: Agreement Status (if accepted)
+   - Values: "Pending", "Sent", "Signed"
+
+================================================================================
+QUICK IMPLEMENTATION STEPS
+================================================================================
+
+STEP 1: Create Webhook (5 minutes)
+-----------------------------------
+1. Create new scenario: "Handle Expo Response"
+2. Add: Webhooks → Custom webhook
+3. Copy webhook URL
+
+STEP 2: Update Email Links (5 minutes)
+----------------------------------------
+1. Open Module 3 (English Email)
+2. Update "Register Now" button link to webhook URL
+3. Add parameters: ?email={{8.email}}&name={{8.name}}&response=accept
+4. Do same for Module 4 (Arabic Email)
+
+STEP 3: Create Response Handler (10 minutes)
+---------------------------------------------
+1. Add Router in webhook scenario
+2. Route 1: Accept → Update Sheets + Send agreement
+3. Route 2: Reject → Update Sheets + Send thank you
+
+STEP 4: Test (5 minutes)
+--------------------------
+1. Send test email
+2. Click link
+3. Check Google Sheets updated
+4. Check follow-up email sent
+
+================================================================================
+ALTERNATIVE: SIMPLE BUTTONS IN EMAIL
+================================================================================
+
+You can also add TWO buttons in email:
+
+ACCEPT BUTTON:
+--------------
+```html
+<a href="https://hook.eu2.make.com/WEBHOOK?email={{8.email}}&response=accept">
+   ✅ Yes, I'll Attend
+</a>
+```
+
+REJECT BUTTON:
+---------------
+```html
+<a href="https://hook.eu2.make.com/WEBHOOK?email={{8.email}}&response=reject">
+   ❌ No, I Cannot Attend
+</a>
+```
+
+Both buttons link directly to webhook - no page needed!
+
+================================================================================
+RECOMMENDATION
+================================================================================
+
+BEST OPTION: Option 3 (Make.com Webhook)
+
+REASONS:
+--------
+✅ Full control in Make.com
+✅ No external website needed (can use direct webhook links)
+✅ Easy to update
+✅ Integrates with Google Sheets
+✅ Can send follow-up emails automatically
+
+IMPLEMENTATION:
+---------------
+1. Create webhook scenario
+2. Update email links to webhook URLs
+3. Handle accept/reject in webhook scenario
+4. Update Google Sheets
+5. Send follow-up emails
+
+================================================================================
+

@@ -1,0 +1,158 @@
+================================================================================
+CORRECTED: MODULE 2 NAME VARIABLE - FIX SYNTAX ERROR
+================================================================================
+
+ERROR:
+──────
+Invalid IML for parameter '{{split(1.respondentEmail; "@")}}{{[0]}}': 
+Unexpected [ at 34.
+
+PROBLEM:
+────────
+The [0] index is OUTSIDE the expression. It needs to be INSIDE.
+
+================================================================================
+CORRECT SYNTAX
+================================================================================
+
+WRONG (Current):
+────────────────
+{{split(1.respondentEmail; "@")}}{{[0]}}
+                    ↑ expression ends    ↑ [0] is outside ❌
+
+CORRECT:
+────────
+{{split(1.respondentEmail; "@")[0]}}
+                    ↑ [0] is inside ✅
+
+Notice: [0] comes BEFORE the closing }} and is part of the expression.
+
+================================================================================
+QUICK FIX - 3 OPTIONS
+================================================================================
+
+OPTION 1: CORRECT SPLIT SYNTAX (Try This First)
+─────────────────────────────────────────────────
+In Module 2, "name" variable value:
+
+{{split(1.respondentEmail; "@")[0]}}
+
+Type it exactly like this - [0] must be inside the braces!
+
+─────────────────────────────────────────────────
+
+OPTION 2: USE EMAIL DIRECTLY (Simplest - Recommended)
+───────────────────────────────────────────────────────
+If split doesn't work, just use the email:
+
+{{1.respondentEmail}}
+
+This will use "chairman@falconeyegroup.net" as the name.
+Simple and always works!
+
+───────────────────────────────────────────────────────
+
+OPTION 3: USE DEFAULT VALUE
+────────────────────────────
+If name isn't critical:
+
+"Guest"
+
+Or empty string: ""
+
+================================================================================
+RECOMMENDED: USE OPTION 2 (Email Directly)
+================================================================================
+
+Since you already have displayName logic in Module 23 that handles
+name extraction, the simplest fix for Module 2 is:
+
+"name": "{{1.respondentEmail}}"
+
+This will:
+- Always work (no syntax errors)
+- Use full email as name
+- Module 23 will handle the display logic anyway
+
+Then Module 23 already has:
+{{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+So it will:
+- Use name from sheet if row exists
+- Use email from Module 2 if row doesn't exist
+
+This is the safest approach!
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+RECOMMENDED APPROACH:
+─────────────────────
+
+1. Open Module 2 in Make.com
+2. Find "name" variable
+3. Change value to: {{1.respondentEmail}}
+4. Save
+
+That's it! Simple and works every time.
+
+────────────────────────────────────────────────────────
+
+ALTERNATIVE (If you want to extract name):
+───────────────────────────────────────────
+
+1. Open Module 2
+2. Find "name" variable
+3. Clear the value field completely
+4. Type EXACTLY: {{split(1.respondentEmail; "@")[0]}}
+   Make sure [0] is typed INSIDE before the closing }}
+5. Save
+
+If this still gives error, go back to Option 2 (use email directly).
+
+================================================================================
+FINAL RECOMMENDED MODULE 2 CONFIGURATION
+================================================================================
+
+{
+  "variables": [
+    {
+      "name": "email",
+      "value": "{{1.respondentEmail}}"
+    },
+    {
+      "name": "name",
+      "value": "{{1.respondentEmail}}"
+      // Using email directly - simple and works!
+    },
+    {
+      "name": "attendance",
+      "value": "{{1.answers.677abd25.textAnswers.answers[0].value}}"
+    },
+    {
+      "name": "comments",
+      "value": ""
+    }
+  ]
+}
+
+================================================================================
+WHY THIS WORKS
+================================================================================
+
+Module 23 already has smart logic:
+{{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+So:
+- If row exists in sheet → Uses Name from sheet (column A)
+- If row doesn't exist → Uses 2.name (which will be email)
+
+This gives you the best of both worlds:
+- Existing leads: Use name from sheet
+- New leads: Use email (or you can still extract from email in Module 23 if needed)
+
+================================================================================
+END
+================================================================================
+

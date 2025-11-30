@@ -1,0 +1,143 @@
+================================================================================
+FIND THE EXACT ERROR - DO THIS FIRST!
+================================================================================
+
+Before we fix anything, we need to see the EXACT error message.
+
+================================================================================
+STEP 1: CHECK EXECUTION LOGS (2 MINUTES)
+================================================================================
+
+1. Go to Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click "Execution history" (top right, looks like a clock icon)
+4. Click on the MOST RECENT execution (the one at the top)
+5. Look at the modules - which ones are RED (failed)?
+
+TELL ME:
+--------
+□ Which module is RED?
+□ What error message does it show? (Copy the exact text)
+□ Does Module 1 show any data?
+□ Does Module 8 show any variables?
+
+================================================================================
+STEP 2: CHECK MODULE 3 "TO" FIELD (1 MINUTE)
+================================================================================
+
+1. Open Module 3 (Resend - Send an Email)
+2. Click on "To" field
+3. Take a screenshot OR tell me exactly what you see:
+
+OPTION A: You see "To Array" with an item
+------------------------------------------
+- Click on the item
+- What does "value" show?
+  □ {{8.email}}
+  □ "8. email"
+  □ 8. email
+  □ Something else?
+
+OPTION B: You see just "To" (not "To Array")
+----------------------------------------------
+- What does it show?
+  □ {{8.email}}
+  □ "8. email"
+  □ Something else?
+
+================================================================================
+STEP 3: CHECK MODULE 8 OUTPUT (1 MINUTE)
+================================================================================
+
+1. Go back to execution history
+2. Click on the latest execution
+3. Click on Module 8 (Set Variables)
+4. What values do you see?
+
+TELL ME:
+--------
+□ "name" = ? (what value?)
+□ "email" = ? (what value?)
+□ "language" = ? (what value?)
+
+If any are empty, that's the problem!
+
+================================================================================
+STEP 4: CHECK MODULE 1 OUTPUT (1 MINUTE)
+================================================================================
+
+1. In the same execution, click Module 1 (Google Sheets)
+2. What data does it show?
+
+TELL ME:
+--------
+□ Does it show your test lead?
+□ What's in column "1" (Email column)?
+□ What's in column "3" (Language column)?
+
+================================================================================
+MOST LIKELY ISSUES
+================================================================================
+
+Based on your error, here are the most likely problems:
+
+ISSUE 1: "To" field format wrong
+---------------------------------
+If you see: "8. email" or 8. email
+Fix: Change to {{8.email}}
+
+ISSUE 2: Module 8 variables empty
+---------------------------------
+If Module 8 shows empty values
+Fix: Remove backticks from Module 8: {{1.1}} not {{1.`1`}}
+
+ISSUE 3: Module 1 not getting data
+-----------------------------------
+If Module 1 shows no data
+Fix: Check spreadsheet ID, sheet name, headers
+
+ISSUE 4: Router not filtering
+------------------------------
+If both emails send
+Fix: Add filters to router routes
+
+================================================================================
+QUICK TEST
+================================================================================
+
+Try this quick test:
+
+1. Add a test lead to Google Sheets:
+   Name: Test
+   Email: your-email@example.com
+   Language: en
+
+2. Wait 30 seconds
+
+3. Check execution history:
+   - Did Module 1 run?
+   - Did Module 8 run?
+   - Did Module 3 run?
+   - Any errors?
+
+4. Tell me what you see!
+
+================================================================================
+WHAT TO SEND ME
+================================================================================
+
+Please send me:
+
+1. Screenshot of Module 3 "To" field (or describe exactly what you see)
+2. Screenshot of execution log showing which module failed
+3. The exact error message (copy/paste it)
+4. Module 8 output values (name, email, language)
+5. Module 1 output (does it show your test lead?)
+
+This will help me give you the EXACT fix!
+
+================================================================================
+
+
+
+

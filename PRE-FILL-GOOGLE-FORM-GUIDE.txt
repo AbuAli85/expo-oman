@@ -1,0 +1,247 @@
+================================================================================
+PRE-FILL GOOGLE FORM WITH EMAIL AND NAME
+Complete Guide
+================================================================================
+
+YOUR FORM URL:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform
+
+GOAL: Pre-fill Email and Name fields when client clicks link
+
+================================================================================
+METHOD 1: GET FIELD IDs FROM RESPONSE SHEET (RECOMMENDED)
+================================================================================
+
+STEP 1: Link Form to Google Sheets
+-----------------------------------
+1. Open your Google Form
+2. Click "Responses" tab (top)
+3. Click Google Sheets icon (📊) - "Link to Sheets"
+4. Choose: "Create a new spreadsheet" or "Select existing spreadsheet"
+5. Click "Create" or "Link"
+
+STEP 2: Get Field IDs
+----------------------
+1. Open the linked Google Sheets
+2. Look at Row 1 (headers)
+3. The column headers show field IDs
+
+Example headers you'll see:
+- Timestamp
+- Email Address (this is the field name)
+- Name
+- Will you attend the expo?
+- Any additional comments or questions?
+
+STEP 3: Get Entry IDs
+----------------------
+The field IDs in Google Forms are usually in this format:
+- entry.1234567890 (numbers)
+
+To get them:
+1. In Google Sheets, right-click on a column header
+2. Or check the form's source code
+3. Or use the method below
+
+ALTERNATIVE: Submit Test Response
+---------------------------------
+1. Submit a test response to your form
+2. In Make.com, create test scenario:
+   - Trigger: Google Forms → Watch Responses
+   - Select your form
+   - Run once
+   - Check output - you'll see field structure
+
+================================================================================
+METHOD 2: USE FIELD NAMES (EASIER)
+================================================================================
+
+Google Forms also accepts field names in URLs!
+
+PRE-FILLED LINK FORMAT:
+------------------------
+https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url&entry.EMAIL_FIELD={{8.email}}&entry.NAME_FIELD={{8.name}}
+
+However, you need the actual entry IDs. Let's use a simpler approach:
+
+================================================================================
+METHOD 3: SIMPLE LINK (NO PRE-FILL) - CURRENTLY USING
+================================================================================
+
+Your current email template uses:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform
+
+This works fine! Clients will fill email/name manually.
+Then Make.com matches by email when processing responses.
+
+================================================================================
+METHOD 4: GET ENTRY IDs FROM FORM EDIT MODE
+================================================================================
+
+STEP 1: Open Form in Edit Mode
+-------------------------------
+1. Go to: https://docs.google.com/forms/d/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/edit
+2. Click on "Email" question
+3. Look at browser URL or inspect element
+
+STEP 2: Check Form Source
+--------------------------
+1. Right-click on form → "View Page Source"
+2. Search for "entry."
+3. You'll find entry IDs like: entry.1234567890
+
+STEP 3: Create Pre-filled Link
+-------------------------------
+Once you have entry IDs:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.EMAIL_ID={{8.email}}&entry.NAME_ID={{8.name}}
+
+================================================================================
+RECOMMENDED: USE SIMPLE LINK + MATCH BY EMAIL
+================================================================================
+
+CURRENT APPROACH (WORKS PERFECTLY):
+------------------------------------
+1. Email sent with simple form link
+2. Client clicks link → Opens form
+3. Client fills email, name, and response
+4. Form submitted
+5. Make.com receives response
+6. Make.com matches by email address
+7. Updates Google Sheets accordingly
+
+ADVANTAGES:
+-----------
+✅ Simple - no need for field IDs
+✅ Works immediately
+✅ Clients can use any email (if different)
+✅ No technical complexity
+
+================================================================================
+UPDATE EMAIL TEMPLATE (CURRENT - SIMPLE LINK)
+================================================================================
+
+Your email template already has the correct link:
+
+```html
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform" 
+   style="...">
+   Register Now
+</a>
+```
+
+This is PERFECT! ✅
+
+================================================================================
+IF YOU WANT PRE-FILLING (ADVANCED)
+================================================================================
+
+STEP 1: Get Entry IDs
+----------------------
+1. Link form to Google Sheets (see Method 1)
+2. Submit a test response
+3. In Make.com, create test scenario:
+   - Google Forms → Watch Responses
+   - Run once
+   - Check output structure
+
+OR
+
+1. Open form in edit mode
+2. Inspect page source
+3. Find entry.XXXXX values
+
+STEP 2: Create Pre-filled Link
+-------------------------------
+Once you have entry IDs (example):
+
+```html
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.1234567890={{8.email}}&entry.0987654321={{8.name}}" 
+   style="...">
+   Register Now
+</a>
+```
+
+Replace 1234567890 and 0987654321 with actual entry IDs.
+
+STEP 3: URL Encode Names
+-------------------------
+If names have spaces, encode them:
+- Space → %20
+- Example: "John Doe" → "John%20Doe"
+
+In Make.com, you can use: {{replace({{8.name}}; " "; "%20")}}
+
+================================================================================
+CURRENT SETUP IS PERFECT
+================================================================================
+
+Your current email template with simple link is:
+✅ Working
+✅ Simple
+✅ No technical complexity
+✅ Easy to maintain
+
+Make.com will match responses by email address automatically!
+
+================================================================================
+MAKE.COM RESPONSE HANDLING
+================================================================================
+
+When client submits form:
+
+1. Make.com receives response with:
+   - Email Address: {{1.Email Address}}
+   - Name: {{1.Name}}
+   - Will you attend: {{1.Will you attend the expo?}}
+   - Comments: {{1.Any additional comments or questions?}}
+
+2. Make.com searches Google Sheets:
+   - Find row where Email = {{1.Email Address}}
+
+3. Updates that row:
+   - Response = "Accepted" or "Rejected"
+   - Response Date = {{now}}
+   - Comments = {{1.Any additional comments or questions?}}
+
+4. Sends follow-up email
+
+NO PRE-FILLING NEEDED! ✅
+
+================================================================================
+RECOMMENDATION
+================================================================================
+
+KEEP YOUR CURRENT SETUP:
+------------------------
+✅ Simple form link (no pre-fill)
+✅ Make.com matches by email
+✅ Works perfectly
+✅ Easy to maintain
+
+PRE-FILLING IS OPTIONAL:
+------------------------
+- Nice to have, but not necessary
+- Adds complexity
+- Current setup works great!
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+CURRENT STATUS:
+--------------
+□ Form created ✅
+□ Form link added to email ✅
+□ Email template updated ✅
+□ Make.com response handler needed (create this)
+
+NEXT STEP:
+----------
+Create "Handle Expo Form Responses" scenario in Make.com:
+1. Google Forms → Watch Responses
+2. Router (Accept/Reject)
+3. Update Google Sheets
+4. Send follow-up emails
+
+================================================================================
+

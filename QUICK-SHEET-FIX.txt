@@ -1,0 +1,41 @@
+================================================================================
+QUICK FIX: SHEET CONFIGURATION
+2-Minute Check
+================================================================================
+
+YOUR SETUP:
+-----------
+Form responses → "UAE Property Expo" sheet (automatic)
+Leads data → "leads" sheet
+
+================================================================================
+VERIFY MODULES USE "leads" SHEET
+================================================================================
+
+CHECK:
+------
+□ Module 8: Sheet Name = "leads"
+□ Module 9: Sheet Name = "leads"
+□ Module 3: Sheet Name = "leads"
+□ Module 5: Sheet Name = "leads"
+
+IF ANY IS WRONG:
+----------------
+1. Open that module
+2. Change Sheet Name to "leads"
+3. Save
+
+================================================================================
+UNDERSTANDING:
+--------------
+✅ Form responses in "UAE Property Expo" = Just for viewing
+✅ Make.com searches "leads" sheet = Your database
+✅ Make.com updates "leads" sheet = Response column
+
+THIS IS CORRECT! ✅
+
+================================================================================
+
+
+
+

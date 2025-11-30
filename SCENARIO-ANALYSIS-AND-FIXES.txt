@@ -1,0 +1,366 @@
+================================================================================
+MAKE.COM SCENARIO ANALYSIS AND FIXES
+Handle Expo Form Responses - Improved
+================================================================================
+
+SCENARIO ID: 8165341
+SCENARIO NAME: "Handle Expo Form Responses - Improved"
+FORM ID: 1ULw8aIt2VuH4d8xUQDmH4fVbzHxBxacuZZtwT6mPRJI
+
+================================================================================
+CURRENT WORKFLOW STRUCTURE
+================================================================================
+
+Module 1: Google Forms - Watch Responses ✅ (Trigger)
+Module 2: Set Variables ⚠️ (Issues found)
+Module 11: Google Sheets - Filter Rows ✅ (Search by email)
+Module 12: Array Aggregator ✅
+Module 5: Set Variables ✅ (rowNumber, rowExists)
+Module 23: Set Variable ⚠️ (displayName - issues)
+Module 22: Set Variable ❌ (CRITICAL ISSUE)
+Module 6: Router ✅
+  Route 1 (rowExists = true):
+    Module 7: Update Row ❌ (CRITICAL - uses "select" mode)
+    Module 13: Array Aggregator ✅
+    Module 15: Router (by attendance)
+      Route 1: Module 16 (Accept email) ✅
+      Route 2: Module 17 (Reject email) ✅
+  Route 2 (rowExists = false):
+    Module 10: Add Row ✅
+    Module 14: Array Aggregator ✅
+    Module 18: Router (by attendance)
+      Route 1: Module 19 (Accept email) ✅
+      Route 2: Module 20 (Reject email) ✅
+
+================================================================================
+CRITICAL ISSUES FOUND
+================================================================================
+
+ISSUE 1: Module 2 - Set Variables - WRONG FIELD MAPPINGS
+──────────────────────────────────────────────────────────
+Problem:
+- name, attendance, and comments ALL use the SAME field:
+  {{1.answers.`677abd25`.textAnswers.answers[].value}}
+- This means all three variables will have the same value!
+
+Current (WRONG):
+  "name": "{{1.answers.`677abd25`.textAnswers.answers[].value}}"
+  "attendance": "{{1.answers.`677abd25`.textAnswers.answers[].value}}"
+  "comments": "{{1.answers.`677abd25`.textAnswers.answers[].value}}"
+
+Fix Needed:
+- Each field needs its own unique answer ID
+- Get the correct answer IDs from your Google Form
+- Map them correctly:
+  - name: {{1.answers.ANSWER_ID_1.textAnswers.answers[0].value}}
+  - attendance: {{1.answers.ANSWER_ID_2.textAnswers.answers[0].value}}
+  - comments: {{1.answers.ANSWER_ID_3.textAnswers.answers[0].value}}
+
+Action: Check Module 1 output to see all available answer IDs
+
+──────────────────────────────────────────────────────────
+
+ISSUE 2: Module 7 - Update Row - MISSING ROW NUMBER ERROR
+──────────────────────────────────────────────────────────
+Problem:
+- Uses mode: "select"
+- Uses rowNumber: {{5.rowNumber}}
+- But rowNumber comes from {{12.array[0].__IMTINDEX__}} which might be wrong
+
+Current Configuration:
+  "mode": "select"
+  "rowNumber": "{{5.rowNumber}}"
+  Where: rowNumber = {{12.array[0].__IMTINDEX__}}
+
+Issue:
+- __IMTINDEX__ is bundle index, NOT row number
+- Should use __ROW_NUMBER__ instead
+- OR change to "Search Rows" mode (RECOMMENDED)
+
+Fix Options:
+
+OPTION A (RECOMMENDED): Change to Search Rows Mode
+  1. Change Module 7 mode from "select" to "fromAll" or use Search Rows
+  2. Add Search Filter:
+     - Column: B (Email)
+     - Operator: equals
+     - Value: {{2.email}}
+  3. Remove rowNumber field
+
+OPTION B: Fix rowNumber Variable
+  1. In Module 5, change:
+     "rowNumber": "{{12.array[0].__ROW_NUMBER__}}"
+     (Use __ROW_NUMBER__ instead of __IMTINDEX__)
+
+──────────────────────────────────────────────────────────
+
+ISSUE 3: Module 23 - Set Variable (displayName) - SYNTAX ERROR
+───────────────────────────────────────────────────────────────
+Problem:
+- Value has incorrect syntax: 
+  {{if(5.rowExists = "true"; 5.sheetName; 2.name | "Guest")}}
+- Uses "|" operator incorrectly
+- References 5.sheetName which doesn't exist
+
+Current (WRONG):
+  "value": "{{if(5.rowExists = \"true\"; 5.sheetName; 2.name | \"Guest\")}}"
+
+Fix:
+  "value": "{{if(5.rowExists = \"true\"; 12.array[0].Name; if(2.name; 2.name; \"Guest\"))}}"
+  
+Or simpler:
+  "value": "{{if(5.rowExists = \"true\"; 12.array[0].Name; 2.name)}}"
+
+──────────────────────────────────────────────────────────
+
+ISSUE 4: Module 22 - Set Variable - INVALID CONFIGURATION
+───────────────────────────────────────────────────────────
+Problem:
+- Variable NAME itself is dynamic: 
+  "name": "{{if(5.rowExists = \"true\"; 12.array[0].Name; 2.name)}}"
+- Variable names must be static strings, not expressions
+
+Current (WRONG):
+  "name": "{{if(5.rowExists = \"true\"; 12.array[0].Name; 2.name)}}"
+  "value": ""
+
+Fix:
+- This module seems unnecessary
+- Remove it OR
+- Set a static name like "finalName" and put the logic in value:
+  "name": "finalName"
+  "value": "{{if(5.rowExists = \"true\"; 12.array[0].Name; 2.name)}}"
+
+──────────────────────────────────────────────────────────
+
+================================================================================
+PRIORITY FIXES
+================================================================================
+
+🔴 CRITICAL (Fix Immediately):
+1. Fix Module 2 - Set correct answer IDs for name, attendance, comments
+2. Fix Module 7 - Change to Search Rows mode OR fix rowNumber
+3. Remove or fix Module 22 (invalid variable name)
+
+🟡 IMPORTANT (Fix Soon):
+4. Fix Module 23 - displayName syntax
+5. Verify all email templates use correct variable references
+
+🟢 OPTIONAL (Improvements):
+6. Clean up unnecessary modules
+7. Add error handling
+
+================================================================================
+DETAILED FIX INSTRUCTIONS
+================================================================================
+
+FIX 1: Module 2 - Correct Field Mappings
+─────────────────────────────────────────
+
+STEP 1: Find Correct Answer IDs
+1. Open Module 1 (Google Forms Watch Responses)
+2. Run scenario once or check execution log
+3. Look at Module 1 output to see all answer IDs
+4. Note the answer IDs for:
+   - Name field
+   - Attendance field (Yes/No response)
+   - Comments field
+
+STEP 2: Update Module 2
+1. Click Module 2 (Set Variables)
+2. Update each variable:
+
+   Variable: email
+   Value: {{1.respondentEmail}} ✅ (Already correct)
+
+   Variable: name
+   Value: {{1.answers.ANSWER_ID_NAME.textAnswers.answers[0].value}}
+   Replace ANSWER_ID_NAME with actual ID from form
+
+   Variable: attendance
+   Value: {{1.answers.ANSWER_ID_ATTENDANCE.textAnswers.answers[0].value}}
+   Replace ANSWER_ID_ATTENDANCE with actual ID
+
+   Variable: comments
+   Value: {{1.answers.ANSWER_ID_COMMENTS.textAnswers.answers[0].value}}
+   Replace ANSWER_ID_COMMENTS with actual ID
+
+Example (if answer IDs are different):
+   "name": "{{1.answers.1865fa7d.textAnswers.answers[0].value}}"
+   "attendance": "{{1.answers.677abd25.textAnswers.answers[0].value}}"
+   "comments": "{{1.answers.08d2bdde.textAnswers.answers[0].value}}"
+
+─────────────────────────────────────────
+
+FIX 2: Module 7 - Update Row Configuration
+───────────────────────────────────────────
+
+OPTION A: Use Search Rows Mode (RECOMMENDED)
+──────────────────────────────────────────────
+
+1. Click Module 7 (Google Sheets - Update Row)
+
+2. Change Mode:
+   - Find "Search Method" or "Mode" dropdown
+   - Change from "select" to "fromAll" or look for "Search Rows"
+
+3. If "fromAll" mode available:
+   - Set mode to "fromAll"
+   - Add Search Filter:
+     - Column: B (Email) or column name "Email"
+     - Operator: equals
+     - Value: {{2.email}}
+
+4. Remove or clear "Row number" field (not needed in search mode)
+
+5. Keep Values section as is:
+   - Column 10: {{if(2.attendance = "Yes, I'll attend"; "Accepted"; "Rejected")}}
+   - Column 11: {{now}}
+   - Column 12: {{2.comments}}
+
+OPTION B: Fix Row Number Variable
+──────────────────────────────────
+
+If you must keep "select" mode:
+
+1. Click Module 5 (Set Variables)
+
+2. Change rowNumber variable:
+   FROM: {{12.array[0].__IMTINDEX__}}
+   TO: {{12.array[0].__ROW_NUMBER__}}
+
+   OR try:
+   {{11[0].__ROW_NUMBER__}}
+   
+   OR:
+   {{12.array[0].__ROW_NUMBER__}}
+
+3. Save Module 5
+
+4. Module 7 should now work with correct rowNumber
+
+───────────────────────────────────────────
+
+FIX 3: Module 22 - Remove or Fix
+─────────────────────────────────
+
+RECOMMENDED: Remove Module 22 Entirely
+───────────────────────────────────────
+
+1. Module 22 seems unnecessary
+2. Delete the module connection from Module 23 to Module 22
+3. Update Module 23 to not reference Module 22
+
+OR Fix Module 22:
+──────────────────
+
+1. Click Module 22
+2. Change variable name to a static string:
+   Name: "finalName"
+   Value: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+3. Save
+
+─────────────────────────────────
+
+FIX 4: Module 23 - Fix displayName
+───────────────────────────────────
+
+1. Click Module 23 (Set Variable displayName)
+
+2. Update value:
+   FROM: {{if(5.rowExists = "true"; 5.sheetName; 2.name | "Guest")}}
+   
+   TO: {{if(5.rowExists = "true"; 12.array[0].Name; if(2.name; 2.name; "Guest"))}}
+
+   OR simpler:
+   TO: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+3. Save
+
+───────────────────────────────────
+
+================================================================================
+VERIFICATION STEPS
+================================================================================
+
+After applying fixes:
+
+1. Test Module 2 Output:
+   - Run scenario
+   - Check Module 2 output
+   - Verify email, name, attendance, comments all have different values
+
+2. Test Module 7:
+   - Ensure Update Row executes successfully
+   - Check Google Sheets - Response column (K) updated
+   - Check Response Date column (L) updated
+   - Check Comments column (M) updated
+
+3. Test Email Sending:
+   - Verify emails are sent based on attendance value
+   - Check email templates display correct name
+
+4. Test Full Flow:
+   - Submit form response
+   - Check all modules execute successfully
+   - Verify Google Sheets updated correctly
+   - Verify email sent
+
+================================================================================
+ALTERNATIVE: SIMPLIFIED WORKFLOW STRUCTURE
+================================================================================
+
+For a cleaner workflow, consider this structure:
+
+Module 1: Google Forms - Watch Responses
+Module 2: Set Variables (with correct answer IDs)
+Module 11: Search Rows (find by email)
+Module 5: Set Variables (rowExists)
+Module 6: Router
+  Route 1 (row exists):
+    Module 7: Update Row (Search Rows mode)
+    Module 16/17: Send Email
+  Route 2 (row doesn't exist):
+    Module 10: Add Row
+    Module 19/20: Send Email
+
+Remove:
+- Module 12 (Array Aggregator) - not needed if using Search Rows directly
+- Module 22 (Invalid variable)
+- Module 23 (Can be simplified or removed)
+
+This reduces complexity and potential errors.
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Fix Module 2: Update answer IDs for name, attendance, comments
+□ Fix Module 7: Change to Search Rows mode OR fix rowNumber
+□ Remove/Fix Module 22: Delete or fix variable name
+□ Fix Module 23: Correct displayName syntax
+□ Test scenario with form submission
+□ Verify Google Sheets updates correctly
+□ Verify emails send correctly
+
+================================================================================
+EXPECTED BEHAVIOR AFTER FIXES
+================================================================================
+
+When form is submitted:
+
+1. Module 1 triggers ✅
+2. Module 2 extracts: email, name, attendance, comments (all different values) ✅
+3. Module 11 searches sheet by email ✅
+4. Module 5 sets rowExists = "true" or "false" ✅
+5. Router routes:
+   - If row exists → Update Row (no error) → Send Email ✅
+   - If row doesn't exist → Add Row → Send Email ✅
+6. Google Sheets updated with Response, Response Date, Comments ✅
+7. Appropriate email sent based on attendance ✅
+
+================================================================================
+END
+================================================================================
+

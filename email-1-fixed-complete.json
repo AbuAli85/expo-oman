@@ -1,0 +1,201 @@
+{
+    "name": "Email 1 - Invitation",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-sheets:watchRows",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 8689880,
+                "mode": "select",
+                "includesHeaders": true,
+                "limit": 1,
+                "valueRenderOption": "FORMATTED_VALUE",
+                "dateTimeRenderOption": "FORMATTED_STRING",
+                "from": "drive",
+                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                "sheetId": "leads",
+                "tableFirstRow": "A1:J1"
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 3,
+                            "module": "resend:sendAnEmail",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12957549
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.3}}",
+                                            "b": "en",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "from": "sales@thesmartpro.io",
+                                "to": [
+                                    {
+                                        "value": "{{1.1}}"
+                                    }
+                                ],
+                                "subject": "{{1.0}}, You're Invited to Showcase your project at UAE Property Expo Muscat Oman",
+                                "sendEmailAs": "html",
+                                "html": "<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>UAE Property Expo - Invitation</title>\r\n</head>\r\n<body style=\"margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;\">\r\n    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #f5f5f5;\">\r\n        <tr>\r\n            <td align=\"center\" style=\"padding: 20px 0;\">\r\n                <table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\">\r\n                    <!-- Header Image -->\r\n                    <tr>\r\n                        <td>\r\n                            <img src=\"https://i.imgur.com/9GWYlQI.jpeg\" alt=\"UAE Property Expo Muscat\" style=\"width: 100%; height: auto; display: block; max-width: 600px;\">\r\n                        </td>\r\n                    </tr>\r\n                    <!-- Content -->\r\n                    <tr>\r\n                        <td style=\"padding: 40px 30px; background-color: #FFFFFF;\">\r\n                            <h1 style=\"color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;\">You're Invited!</h1>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\">\r\n                                Dear {{1.0}},\r\n                            </p>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\">\r\n                                We are delighted to invite you to the <strong style=\"color: #C40021;\">UAE Property Expo – Muscat</strong>, the premier real estate event showcasing the finest properties from the United Arab Emirates.\r\n                            </p>\r\n                            <div style=\"background: linear-gradient(135deg, #1E4168 0%, #000000 100%); color: #FFFFFF; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center;\">\r\n                                <p style=\"margin: 0 0 10px 0; font-size: 20px; font-weight: bold; color: #D4AF37;\">📅 26–27 December 2025</p>\r\n                                <p style=\"margin: 0; font-size: 18px;\">📍 Grand Hyatt, Muscat</p>\r\n                            </div>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\">\r\n                                Join us for an exclusive opportunity to explore luxury properties, meet leading developers, and discover exceptional investment opportunities. This is your chance to connect with industry experts and find your perfect property in the UAE.\r\n                            </p>\r\n                            <div style=\"background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #C40021;\">\r\n                                <p style=\"color: #1E4168; font-size: 16px; font-weight: bold; margin: 0 0 10px 0;\">✨ What Awaits You:</p>\r\n                                <ul style=\"color: #333333; font-size: 15px; line-height: 1.8; margin: 0; padding-left: 20px;\">\r\n                                    <li>Exclusive luxury properties from top UAE developers</li>\r\n                                    <li>Direct access to property experts and consultants</li>\r\n                                    <li>Special expo-only promotions and financing options</li>\r\n                                    <li>Market insights and investment opportunities</li>\r\n                                    <li>Networking with industry professionals</li>\r\n                                </ul>\r\n                            </div>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;\">\r\n                                Don't miss this exclusive event! Register now to secure your spot.\r\n                            </p>\r\n                            <!-- CTA Button -->\r\n                            <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tr>\r\n                                    <td align=\"center\" style=\"padding: 20px 0;\">\r\n                                        <a href=\"#\" style=\"display: inline-block; padding: 16px 45px; background: linear-gradient(135deg, #C40021 0%, #a0001a 100%); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 15px rgba(196, 0, 33, 0.4); transition: transform 0.2s;\">Register Now</a>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                            <!-- Contact Info -->\r\n                            <div style=\"background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;\">\r\n                                <p style=\"color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;\">Contact Us:</p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">UAE: <a href=\"tel:+971585312174\" style=\"color: #C40021; text-decoration: none;\">+971 58 531 2174</a></p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">Oman: <a href=\"tel:+96897083232\" style=\"color: #C40021; text-decoration: none;\">+968 970 83232</a> | <a href=\"tel:+96879665511\" style=\"color: #C40021; text-decoration: none;\">+968 796 65511</a></p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">Email: <a href=\"mailto:sales@thesmartpro.io\" style=\"color: #C40021; text-decoration: none;\">sales@thesmartpro.io</a></p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">Website: <a href=\"https://www.thesmartpro.io\" style=\"color: #C40021; text-decoration: none;\">www.thesmartpro.io</a></p>\r\n                            </div>\r\n                            <p style=\"color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;\">\r\n                                Organized by: UAE Property Expo • Falcon Eye • Globo\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n</body>\r\n</html>"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": 0
+                                }
+                            }
+                        },
+                        {
+                            "id": 5,
+                            "module": "google-sheets:updateRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 8689880
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "mode": "select",
+                                "values": {
+                                    "4": "Email 1 Sent",
+                                    "6": "{{now}}"
+                                },
+                                "sheetId": "leads",
+                                "rowNumber": "{{1.__ROW_NUMBER__}}",
+                                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                                "includesHeaders": true,
+                                "valueInputOption": "USER_ENTERED"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 0
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 4,
+                            "module": "resend:sendAnEmail",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12957549
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.3}}",
+                                            "b": "ar",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "from": "sales@thesmartpro.io",
+                                "to": [
+                                    {
+                                        "value": "{{1.1}}"
+                                    }
+                                ],
+                                "subject": "{{1.0}}، أنت مدعو! لمعرض عقارات الإمارات – مسقط",
+                                "sendEmailAs": "html",
+                                "html": "<!DOCTYPE html>\r\n<html lang=\"ar\" dir=\"rtl\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>معرض عقارات الإمارات - دعوة</title>\r\n</head>\r\n<body style=\"margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; direction: rtl;\">\r\n    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #f5f5f5;\">\r\n        <tr>\r\n            <td align=\"center\" style=\"padding: 20px 0;\">\r\n                <table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\">\r\n                    <!-- Header Image -->\r\n                    <tr>\r\n                        <td>\r\n                            <img src=\"https://i.imgur.com/r0drplC.jpeg\" alt=\"معرض عقارات الإمارات مسقط\" style=\"width: 100%; height: auto; display: block; max-width: 600px;\">\r\n                        </td>\r\n                    </tr>\r\n                    <!-- Content -->\r\n                    <tr>\r\n                        <td style=\"padding: 40px 30px; background-color: #FFFFFF; direction: rtl; text-align: right;\">\r\n                            <h1 style=\"color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;\">أنت مدعو!</h1>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\">\r\n                                عزيزي {{1.0}}،\r\n                            </p>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\">\r\n                                يسعدنا دعوتك لحضور <strong style=\"color: #C40021;\">معرض عقارات الإمارات – مسقط</strong>، الحدث العقاري الرائد الذي يعرض أفضل العقارات من دولة الإمارات العربية المتحدة.\r\n                            </p>\r\n                            <div style=\"background: linear-gradient(135deg, #1E4168 0%, #000000 100%); color: #FFFFFF; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center;\">\r\n                                <p style=\"margin: 0 0 10px 0; font-size: 20px; font-weight: bold; color: #D4AF37;\">📅 26–27 ديسمبر 2025</p>\r\n                                <p style=\"margin: 0; font-size: 18px;\">📍 جراند حياة، مسقط</p>\r\n                            </div>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\">\r\n                                انضم إلينا في فرصة حصرية لاستكشاف العقارات الفاخرة والالتقاء بالمطورين الرائدين واكتشاف فرص استثمارية استثنائية. هذه فرصتك للتواصل مع خبراء الصناعة والعثور على عقارك المثالي في الإمارات.\r\n                            </p>\r\n                            <div style=\"background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-right: 4px solid #C40021;\">\r\n                                <p style=\"color: #1E4168; font-size: 16px; font-weight: bold; margin: 0 0 10px 0;\">✨ ما ينتظرك:</p>\r\n                                <ul style=\"color: #333333; font-size: 15px; line-height: 1.8; margin: 0; padding-right: 20px;\">\r\n                                    <li>عقارات فاخرة حصرية من أفضل مطوري الإمارات</li>\r\n                                    <li>وصول مباشر إلى خبراء العقارات والمستشارين</li>\r\n                                    <li>عروض خاصة للمعرض فقط وخيارات التمويل</li>\r\n                                    <li>رؤى السوق وفرص الاستثمار</li>\r\n                                    <li>التواصل مع المهنيين في الصناعة</li>\r\n                                </ul>\r\n                            </div>\r\n                            <p style=\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;\">\r\n                                لا تفوت هذا الحدث الحصري! سجل الآن لتأمين مكانك.\r\n                            </p>\r\n                            <!-- CTA Button -->\r\n                            <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\r\n                                <tr>\r\n                                    <td align=\"center\" style=\"padding: 20px 0;\">\r\n                                        <a href=\"#\" style=\"display: inline-block; padding: 16px 45px; background: linear-gradient(135deg, #C40021 0%, #a0001a 100%); color: #FFFFFF; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 15px rgba(196, 0, 33, 0.4);\">سجل الآن</a>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                            <!-- Contact Info -->\r\n                            <div style=\"background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-right: 4px solid #C40021;\">\r\n                                <p style=\"color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;\">اتصل بنا:</p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">الإمارات: <a href=\"tel:+971585312174\" style=\"color: #C40021; text-decoration: none;\">+971 58 531 2174</a></p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">عمان: <a href=\"tel:+96897083232\" style=\"color: #C40021; text-decoration: none;\">+968 970 83232</a> | <a href=\"tel:+96879665511\" style=\"color: #C40021; text-decoration: none;\">+968 796 65511</a></p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">البريد الإلكتروني: <a href=\"mailto:sales@thesmartpro.io\" style=\"color: #C40021; text-decoration: none;\">sales@thesmartpro.io</a></p>\r\n                                <p style=\"color: #333333; font-size: 14px; margin: 5px 0;\">الموقع الإلكتروني: <a href=\"https://www.thesmartpro.io\" style=\"color: #C40021; text-decoration: none;\">www.thesmartpro.io</a></p>\r\n                            </div>\r\n                            <p style=\"color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;\">\r\n                                منظم من قبل: معرض عقارات الإمارات • فالكون آي • جلوبو\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n</body>\r\n</html>"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 600,
+                                    "y": 300
+                                }
+                            }
+                        },
+                        {
+                            "id": 7,
+                            "module": "google-sheets:updateRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 8689880
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "mode": "select",
+                                "values": {
+                                    "4": "Email 1 Sent",
+                                    "6": "{{now}}"
+                                },
+                                "sheetId": "leads",
+                                "rowNumber": "{{1.__ROW_NUMBER__}}",
+                                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                                "includesHeaders": true,
+                                "valueInputOption": "USER_ENTERED"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 300
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
+

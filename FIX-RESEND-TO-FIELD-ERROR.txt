@@ -1,0 +1,244 @@
+================================================================================
+FIX: "The `to` field must be a `string`" Error (422)
+================================================================================
+
+Resend email service requires the "to" field in a specific format. Your current
+format is incorrect and causing the 422 error.
+
+================================================================================
+THE PROBLEM
+================================================================================
+
+Your email modules (Module 3 and Module 4) have:
+  "to": ["{{9.email}}"]
+
+But Resend requires either:
+  1. A string: "{{9.email}}"
+  2. An array of objects: [{"value": "{{9.email}}"}]
+
+Current format (array of strings) is not accepted → 422 error
+
+================================================================================
+THE FIX
+================================================================================
+
+You need to change the "to" field format in BOTH email modules:
+  • Module 3 (English email)
+  • Module 4 (Arabic email)
+
+OPTION 1: Use String Format (Simplest)
+───────────────────────────────────────
+
+Change from:
+  to: ["{{9.email}}"]
+
+Change to:
+  to: "{{9.email}}"
+
+Steps:
+1. Click Module 3 (Resend - Send an Email)
+2. Find "To" field
+3. Remove the array brackets
+4. Change from: ["{{9.email}}"]
+5. Change to: {{9.email}}
+6. Save
+7. Repeat for Module 4
+
+OPTION 2: Use Array of Objects (If Multiple Recipients)
+────────────────────────────────────────────────────────
+
+If you need array format (for multiple recipients), use:
+  to: [{"value": "{{9.email}}"}]
+
+Steps:
+1. Click Module 3 (Resend - Send an Email)
+2. Find "To" field
+3. Click to edit
+4. Change format to object array:
+   - Click "Add item"
+   - Select "Object"
+   - Add key: "value"
+   - Set value: {{9.email}}
+5. Should show: [{"value": "{{9.email}}"}]
+6. Save
+7. Repeat for Module 4
+
+================================================================================
+RECOMMENDED: OPTION 1 (String Format)
+================================================================================
+
+For single email recipient, use the simple string format:
+
+Module 3 (English Email):
+─────────────────────────
+To: {{9.email}}
+(Just the variable, no brackets, no quotes)
+
+Module 4 (Arabic Email):
+─────────────────────────
+To: {{9.email}}
+(Just the variable, no brackets, no quotes)
+
+This is the simplest and most common approach.
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+FIX MODULE 3 (English Email):
+──────────────────────────────
+
+1. Open Make.com scenario
+2. Click Module 3 (Resend - Send an Email)
+3. Find "To" field
+4. Current value: ["{{9.email}}"]
+5. Delete the brackets and quotes
+6. New value: {{9.email}}
+7. Click OK/Save
+
+FIX MODULE 4 (Arabic Email):
+─────────────────────────────
+
+1. Click Module 4 (Resend - Send an Email)
+2. Find "To" field
+3. Current value: ["{{9.email}}"]
+4. Delete the brackets and quotes
+5. New value: {{9.email}}
+6. Click OK/Save
+
+SAVE SCENARIO:
+──────────────
+7. Save the entire scenario
+8. Test with a webhook call
+
+================================================================================
+VISUAL GUIDE
+================================================================================
+
+BEFORE (WRONG - causes 422 error):
+───────────────────────────────────
+To field:
+  ["{{9.email}}"]
+  ↑ Array of string (not accepted)
+
+AFTER (CORRECT):
+────────────────
+To field:
+  {{9.email}}
+  ↑ Simple string (accepted)
+
+OR if you need array format:
+────────────────────────────
+To field:
+  [{"value": "{{9.email}}"}]
+  ↑ Array of objects (accepted)
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, verify:
+
+□ Module 3 "To" field is: {{9.email}} (no brackets)
+□ Module 4 "To" field is: {{9.email}} (no brackets)
+□ Scenario is saved
+□ No errors in module configuration
+□ Test execution completes successfully
+
+================================================================================
+WHY THIS HAPPENS
+================================================================================
+
+Resend API expects:
+  • String: "user@example.com" ✓
+  • Array of objects: [{"value": "user@example.com"}] ✓
+  • Array of strings: ["user@example.com"] ✗ (NOT accepted)
+
+Your scenario was using array of strings format, which Resend rejects.
+
+================================================================================
+COMPLETE FIX CHECKLIST
+================================================================================
+
+□ Module 3: Change "To" from ["{{9.email}}"] to {{9.email}}
+□ Module 4: Change "To" from ["{{9.email}}"] to {{9.email}}
+□ Save scenario
+□ Test with webhook call
+□ Verify email sends successfully
+□ Check execution logs - no 422 errors
+
+================================================================================
+TESTING AFTER FIX
+================================================================================
+
+1. Save the scenario after making changes
+2. Run a test webhook execution:
+   - Use testWebhook() in Google Apps Script
+   - Or manually trigger in Make.com
+3. Check execution:
+   ✓ Email module executes
+   ✓ No 422 errors
+   ✓ Email is sent
+   ✓ Recipient receives email
+
+Expected result:
+  ✓ Module 3 or 4 executes (based on language)
+  ✓ Email sends successfully
+  ✓ Sheet is updated
+  ✓ No errors
+
+================================================================================
+ALTERNATIVE: IF YOU NEED ARRAY FORMAT
+================================================================================
+
+If Make.com interface requires array format, use objects:
+
+In "To" field:
+1. Click "Add item"
+2. Select "Object" (not "Text")
+3. Add property:
+   - Key: "value"
+   - Value: {{9.email}}
+4. Result: [{"value": "{{9.email}}"}]
+
+This format is accepted by Resend.
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If still getting errors:
+
+1. Check email value is valid:
+   □ Module 9 sets email correctly
+   □ Email variable contains valid email address
+   □ No extra characters or spaces
+
+2. Verify field format:
+   □ "To" field is string ({{9.email}})
+   □ OR array of objects ([{"value": "{{9.email}}"}])
+   □ NOT array of strings (["{{9.email}}"])
+
+3. Check email address format:
+   □ Valid email format: user@example.com
+   □ No leading/trailing spaces
+   □ Variable maps correctly from webhook
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Resend "To" Field Formats:
+
+✅ ACCEPTED:
+  • String: {{9.email}}
+  • Array of objects: [{"value": "{{9.email}}"}]
+
+❌ NOT ACCEPTED:
+  • Array of strings: ["{{9.email}}"]
+  • Wrong object format: [{"email": "{{9.email}}"}]
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

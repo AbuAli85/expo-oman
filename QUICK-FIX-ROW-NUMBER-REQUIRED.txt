@@ -1,0 +1,50 @@
+================================================================================
+QUICK FIX: ROW NUMBER REQUIRED
+5-Minute Solution
+================================================================================
+
+PROBLEM: "Row number*" field is required and cannot be removed
+
+SOLUTION: Add Search Rows module first, then use its row number
+
+================================================================================
+QUICK STEPS
+================================================================================
+
+ROUTE 1 (Accept):
+------------------
+1. Before Module 3, add: Google Sheets → Search Rows
+   - Search Filter: Email = {{4.email}}
+   - Limit: 1
+
+2. Update Module 3:
+   - Keep Mode: "select"
+   - Row Number: {{searchResult.__ROW_NUMBER__}}
+   - Remove "1": "{{4.email}}" from values
+
+3. Fix Module 6:
+   - "To": [{"value": "{{4.email}}"}]
+
+ROUTE 2 (Reject):
+------------------
+1. Before Module 5, add: Google Sheets → Search Rows
+   - Search Filter: Email = {{4.email}}
+   - Limit: 1
+
+2. Update Module 5:
+   - Keep Mode: "select"
+   - Row Number: {{searchResult.__ROW_NUMBER__}}
+
+3. Fix Module 7:
+   - "To": [{"value": "{{4.email}}"}]
+
+================================================================================
+HOW IT WORKS
+================================================================================
+
+1. Search Rows finds row by email → Returns row number
+2. Update Row uses that row number → Updates correct row
+3. Email sent → Client notified
+
+================================================================================
+

@@ -1,0 +1,226 @@
+================================================================================
+STEP-BY-STEP FIX FOR IML PARSING ERROR
+================================================================================
+
+PROBLEM:
+--------
+Error: "Invalid IML for parameter... Operator on end of an expression"
+This occurs because Make.com cannot parse complex if() statements with
+very long HTML strings in the email HTML field.
+
+SOLUTION:
+---------
+Add routers after the array aggregators to split by attendance response.
+This eliminates the need for complex if() statements.
+
+================================================================================
+FIX FOR ROUTE 1 (UPDATE EXISTING ROW)
+================================================================================
+
+STEP 1: Delete Current Email Module (Module 9)
+-----------------------------------------------
+1. Open your scenario in Make.com
+2. Find Module 9 (Resend → Send Email in Route 1)
+3. Click on it
+4. Click the trash icon to delete it
+5. Confirm deletion
+
+STEP 2: Add Router After Module 8
+-----------------------------------
+1. Click on Module 8 (Array Aggregator)
+2. Click the "+" button to add a new module
+3. Search for "Router" or "Flow Control → Router"
+4. Add the Router module
+5. This becomes Module 9 (Router)
+
+STEP 3: Configure Router - Route 1A (Yes, I'll attend)
+-------------------------------------------------------
+1. Click on Module 9 (Router)
+2. Click "Add route" or edit Route 1
+3. Name it: "Yes - Agreement Email"
+4. Click "Set up a filter"
+5. Add condition:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "Yes, I'll attend"
+6. Save the route
+
+STEP 4: Add Email Module in Route 1A
+-------------------------------------
+1. Inside Route 1A, click "+" to add module
+2. Search for "Resend → Send an Email"
+3. Add the module
+4. Configure:
+   - From: sales@thesmartpro.io
+   - To: Click "Add item" → Object → value: {{2.email}}
+     (Should show: [{"value": "{{2.email}}"}])
+   - Subject: "Agreement - UAE Property Expo"
+   - Content Type: HTML
+   - HTML: Copy the content from AGREEMENT-EMAIL-TEMPLATE.html
+     IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save the module
+
+STEP 5: Configure Router - Route 1B (No, I cannot attend)
+-----------------------------------------------------------
+1. In Module 9 (Router), click "Add route" or edit Route 2
+2. Name it: "No - Thank You Email"
+3. Click "Set up a filter"
+4. Add condition:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "No, I cannot attend"
+5. Save the route
+
+STEP 6: Add Email Module in Route 1B
+-------------------------------------
+1. Inside Route 1B, click "+" to add module
+2. Search for "Resend → Send an Email"
+3. Add the module
+4. Configure:
+   - From: sales@thesmartpro.io
+   - To: Click "Add item" → Object → value: {{2.email}}
+     (Should show: [{"value": "{{2.email}}"}])
+   - Subject: "Thank You - UAE Property Expo"
+   - Content Type: HTML
+   - HTML: Copy the content from THANK-YOU-EMAIL-TEMPLATE.html
+     IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save the module
+
+================================================================================
+FIX FOR ROUTE 2 (ADD NEW ROW)
+================================================================================
+
+STEP 7: Delete Current Email Module (Module 12)
+------------------------------------------------
+1. Find Module 12 (Resend → Send Email in Route 2)
+2. Click on it
+3. Click the trash icon to delete it
+4. Confirm deletion
+
+STEP 8: Add Router After Module 11
+-----------------------------------
+1. Click on Module 11 (Array Aggregator in Route 2)
+2. Click the "+" button to add a new module
+3. Search for "Router" or "Flow Control → Router"
+4. Add the Router module
+5. This becomes Module 12 (Router)
+
+STEP 9: Configure Router - Route 2A (Yes, I'll attend)
+-------------------------------------------------------
+1. Click on Module 12 (Router)
+2. Click "Add route" or edit Route 1
+3. Name it: "Yes - Agreement Email"
+4. Click "Set up a filter"
+5. Add condition:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "Yes, I'll attend"
+6. Save the route
+
+STEP 10: Add Email Module in Route 2A
+--------------------------------------
+1. Inside Route 2A, click "+" to add module
+2. Search for "Resend → Send an Email"
+3. Add the module
+4. Configure:
+   - From: sales@thesmartpro.io
+   - To: Click "Add item" → Object → value: {{2.email}}
+     (Should show: [{"value": "{{2.email}}"}])
+   - Subject: "Agreement - UAE Property Expo"
+   - Content Type: HTML
+   - HTML: Copy the content from AGREEMENT-EMAIL-TEMPLATE.html
+     IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save the module
+
+STEP 11: Configure Router - Route 2B (No, I cannot attend)
+------------------------------------------------------------
+1. In Module 12 (Router), click "Add route" or edit Route 2
+2. Name it: "No - Thank You Email"
+3. Click "Set up a filter"
+4. Add condition:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "No, I cannot attend"
+5. Save the route
+
+STEP 12: Add Email Module in Route 2B
+--------------------------------------
+1. Inside Route 2B, click "+" to add module
+2. Search for "Resend → Send an Email"
+3. Add the module
+4. Configure:
+   - From: sales@thesmartpro.io
+   - To: Click "Add item" → Object → value: {{2.email}}
+     (Should show: [{"value": "{{2.email}}"}])
+   - Subject: "Thank You - UAE Property Expo"
+   - Content Type: HTML
+   - HTML: Copy the content from THANK-YOU-EMAIL-TEMPLATE.html
+     IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save the module
+
+================================================================================
+FINAL STEPS
+================================================================================
+
+STEP 13: Save Scenario
+-----------------------
+1. Click "Save" button in Make.com
+2. Verify no errors are shown
+3. All modules should be connected properly
+
+STEP 14: Test the Scenario
+---------------------------
+1. Submit a test form response with "Yes, I'll attend"
+2. Check execution logs:
+   - Should go through Route 1 (Update) → Router → Route 1A → Agreement Email
+3. Submit another test with "No, I cannot attend"
+4. Check execution logs:
+   - Should go through Route 1 (Update) → Router → Route 1B → Thank You Email
+5. Test with new email (not in sheet):
+   - Should go through Route 2 (Add) → Router → appropriate email route
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After fixing, verify:
+
+☐ Module 9 (Router in Route 1) has 2 routes:
+  ☐ Route 1A: Filter = "Yes, I'll attend"
+  ☐ Route 1B: Filter = "No, I cannot attend"
+
+☐ Module 12 (Router in Route 2) has 2 routes:
+  ☐ Route 2A: Filter = "Yes, I'll attend"
+  ☐ Route 2B: Filter = "No, I cannot attend"
+
+☐ All email modules have:
+  ☐ To field: [{"value": "{{2.email}}"}]
+  ☐ Subject: Correct based on route
+  ☐ HTML: Template with {{2.name}} (not {{4.name}})
+
+☐ No IML errors shown in Make.com
+
+☐ Scenario saves without errors
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Issue: Router not showing routes
+Solution: Make sure you clicked "Add route" in the router module
+
+Issue: Email not sending
+Solution: Check that To field is [{"value": "{{2.email}}"}] format
+
+Issue: Name not appearing in email
+Solution: Make sure HTML uses {{2.name}}, not {{4.name}}
+
+Issue: Wrong email template sent
+Solution: Check router filters match attendance response exactly
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+
+
+

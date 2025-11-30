@@ -1,0 +1,203 @@
+================================================================================
+FIX: Router Sending Emails to Both Languages
+================================================================================
+
+PROBLEM:
+--------
+The router is sending emails to BOTH English and Arabic leads, regardless of 
+their language preference.
+
+This means the router has NO filter conditions set up.
+
+================================================================================
+ROOT CAUSE
+================================================================================
+
+The router (Module 2) currently has:
+- "mapper": null ← No filter conditions!
+
+This means:
+- Route 1 (English) runs for ALL leads
+- Route 2 (Arabic) runs for ALL leads
+- Both emails are sent to everyone ❌
+
+================================================================================
+SOLUTION: Add Language Filters to Router
+================================================================================
+
+STEP 1: Open Router Module (Module 2)
+--------------------------------------
+1. Click on the Router module (Module 2)
+2. You should see two routes:
+   - Route 1 (English)
+   - Route 2 (Arabic)
+
+STEP 2: Add Filter to Route 1 (English)
+-----------------------------------------
+1. Click on Route 1
+2. Find "Filter" or "Condition" section
+3. Add condition:
+   - Field: Language (or {{1.3}} or {{8.testCol3}})
+   - Operator: equals (or =)
+   - Value: "en" (or "EN" - check your sheets!)
+
+STEP 3: Add Filter to Route 2 (Arabic)
+----------------------------------------
+1. Click on Route 2
+2. Find "Filter" or "Condition" section
+3. Add condition:
+   - Field: Language (or {{1.3}} or {{8.testCol3}})
+   - Operator: equals (or =)
+   - Value: "ar" (or "AR" - check your sheets!)
+
+STEP 4: Check Language Values in Google Sheets
+-----------------------------------------------
+1. Open your Google Sheets
+2. Check column D (Language)
+3. What values do you see?
+   - "en" / "ar" (lowercase)?
+   - "EN" / "AR" (uppercase)?
+   - Something else?
+
+4. Use the EXACT value in your router filters (case-sensitive!)
+
+================================================================================
+ALTERNATIVE: Use Module 8 Variable
+================================================================================
+
+Since you have Module 8 (Set Variables) that captures testCol3 = Language:
+
+In Router filters, use:
+- Route 1: {{8.testCol3}} = "en" (or "EN")
+- Route 2: {{8.testCol3}} = "ar" (or "AR")
+
+This uses the normalized variable from Module 8.
+
+================================================================================
+DETAILED STEPS FOR MAKE.COM UI
+================================================================================
+
+OPTION 1: Router with Filter Conditions
+----------------------------------------
+
+1. Click on Router module (Module 2)
+2. You'll see Route 1 and Route 2
+3. For each route:
+
+   Route 1 (English):
+   - Click on Route 1
+   - Click "Add filter" or "Set condition"
+   - Field: Select "Language" or type {{1.3}} or {{8.testCol3}}
+   - Operator: "equals" or "="
+   - Value: "en" (or "EN" - match your sheets exactly)
+   - Save
+
+   Route 2 (Arabic):
+   - Click on Route 2
+   - Click "Add filter" or "Set condition"
+   - Field: Select "Language" or type {{1.3}} or {{8.testCol3}}
+   - Operator: "equals" or "="
+   - Value: "ar" (or "AR" - match your sheets exactly)
+   - Save
+
+OPTION 2: If Router Doesn't Support Filters
+--------------------------------------------
+Some Make.com routers work differently. If you can't add filters directly:
+
+1. Add a Filter module BEFORE the router
+2. Create two filters:
+   - Filter 1: Language = "en" → Route 1
+   - Filter 2: Language = "ar" → Route 2
+
+OR use separate router instances for each language.
+
+================================================================================
+QUICK DEBUG: Check Language Values
+================================================================================
+
+To see what Language values you actually have:
+
+1. Check Module 8 output (Set Variables)
+2. Look at testCol3 value
+3. This shows the actual Language value from your sheets
+
+OR:
+
+1. Add a temporary Set Variable module
+2. Variable: debugLang
+3. Value: {{1.3}} or {{8.testCol3}}
+4. Run scenario
+5. Check execution log to see the value
+
+================================================================================
+COMMON ISSUES
+================================================================================
+
+ISSUE 1: Case Mismatch
+----------------------
+Sheets: "EN" / "AR" (uppercase)
+Router: "en" / "ar" (lowercase)
+→ Won't match! ❌
+
+Fix: Use exact case in router filters
+
+ISSUE 2: No Filters Set
+------------------------
+Router has no filter conditions
+→ Both routes run for all leads ❌
+
+Fix: Add filter conditions to each route
+
+ISSUE 3: Wrong Column Reference
+--------------------------------
+Using wrong column index
+→ Filter checks wrong column ❌
+
+Fix: Use {{1.3}} for Language (column D) or {{8.testCol3}}
+
+================================================================================
+RECOMMENDED CONFIGURATION
+================================================================================
+
+Route 1 (English Email):
+-------------------------
+Filter Condition:
+- Field: {{8.testCol3}} (or {{1.3}})
+- Operator: equals
+- Value: "en" (or "EN" - match your sheets)
+
+Route 2 (Arabic Email):
+------------------------
+Filter Condition:
+- Field: {{8.testCol3}} (or {{1.3}})
+- Operator: equals
+- Value: "ar" (or "AR" - match your sheets)
+
+================================================================================
+TESTING
+================================================================================
+
+After adding filters:
+
+1. Run the scenario
+2. Check execution log:
+   - English leads should only go through Route 1
+   - Arabic leads should only go through Route 2
+   - Each lead should only receive ONE email (not both)
+
+3. Verify:
+   - English lead → Only English email sent ✅
+   - Arabic lead → Only Arabic email sent ✅
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+1. Check Module 8 output - what value is in testCol3?
+2. Verify the exact value matches your router filter
+3. Try using {{1.3}} directly instead of {{8.testCol3}}
+4. Check if there are extra spaces: use trim() function
+5. Try case-insensitive comparison if available
+
+================================================================================
+

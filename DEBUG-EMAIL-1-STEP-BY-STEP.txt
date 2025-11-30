@@ -1,0 +1,225 @@
+================================================================================
+DEBUG EMAIL 1 - STEP BY STEP
+Find Exactly What's Wrong
+================================================================================
+
+Let's find the exact problem. Follow these steps in order.
+
+================================================================================
+STEP 1: CHECK EXECUTION LOGS
+================================================================================
+
+This is the MOST IMPORTANT step!
+
+1. Go to Make.com
+2. Open your "Email 1 - Invitation" scenario
+3. Click "Execution history" (top right)
+4. Click on the LATEST execution (most recent)
+5. Look at each module:
+
+WHAT TO CHECK:
+--------------
+□ Module 1 (Google Sheets): Did it run? What data did it get?
+□ Module 8 (Set Variables): Did it run? What values are in the variables?
+□ Module 2 (Router): Did it run? Which route did it take?
+□ Module 3 or 4 (Send Email): Did it run? Any error message?
+□ Module 5 or 7 (Update Row): Did it run?
+
+ERROR MESSAGES:
+---------------
+Look for RED error messages. What does it say exactly?
+
+Copy the error message and tell me what it says.
+
+================================================================================
+STEP 2: CHECK IF SCENARIO IS RUNNING
+================================================================================
+
+1. In Make.com, look at your scenario
+2. Is there a green "ON" button? Or red "OFF"?
+3. If it's OFF, click it to turn ON
+4. If it's ON, try turning it OFF and ON again
+
+================================================================================
+STEP 3: CHECK MODULE 1 (Google Sheets Watch Rows)
+================================================================================
+
+1. Open Module 1
+2. Verify settings:
+   □ Spreadsheet ID: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+   □ Sheet Name: leads
+   □ Table First Row: A1:J1
+   □ Includes Headers: Yes
+   □ Limit: 1
+
+3. Test: Click "Run once" (if available)
+4. Check output: Does it show your test lead data?
+
+If Module 1 shows no data:
+- Check if lead is in Google Sheets
+- Check if headers are in Row 1
+- Check if spreadsheet ID is correct
+
+================================================================================
+STEP 4: CHECK MODULE 8 (Set Variables)
+================================================================================
+
+1. Open Module 8
+2. Check each variable:
+
+Variable "name":
+  Value should be: {{1.0}}
+  NOT: {{1.`0`}} or "1.0"
+
+Variable "email":
+  Value should be: {{1.1}}
+  NOT: {{1.`1`}} or "1.1"
+
+Variable "language":
+  Value should be: {{1.3}}
+  NOT: {{1.`3`}} or "1.3"
+
+3. If you see backticks (`), remove them!
+
+4. Save Module 8
+
+5. Check execution log:
+   - Click latest execution
+   - Click Module 8
+   - What values do you see?
+   - Is "email" empty? Is "name" empty?
+
+================================================================================
+STEP 5: CHECK MODULE 3 (English Email)
+================================================================================
+
+1. Open Module 3
+
+2. Check "To" field:
+   - Click "To" field
+   - Click on the array item
+   - What does "value" show?
+   
+   CORRECT: {{8.email}}
+   WRONG: "8. email" or 8. email or {{8. email}}
+
+3. Check Subject:
+   - Should be: {{8.name}}, You're Invited...
+   - NOT: "8. name," or 8. name,
+
+4. Check Filter:
+   - Condition: {{8.language}} = "en"
+   - Make sure it's exactly "en" (lowercase)
+
+5. Check "From":
+   - Should be: sales@thesmartpro.io
+
+================================================================================
+STEP 6: CHECK MODULE 4 (Arabic Email)
+================================================================================
+
+1. Open Module 4
+
+2. Check "To" field:
+   - Click "To" field
+   - Click on the array item
+   - What does "value" show?
+   
+   CORRECT: {{8.email}}
+   WRONG: "8. email" or 8. email
+
+3. Check Subject:
+   - Should be: {{8.name}}، أنت مدعو!...
+   - NOT: "8. name,"
+
+4. Check Filter:
+   - Condition: {{8.language}} = "ar"
+   - Make sure it's exactly "ar" (lowercase)
+
+================================================================================
+STEP 7: CHECK MODULE 2 (Router)
+================================================================================
+
+1. Open Module 2 (Router)
+
+2. Check Route 1 (English):
+   - Does it have a filter?
+   - Filter should be: {{8.language}} = "en"
+
+3. Check Route 2 (Arabic):
+   - Does it have a filter?
+   - Filter should be: {{8.language}} = "ar"
+
+4. If no filters, add them!
+
+================================================================================
+STEP 8: TEST WITH A NEW LEAD
+================================================================================
+
+1. Add a new test lead to Google Sheets:
+   - Name: Test User
+   - Email: YOUR-EMAIL@example.com (use your real email)
+   - Language: en
+   - Other columns: leave empty
+
+2. Wait 30 seconds
+
+3. Check Make.com execution history
+
+4. What happened?
+   □ Did Module 1 trigger?
+   □ Did Module 8 run?
+   □ Did Module 2 route correctly?
+   □ Did Module 3 or 4 run?
+   □ Any errors?
+
+================================================================================
+STEP 9: CHECK GOOGLE SHEETS DATA
+================================================================================
+
+1. Open your Google Sheets
+2. Check your test lead:
+   - Is email address correct? (no spaces, valid format)
+   - Is language exactly "en" or "ar"? (case-sensitive, no spaces)
+   - Is the row in the "leads" sheet?
+   - Are headers in Row 1?
+
+================================================================================
+COMMON ERRORS AND FIXES
+================================================================================
+
+ERROR: "Missing value of required parameter 'to'"
+FIX: Module 3/4 "To" field must be {{8.email}}, not "8. email"
+
+ERROR: "Invalid to field"
+FIX: "To" field value must be {{8.email}} with curly braces
+
+ERROR: Module 8 variables are empty
+FIX: Remove backticks from Module 8: {{1.1}} not {{1.`1`}}
+
+ERROR: Router sends to both routes
+FIX: Add filters to Router routes: {{8.language}} = "en" and "ar"
+
+ERROR: Module 1 doesn't trigger
+FIX: Make sure scenario is ON, check spreadsheet ID
+
+ERROR: Email not received
+FIX: Check spam folder, verify email address is correct
+
+================================================================================
+WHAT TO TELL ME
+================================================================================
+
+Please tell me:
+
+1. What error message do you see in execution logs?
+2. Which module failed? (Module 1, 8, 2, 3, 4, 5, or 7?)
+3. What does Module 8 output show? (Are variables empty?)
+4. What does Module 3/4 "To" field show? (Is it {{8.email}} or "8. email"?)
+5. Is the scenario ON?
+6. Did Module 1 trigger when you added a lead?
+
+This will help me give you the exact fix!
+
+================================================================================
+

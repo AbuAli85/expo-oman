@@ -1,154 +1,234 @@
 ================================================================================
-FIX: Language Filter Not Matching
+FIX: LANGUAGE FILTER NOT WORKING
 ================================================================================
 
-PROBLEM:
---------
-Google Sheets search IS working ✅ (found rows)
-But both email routes show: "The bundle did not pass through the filter" ❌
-
-This means:
-- The lead was found by Google Sheets ✅
-- But the Language value doesn't match the router filters ❌
+Both email modules are failing their language filters. This guide will help
+you fix it.
 
 ================================================================================
-ROOT CAUSE
+THE PROBLEM
 ================================================================================
 
-Your email modules have filters:
-- Module 3 (English): Language = "en" (lowercase)
-- Module 4 (Arabic): Language = "ar" (lowercase)
+Your execution shows:
+  ❌ English email (Module 3): "bundle did not pass through the filter"
+  ❌ Arabic email (Module 4): "bundle did not pass through the filter"
 
-But your Google Sheets probably has:
-- "EN" (uppercase) ❌
-- "AR" (uppercase) ❌
+This means the language value doesn't match "en" or "ar".
 
-OR something else entirely!
-
-================================================================================
-SOLUTION: Check and Fix Language Values
-================================================================================
-
-STEP 1: Check Your Google Sheets
----------------------------------
-1. Open your Google Sheets
-2. Look at column D (Language)
-3. Check the EXACT value for your test lead (Fahad Alamri)
-4. Is it:
-   - "en" or "EN"?
-   - "ar" or "AR"?
-   - Something else?
-
-STEP 2: Update Router Filters to Match
-----------------------------------------
-Once you know the exact value:
-
-If sheets have "EN" and "AR" (uppercase):
-- Module 3 filter: Change "en" to "EN"
-- Module 4 filter: Change "ar" to "AR"
-
-If sheets have "en" and "ar" (lowercase):
-- Keep filters as is, but verify data matches
-
-STEP 3: Alternative - Normalize the Data
------------------------------------------
-If you want to handle any case:
-
-1. Add a Set Variable module after Google Sheets search
-2. Variable name: normalizedLanguage
-3. Value: {{lower(1.3)}} (converts to lowercase)
-4. Update router filters to check normalizedLanguage instead
+Possible causes:
+  1. Language value from sheet is empty or null
+  2. Language value has extra spaces
+  3. Language value is not exactly "en" or "ar"
+  4. Variable not mapped correctly in Module 9
 
 ================================================================================
-QUICK DEBUG: See Actual Language Value
+IMMEDIATE FIX
 ================================================================================
 
-To see what value is actually in the Language column:
+OPTION 1: Normalize Language in Module 9 (Recommended)
+───────────────────────────────────────────────────────
 
-1. Add a Set Variable module after Module 1 (Google Sheets Search)
-2. Variable name: debugLanguage
-3. Value: {{1.3}} (Language column D)
-4. Run the scenario
-5. Check execution log - it will show the actual value
+In Module 9 (Set Variables), update the language variable:
 
-This will tell you exactly what's in the Language column!
+Current:
+  Variable: language
+  Value: {{12.language}}
 
-================================================================================
-IMMEDIATE FIX OPTIONS
-================================================================================
+Change to:
+  Variable: language
+  Value: {{trim(12.language)}} || "en"
+  
+Note: Make.com doesn't have lowercase() function. Use trim() instead.
+Filters are case-insensitive anyway, so this is sufficient.
 
-OPTION 1: Fix Google Sheets Data (Easiest)
--------------------------------------------
-1. Open Google Sheets
-2. Find Fahad Alamri's row
-3. Check column D (Language)
-4. Change it to exactly "ar" (lowercase) if it's "AR"
-5. Save
-6. Run scenario again
+This will:
+  ✓ Remove whitespace
+  ✓ Default to "en" if empty
+  ✓ Filters are case-insensitive, so "en"/"EN"/"En" all work
 
-OPTION 2: Fix Router Filters
------------------------------
-1. Open Module 3 (English Email)
-2. Find the filter condition
-3. Change from "en" to "EN" (if sheets use uppercase)
-4. Open Module 4 (Arabic Email)
-5. Change from "ar" to "AR" (if sheets use uppercase)
-6. Save and test
+How to do it:
+1. Click Module 9 in Make.com
+2. Find the "language" variable
+3. Change value to: {{lowercase(trim(12.language))}} || "en"
+4. Save
 
-OPTION 3: Remove Filters Temporarily (For Testing)
----------------------------------------------------
-1. Remove filters from Module 3 and Module 4
-2. This will send both emails to all leads
-3. Use this only for testing to verify the rest works
-4. Add filters back after fixing
+OPTION 2: Check Actual Language Values
+────────────────────────────────────────
 
-================================================================================
-YOUR CURRENT FILTER CONFIGURATION
-================================================================================
+1. Run a test webhook execution
+2. Click on Module 9 in the execution
+3. View the output
+4. Check what the "language" value actually is
+5. Update filters to match actual values
 
-Module 3 (English Email):
-- Filter: {{1.`3`}} = "en" (lowercase)
+OPTION 3: Make Filters More Flexible
+──────────────────────────────────────
 
-Module 4 (Arabic Email):
-- Filter: {{1.`3`}} = "ar" (lowercase)
+Update Router filters to handle variations:
 
-Your lead (Fahad Alamri) has:
-- Language: "ar" (according to earlier data)
+English Route Filter:
+  {{9.language}} equals "en" OR contains "en"
 
-But the filter isn't matching! This suggests:
-- The value might be "AR" (uppercase)
-- Or there might be extra spaces
-- Or the column mapping is wrong
+Arabic Route Filter:
+  {{9.language}} equals "ar" OR contains "ar"
 
 ================================================================================
-RECOMMENDED FIX
+ROOT CAUSE: CHECK YOUR SHEET DATA
 ================================================================================
 
-1. Add Set Variable module to see actual value:
-   - Variable: testLang = {{1.3}}
-   - Run scenario and check log
+Looking at your sheet structure:
+  Column D: Language
 
-2. Based on the actual value:
-   - If it's "AR": Change filter to "AR"
-   - If it's "ar": Keep filter as "ar"
-   - If it has spaces: Use trim() function
+Your sample data shows:
+  Row 1: language = "en"
+  Row 2: language = "en"
 
-3. Test again
+The script sends language with default "en":
+  language: data.language || 'en'
 
-================================================================================
-ALTERNATIVE: Case-Insensitive Filter
-================================================================================
-
-If you want to handle both cases:
-
-1. Add Set Variable module:
-   - Variable: langLower = {{lower(1.3)}}
-
-2. Update filters to check langLower:
-   - Module 3: langLower = "en"
-   - Module 4: langLower = "ar"
-
-This will work regardless of case in Google Sheets!
+Possible issues:
+  1. If language column is empty → defaults to "en" ✓
+  2. If language has spaces → needs trimming
+  3. If language is different format → needs normalization
 
 ================================================================================
+COMPLETE FIX INSTRUCTIONS
+================================================================================
 
+STEP 1: Update Module 9 Language Variable
+──────────────────────────────────────────
+
+1. Open Make.com scenario
+2. Click Module 9 (Set Variables)
+3. Find variable: "language"
+4. Current value: {{12.language}}
+5. Change to: {{lowercase(trim(12.language))}} || "en"
+6. Save
+
+STEP 2: Verify Router Filters
+──────────────────────────────
+
+Check Module 2 Router filters:
+
+Route 1 (English):
+  Condition: {{9.language}} equals "en"
+  Case sensitive: No (case insensitive)
+
+Route 2 (Arabic):
+  Condition: {{9.language}} equals "ar"
+  Case sensitive: No (case insensitive)
+
+STEP 3: Test
+─────────────
+
+1. Run testWebhook() in Google Apps Script
+2. Check Make.com execution
+3. Verify Module 9 language value
+4. Verify one of the email modules executes
+
+================================================================================
+ALTERNATIVE: FIX IN GOOGLE APPS SCRIPT
+================================================================================
+
+You can also ensure clean language values in the script:
+
+In CLEAN-SCRIPT-FOR-PASTE.js, update getFormData():
+
+Current:
+  language: rowData[COLUMN_MAPPING.LANGUAGE - 1] || 'en',
+
+Better:
+  language: (rowData[COLUMN_MAPPING.LANGUAGE - 1] || 'en').toString().trim().toLowerCase(),
+
+This ensures:
+  ✓ Always lowercase
+  ✓ No whitespace
+  ✓ Always a string
+  ✓ Defaults to "en"
+
+Then update sendToWebhook() payload to use the cleaned value.
+
+================================================================================
+DEBUGGING STEPS
+================================================================================
+
+To find out what's wrong:
+
+1. TEST WEBHOOK:
+   □ Run testWebhook() in Apps Script
+   □ Check Make.com execution
+   □ Click Module 9
+   □ See language value
+
+2. TEST WITH ACTUAL DATA:
+   □ Run testLastRow() in Apps Script
+   □ Check what language value is sent
+   □ Compare with sheet data
+
+3. CHECK SHEET DATA:
+   □ Open your sheet
+   □ Check language column (Column D)
+   □ See what values exist
+   □ Verify format (lowercase, no spaces)
+
+4. VERIFY MODULE 9:
+   □ Check language variable mapping
+   □ Ensure it references {{12.language}}
+   □ Check if any transformations applied
+
+5. VERIFY FILTERS:
+   □ Check Module 3 filter (English)
+   □ Check Module 4 filter (Arabic)
+   □ Ensure they use {{9.language}}
+   □ Ensure comparison values are correct
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Update Module 9 language variable to normalize value
+□ Verify Router filters reference {{9.language}} correctly
+□ Ensure filters use case-insensitive matching
+□ Test with webhook call
+□ Verify email module passes filter
+□ Confirm email is sent
+
+================================================================================
+EXPECTED VALUES
+================================================================================
+
+Your sheet should have:
+  • "en" for English
+  • "ar" for Arabic
+
+Your webhook should send:
+  • language: "en" (exactly, lowercase, no spaces)
+  • language: "ar" (exactly, lowercase, no spaces)
+
+Your Module 9 should set:
+  • language = "en" or "ar"
+
+Your filters should check:
+  • {{9.language}} equals "en" (case insensitive)
+  • {{9.language}} equals "ar" (case insensitive)
+
+================================================================================
+TESTING AFTER FIX
+================================================================================
+
+After applying fixes:
+
+1. Run testWebhook() with language: "en"
+   ✓ Should trigger English email
+
+2. Run testWebhook() with language: "ar"
+   ✓ Should trigger Arabic email
+
+3. Check execution logs:
+   ✓ Email module should pass filter
+   ✓ Email should be sent
+   ✓ Sheet should be updated
+
+================================================================================
+END OF FIX GUIDE
+================================================================================

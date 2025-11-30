@@ -1,0 +1,249 @@
+================================================================================
+DEBUG: EMAIL FILTERS NOT PASSING
+================================================================================
+
+Your Make.com scenario executed, but both email modules failed their filters:
+  ❌ Module 3 (English email): "The bundle did not pass through the filter"
+  ❌ Module 4 (Arabic email): "The bundle did not pass through the filter"
+
+This means the language value from your webhook doesn't match "en" or "ar".
+
+================================================================================
+PROBLEM ANALYSIS
+================================================================================
+
+Your Router (Module 2) executed and tried both routes:
+  ✓ Route 1 (English) - checked language filter
+  ✓ Route 2 (Arabic) - checked language filter
+
+But both email modules failed because:
+  • Language value from webhook ≠ "en"
+  • Language value from webhook ≠ "ar"
+
+Most likely causes:
+  1. Language value is not exactly "en" or "ar"
+  2. Extra whitespace in language value
+  3. Language value is empty or null
+  4. Variable mapping issue in Module 9
+
+================================================================================
+HOW TO DEBUG
+================================================================================
+
+STEP 1: Check What Language Value is Received
+───────────────────────────────────────────────
+
+1. In Make.com, click on Module 9 (Set Variables)
+2. Look at the execution output
+3. Check the "language" variable value
+4. Verify it shows exactly "en" or "ar"
+
+OR:
+
+1. In Make.com scenario, click on the execution
+2. Click on Module 9
+3. View the output data
+4. Check what value is in the "language" variable
+
+STEP 2: Check Module 9 Variable Mapping
+────────────────────────────────────────
+
+Verify Module 9 is correctly mapping:
+  language = {{12.language}}
+
+If it's wrong, fix it to:
+  {{12.language}}
+
+STEP 3: Check Router Filters
+──────────────────────────────
+
+Module 3 (English email) filter should be:
+  {{9.language}} equals "en" (case insensitive)
+
+Module 4 (Arabic email) filter should be:
+  {{9.language}} equals "ar" (case insensitive)
+
+Verify these filters are set correctly.
+
+================================================================================
+COMMON ISSUES AND FIXES
+================================================================================
+
+ISSUE 1: Language Value Has Whitespace
+────────────────────────────────────────
+If language is "en " or " en" (with spaces):
+  → Fix: Use "Trim" function or add to Module 9:
+     language = {{trim(12.language)}}
+
+ISSUE 2: Language Value is Empty/Null
+──────────────────────────────────────
+If language doesn't exist or is empty:
+  → Fix: Set default value in Module 9:
+     language = {{12.language}} || "en"
+
+ISSUE 3: Case Sensitivity
+──────────────────────────
+If language is "EN" or "En" instead of "en":
+  → Fix: Filters are case-insensitive by default, so "EN" will match "en"
+     Just ensure filter uses case-insensitive matching (default setting)
+
+ISSUE 4: Wrong Variable Reference
+──────────────────────────────────
+If Module 9 isn't mapping language correctly:
+  → Fix: Ensure Module 9 has:
+     Variable name: language
+     Variable value: {{12.language}}
+
+ISSUE 5: Language Value is Different
+─────────────────────────────────────
+If webhook sends "english" or "English" instead of "en":
+  → Fix Option 1: Update Google Apps Script to send "en" or "ar"
+  → Fix Option 2: Change filters to match actual values
+  → Fix Option 3: Map values in Module 9:
+     language = if({{12.language}} = "english", "en", {{12.language}})
+
+================================================================================
+QUICK FIX OPTIONS
+================================================================================
+
+OPTION 1: Add Language Normalization in Module 9
+──────────────────────────────────────────────────
+
+In Module 9, normalize the language value:
+
+Add a new variable or update existing:
+  language = {{trim(12.language)}} || "en"
+
+Note: Make.com doesn't have lowercase() function, but filters are
+case-insensitive, so this is sufficient.
+
+This ensures:
+  ✓ No whitespace
+  ✓ Lowercase
+  ✓ Default to "en" if empty
+
+OPTION 2: Check Actual Language Value First
+────────────────────────────────────────────
+
+1. Add a temporary Text Aggregator or Logger
+2. Log the language value
+3. See what's actually being received
+4. Adjust filters accordingly
+
+OPTION 3: Update Router Filters
+─────────────────────────────────
+
+If language value is different, update filters:
+  • English: language equals "en" OR "english" OR "English"
+  • Arabic: language equals "ar" OR "arabic" OR "Arabic"
+
+OR use case-insensitive text matching.
+
+================================================================================
+STEP-BY-STEP DEBUGGING
+================================================================================
+
+STEP 1: Check Module 9 Output
+───────────────────────────────
+□ Open Make.com scenario execution
+□ Click on Module 9 (Set Variables)
+□ View output data
+□ Check "language" variable value
+□ Note the exact value (including any spaces/case)
+
+STEP 2: Check Webhook Data
+───────────────────────────
+□ Click on Module 12 (Webhook)
+□ View received data
+□ Check "language" field value
+□ Compare with Module 9 mapping
+
+STEP 3: Verify Router Filters
+──────────────────────────────
+□ Check Module 3 filter condition
+□ Check Module 4 filter condition
+□ Ensure they reference {{9.language}}
+□ Ensure comparison values are "en" and "ar"
+
+STEP 4: Test with Known Values
+───────────────────────────────
+□ Update Module 9 to hardcode test values:
+   language = "en" (for testing)
+□ Run scenario
+□ See if email sends
+□ Repeat with "ar"
+
+STEP 5: Fix Based on Findings
+──────────────────────────────
+□ If value has whitespace → Add trim()
+□ If value is wrong case → Add lowercase()
+□ If value is different → Update filters or mapping
+□ If value is empty → Add default value
+
+================================================================================
+EXPECTED BEHAVIOR
+================================================================================
+
+When working correctly:
+
+1. Webhook receives: {"language": "en", ...}
+2. Module 9 sets: language = "en"
+3. Router routes to Route 1 (English)
+4. Module 3 filter checks: "en" equals "en" ✓
+5. Module 3 executes and sends email ✓
+
+OR:
+
+1. Webhook receives: {"language": "ar", ...}
+2. Module 9 sets: language = "ar"
+3. Router routes to Route 2 (Arabic)
+4. Module 4 filter checks: "ar" equals "ar" ✓
+5. Module 4 executes and sends email ✓
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After debugging, verify:
+
+□ Module 9 correctly maps language from webhook
+□ Language value is exactly "en" or "ar" (no spaces)
+□ Router filters reference {{9.language}} correctly
+□ Filter conditions use case-insensitive matching
+□ Test execution shows email module passes filter
+□ Email is sent successfully
+
+================================================================================
+QUICK FIX TEMPLATE
+================================================================================
+
+Update Module 9 to normalize language:
+
+Current:
+  language: {{12.language}}
+
+Better:
+  language: {{lowercase(trim(12.language))}}
+
+With default:
+  language: {{if({{12.language}}, lowercase(trim({{12.language}})), "en")}}
+
+This ensures:
+  • Always lowercase
+  • No whitespace
+  • Defaults to "en" if empty
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Check Module 9 output to see actual language value
+2. Compare with filter conditions
+3. Normalize language value if needed
+4. Test again
+5. Verify email sends
+
+================================================================================
+END OF DEBUG GUIDE
+================================================================================
+

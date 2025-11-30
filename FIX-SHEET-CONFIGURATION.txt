@@ -1,0 +1,215 @@
+================================================================================
+FIX SHEET CONFIGURATION
+Form Responses vs Leads Sheet
+================================================================================
+
+YOUR SITUATION:
+--------------
+✅ Form responses are saved to: "UAE Property Expo" sheet
+✅ Leads data is in: "leads" sheet
+❌ Need to make sure scenario uses correct sheet
+
+================================================================================
+UNDERSTANDING THE FLOW
+================================================================================
+
+HOW IT WORKS:
+-------------
+1. Google Forms → Saves responses to "UAE Property Expo" sheet (automatic)
+2. Make.com → Reads form responses directly (Module 1: Watch Responses)
+3. Make.com → Searches "leads" sheet for email (Module 8/9: Filter Rows)
+4. Make.com → Updates "leads" sheet (Module 3/5: Update Row)
+
+IMPORTANT:
+----------
+- Form responses in "UAE Property Expo" sheet = Just for viewing
+- Make.com searches "leads" sheet = Where your leads data is
+- Make.com updates "leads" sheet = Where Response column is updated
+
+THIS IS CORRECT! ✅
+
+================================================================================
+VERIFY SHEET CONFIGURATION
+================================================================================
+
+CHECK MODULE 8 (Route 1 - Search Rows):
+----------------------------------------
+1. Open Module 8 (Google Sheets: Filter Rows)
+2. Check:
+   □ Spreadsheet: Should be your main spreadsheet
+   □ Sheet Name: Should be "leads" (NOT "UAE Property Expo")
+   □ Filter: Email (Column B) = {{4.email}}
+
+CHECK MODULE 9 (Route 2 - Search Rows):
+----------------------------------------
+1. Open Module 9 (Google Sheets: Filter Rows)
+2. Check:
+   □ Spreadsheet: Should be your main spreadsheet
+   □ Sheet Name: Should be "leads" (NOT "UAE Property Expo")
+   □ Filter: Email (Column B) = {{4.email}}
+
+CHECK MODULE 3 (Route 1 - Update Row):
+---------------------------------------
+1. Open Module 3 (Google Sheets: Update Row)
+2. Check:
+   □ Spreadsheet: Should be your main spreadsheet
+   □ Sheet Name: Should be "leads" (NOT "UAE Property Expo")
+   □ Row Number: {{8.__ROW_NUMBER__}}
+   □ Values: Response (K), Response Date (L), Comments (M)
+
+CHECK MODULE 5 (Route 2 - Update Row):
+---------------------------------------
+1. Open Module 5 (Google Sheets: Update Row)
+2. Check:
+   □ Spreadsheet: Should be your main spreadsheet
+   □ Sheet Name: Should be "leads" (NOT "UAE Property Expo")
+   □ Row Number: {{9.__ROW_NUMBER__}}
+   □ Values: Response (K), Response Date (L), Comments (M)
+
+================================================================================
+IF SHEETS ARE WRONG - FIX THEM
+================================================================================
+
+IF MODULE 8/9 USES WRONG SHEET:
+--------------------------------
+1. Open Module 8 or 9
+2. Click on "Sheet Name" field
+3. Change from "UAE Property Expo" to "leads"
+4. Save
+
+IF MODULE 3/5 USES WRONG SHEET:
+-------------------------------
+1. Open Module 3 or 5
+2. Click on "Sheet Name" field
+3. Change from "UAE Property Expo" to "leads"
+4. Save
+
+================================================================================
+CORRECT CONFIGURATION
+================================================================================
+
+MODULE 8 (Search Rows - Route 1):
+-----------------------------------
+- Spreadsheet: Your main spreadsheet
+- Sheet Name: "leads"
+- Filter: Email (B) = {{4.email}}
+
+MODULE 9 (Search Rows - Route 2):
+-----------------------------------
+- Spreadsheet: Your main spreadsheet
+- Sheet Name: "leads"
+- Filter: Email (B) = {{4.email}}
+
+MODULE 3 (Update Row - Route 1):
+---------------------------------
+- Spreadsheet: Your main spreadsheet
+- Sheet Name: "leads"
+- Row Number: {{8.__ROW_NUMBER__}}
+- Values: Response (K), Date (L), Comments (M)
+
+MODULE 5 (Update Row - Route 2):
+---------------------------------
+- Spreadsheet: Your main spreadsheet
+- Sheet Name: "leads"
+- Row Number: {{9.__ROW_NUMBER__}}
+- Values: Response (K), Date (L), Comments (M)
+
+================================================================================
+QUICK VERIFICATION (2 MINUTES)
+================================================================================
+
+STEP 1: Check Module 8 (30 sec)
+--------------------------------
+1. Open Module 8
+2. Sheet Name: Should be "leads"
+3. If not → Change it
+
+STEP 2: Check Module 9 (30 sec)
+--------------------------------
+1. Open Module 9
+2. Sheet Name: Should be "leads"
+3. If not → Change it
+
+STEP 3: Check Module 3 (30 sec)
+-------------------------------
+1. Open Module 3
+2. Sheet Name: Should be "leads"
+3. If not → Change it
+
+STEP 4: Check Module 5 (30 sec)
+-------------------------------
+1. Open Module 5
+2. Sheet Name: Should be "leads"
+3. If not → Change it
+
+STEP 5: Save (30 sec)
+----------------------
+1. Save scenario
+2. All modules should use "leads" sheet
+
+================================================================================
+UNDERSTANDING THE TWO SHEETS
+================================================================================
+
+SHEET 1: "UAE Property Expo"
+-----------------------------
+- Purpose: Google Forms automatically saves responses here
+- Contains: All form submissions (timestamp, email, attendance, comments)
+- Used by: Google Forms (automatic)
+- NOT used by: Make.com scenario
+
+SHEET 2: "leads"
+-----------------
+- Purpose: Your main leads database
+- Contains: Name, Email, Phone, Language, Status, Response, etc.
+- Used by: Make.com scenario (Module 8/9 search here, Module 3/5 update here)
+- This is where Response column gets updated!
+
+================================================================================
+IF YOU WANT TO CHANGE WHERE FORM RESPONSES GO
+================================================================================
+
+OPTION 1: Keep Current Setup (Recommended)
+--------------------------------------------
+- Form responses → "UAE Property Expo" sheet (automatic)
+- Make.com searches → "leads" sheet (your database)
+- Make.com updates → "leads" sheet (Response column)
+
+This is the correct setup! ✅
+
+OPTION 2: Change Form Response Destination
+--------------------------------------------
+1. In Google Forms, click "Responses" tab
+2. Click three dots (⋮) next to "Link to Sheets"
+3. Click "Unlink"
+4. Click "Link to Sheets" again
+5. Select "leads" sheet
+6. Now form responses will go to "leads" sheet
+
+BUT: This might mix form responses with your leads data, which could be messy.
+
+RECOMMENDATION: Keep current setup (Option 1)
+
+================================================================================
+SUMMARY
+================================================================================
+
+CURRENT SETUP:
+-------------
+✅ Form responses → "UAE Property Expo" sheet (automatic, for viewing)
+✅ Make.com searches → "leads" sheet (your database)
+✅ Make.com updates → "leads" sheet (Response column)
+
+THIS IS CORRECT! ✅
+
+JUST VERIFY:
+------------
+□ Module 8: Sheet Name = "leads"
+□ Module 9: Sheet Name = "leads"
+□ Module 3: Sheet Name = "leads"
+□ Module 5: Sheet Name = "leads"
+
+If all checked → Everything is correct! ✅
+
+================================================================================
+

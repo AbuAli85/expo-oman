@@ -1,0 +1,170 @@
+================================================================================
+COMPLETE FIX FOR EMAIL 1
+Based on Your Google Sheets Structure
+================================================================================
+
+YOUR SHEET STRUCTURE:
+---------------------
+A: Name
+B: Email
+C: Phone
+D: Language
+E: Status
+F: Date Added
+G: Email 1 Date
+H: Email 2 Date
+I: Email 3 Date
+J: Notes
+
+================================================================================
+STEP 1: FIX MODULE 8 (Set Variables)
+================================================================================
+
+Open Module 8 and set these variables:
+
+Variable 1: name
+  Value: {{1.0}}
+  (NOT {{1.`0`}} - remove backticks!)
+
+Variable 2: email
+  Value: {{1.1}}
+  (NOT {{1.`1`}} - remove backticks!)
+
+Variable 3: language
+  Value: {{1.3}}
+  (NOT {{1.`3`}} - remove backticks!)
+
+Save Module 8.
+
+================================================================================
+STEP 2: FIX MODULE 3 (English Email)
+================================================================================
+
+1. Open Module 3
+
+2. "To" Field:
+   - Click "To" field
+   - Click on Array Item 1
+   - Click "value" field
+   - DELETE: "8. email"
+   - TYPE: {{8.email}}
+   - Should show: [{"value": "{{8.email}}"}]
+
+3. Subject Field:
+   - Change: "8. name,You're Invited..."
+   - To: "{{8.name}}, You're Invited..."
+   - (Add curly braces and space after comma)
+
+4. Filter (should already be correct):
+   - {{8.language}} = "en"
+
+5. Save Module 3
+
+================================================================================
+STEP 3: FIX MODULE 4 (Arabic Email)
+================================================================================
+
+1. Open Module 4
+
+2. "To" Field:
+   - Click "To" field
+   - Click on Array Item 1
+   - Click "value" field
+   - DELETE: "8. email"
+   - TYPE: {{8.email}}
+   - Should show: [{"value": "{{8.email}}"}]
+
+3. Subject Field:
+   - Change: "8. name,أنت مدعو!..."
+   - To: "{{8.name}}، أنت مدعو!..."
+   - (Add curly braces and Arabic comma)
+
+4. Filter (should already be correct):
+   - {{8.language}} = "ar"
+
+5. Save Module 4
+
+================================================================================
+STEP 4: VERIFY MODULE 5 & 7 (Update Row)
+================================================================================
+
+Both Module 5 and Module 7 should update:
+
+Values:
+  "4": "Email 1 Sent"  (Column E - Status)
+  "6": "{{now}}"       (Column G - Email 1 Date)
+
+Row Number: {{1.__ROW_NUMBER__}}
+
+If different, update them.
+
+================================================================================
+STEP 5: VERIFY SCENARIO SETTINGS
+================================================================================
+
+□ Scenario is ON (not paused)
+□ Module 1 is watching "leads" sheet
+□ Spreadsheet ID is correct
+□ Headers are in Row 1
+
+================================================================================
+STEP 6: TEST
+================================================================================
+
+1. Add test lead to Google Sheets:
+   - Name: Test User
+   - Email: your-email@example.com
+   - Language: en
+   - Other columns can be empty
+
+2. Wait 15-30 seconds
+
+3. Check Make.com execution logs:
+   - Should see: ✅ Success
+   - Should see: Email sent
+
+4. Check your email inbox
+
+5. Check Google Sheets:
+   - Column E should show: "Email 1 Sent"
+   - Column G should show: date/time
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+Check Execution Logs:
+1. Go to Make.com
+2. Click on your scenario
+3. Click "Execution history"
+4. Click on latest execution
+5. Check each module:
+   - Module 1: Should show row data
+   - Module 8: Should show variables with values
+   - Module 2: Should route to Module 3 or 4
+   - Module 3/4: Check for errors
+   - Module 5/7: Should show "Updated"
+
+Common Issues:
+- Module 1 not triggering → Check if scenario is ON
+- Module 8 variables empty → Check backticks removed
+- Module 3/4 error → Check "To" field = {{8.email}}
+- No email received → Check spam folder, verify email address
+
+================================================================================
+FINAL CHECKLIST
+================================================================================
+
+Before testing, verify:
+
+□ Module 8: name = {{1.0}}, email = {{1.1}}, language = {{1.3}}
+□ Module 3: To = {{8.email}}, Subject = {{8.name}}, You're...
+□ Module 4: To = {{8.email}}, Subject = {{8.name}}، أنت...
+□ Module 3 Filter: {{8.language}} = "en"
+□ Module 4 Filter: {{8.language}} = "ar"
+□ Module 5 & 7: Update Column E = "Email 1 Sent", Column G = {{now}}
+□ Scenario is ON
+□ Test lead in Google Sheets
+
+================================================================================
+

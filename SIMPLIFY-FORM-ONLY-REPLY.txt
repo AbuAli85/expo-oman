@@ -1,0 +1,259 @@
+================================================================================
+SIMPLIFY FORM: ONLY ASK FOR REPLY
+Remove Email and Name Fields
+================================================================================
+
+YOUR REQUIREMENT:
+-----------------
+Form should ONLY ask for:
+- Will you attend? (Yes/No)
+- Comments (optional)
+
+NOT ask for:
+- Email (already in Google Sheets)
+- Name (already in Google Sheets)
+
+================================================================================
+SOLUTION 1: USE PRE-FILLED FORM WITH HIDDEN EMAIL (RECOMMENDED)
+================================================================================
+
+HOW IT WORKS:
+-------------
+1. When sending Email 1, 2, or 3, include a PRE-FILLED form link
+2. The pre-filled link contains the email as a hidden field
+3. Form only shows: Attendance question + Comments
+4. When submitted, form includes the email automatically
+
+STEP 1: Update Google Form
+---------------------------
+1. Open your Google Form
+2. Remove "Email Address" field (if exists)
+3. Remove "Full Name" field (if exists)
+4. Keep only:
+   - "Will you attend the expo?" (required)
+   - "Any additional comments or questions?" (optional)
+5. Save
+
+STEP 2: Get Form Field IDs
+---------------------------
+1. In Google Form, click "Send" button
+2. Click "Link" icon
+3. Check "Pre-fill link"
+4. Fill in a test email
+5. Copy the pre-fill link
+6. The link will look like:
+   https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.XXXXX=test@example.com
+
+STEP 3: Update Email Templates
+-------------------------------
+In Email 1, 2, 3 templates, change form link from:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform
+
+To:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.XXXXX={{email}}
+
+Where:
+- entry.XXXXX = the field ID for email (from pre-fill link)
+- {{email}} = the email variable from your scenario
+
+STEP 4: Update Make.com Scenario
+----------------------------------
+Module 1 (Google Forms Watch Responses) will now receive:
+- respondentEmail: From pre-filled form OR logged-in user
+- answers: Only attendance and comments
+
+Module 4 (Set Variables):
+- email: {{1.respondentEmail}} (from form, not from answers)
+- name: Get from Google Sheets (search by email)
+- attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+- comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+================================================================================
+SOLUTION 2: USE RESPONDENT EMAIL (SIMPLER)
+================================================================================
+
+HOW IT WORKS:
+-------------
+1. Google Forms automatically captures respondentEmail if user is logged in
+2. Form only asks: Attendance + Comments
+3. Use respondentEmail to match with Google Sheets
+
+STEP 1: Update Google Form
+---------------------------
+1. Remove Email and Name fields
+2. Keep only Attendance and Comments
+3. Make sure "Collect email addresses" is ON in form settings
+   - Form Settings → General → "Collect email addresses"
+
+STEP 2: Update Make.com Scenario
+----------------------------------
+Module 4 (Set Variables):
+- email: {{1.respondentEmail}} ✅ (already correct)
+- name: Get from Google Sheets (need to add step)
+- attendance: {{1.answers.677abd25.textAnswers.answers[0].value}}
+- comments: {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+STEP 3: Add Name Lookup (Optional)
+----------------------------------
+If you need name in email template:
+1. After Module 4, add: Google Sheets → Search Rows
+2. Search by email: {{4.email}}
+3. Get name from column 0 (Name)
+4. Use in email template: {{searchResult.0}}
+
+================================================================================
+SOLUTION 3: ADD UNIQUE TOKEN TO FORM LINK (MOST FLEXIBLE)
+================================================================================
+
+HOW IT WORKS:
+-------------
+1. Add a unique token/ID to each form link
+2. Store token in Google Sheets (new column)
+3. Form includes token as hidden field
+4. Match response by token
+
+STEP 1: Add Token Column to Google Sheets
+------------------------------------------
+1. Add column: "Form Token" (e.g., column N)
+2. Generate unique token for each lead (UUID or random string)
+
+STEP 2: Update Email Templates
+-------------------------------
+Form link becomes:
+https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform?entry.XXXXX={{token}}
+
+STEP 3: Update Make.com Scenario
+----------------------------------
+1. Module 1: Get token from form response
+2. Module 4: Search Google Sheets by token
+3. Get email and name from found row
+4. Continue with workflow
+
+================================================================================
+RECOMMENDED: SOLUTION 2 (SIMPLEST)
+================================================================================
+
+BEST APPROACH:
+--------------
+1. Remove Email and Name fields from form
+2. Enable "Collect email addresses" in form settings
+3. Use {{1.respondentEmail}} (already in your scenario)
+4. Get name from Google Sheets if needed
+
+ADVANTAGES:
+-----------
+✅ Simplest to implement
+✅ No form changes needed (just remove fields)
+✅ Works if user is logged into Google
+✅ respondentEmail is already captured
+
+DISADVANTAGES:
+--------------
+⚠️ Requires user to be logged into Google account
+⚠️ If not logged in, respondentEmail might be empty
+
+================================================================================
+STEP-BY-STEP: IMPLEMENT SOLUTION 2
+================================================================================
+
+STEP 1: Update Google Form (2 minutes)
+--------------------------------------
+1. Open Google Form
+2. Delete "Email Address" field
+3. Delete "Full Name" field
+4. Keep only:
+   - "Will you attend the expo?" (required)
+   - "Any additional comments or questions?" (optional)
+5. Go to Settings (gear icon)
+6. Under "General", check "Collect email addresses"
+7. Save
+
+STEP 2: Verify Make.com Scenario (Already Correct!)
+-----------------------------------------------------
+Your Module 4 already uses:
+- email: {{1.respondentEmail}} ✅
+
+No changes needed!
+
+STEP 3: Update Email Templates (Optional - If You Need Name)
+------------------------------------------------------------
+If you want to use name in email template:
+
+Option A: Get name from Google Sheets
+1. After Module 4, add: Google Sheets → Search Rows
+2. Search: Email = {{4.email}}
+3. Get: Name = {{searchResult.0}}
+4. Use in email: {{searchResult.0}}
+
+Option B: Use name from form (if you keep it)
+- Keep name field in form
+- Use: {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+
+================================================================================
+UPDATED FORM STRUCTURE
+================================================================================
+
+BEFORE:
+-------
+1. Email Address (remove)
+2. Full Name (remove)
+3. Will you attend the expo? (keep)
+4. Comments (keep)
+
+AFTER:
+------
+1. Will you attend the expo? (required)
+2. Any additional comments or questions? (optional)
+
+Email: Automatically captured from Google account (respondentEmail)
+Name: Get from Google Sheets by matching email
+
+================================================================================
+UPDATED WORKFLOW
+================================================================================
+
+CURRENT:
+--------
+Form → Email/Name/Attendance/Comments → Match by email → Update sheet → Send email
+
+NEW:
+----
+Form → Attendance/Comments → respondentEmail → Match by email → Get name from sheet → Update sheet → Send email
+
+================================================================================
+QUICK IMPLEMENTATION (5 MINUTES)
+================================================================================
+
+1. Open Google Form
+2. Delete Email and Name fields
+3. Enable "Collect email addresses" in settings
+4. Save form
+5. Test: Submit form while logged into Google
+6. Verify: respondentEmail is captured in Make.com
+
+DONE! ✅
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+NOTE 1: Email Collection
+-------------------------
+- If "Collect email addresses" is ON: respondentEmail is captured
+- If user is logged in: respondentEmail = their Google email
+- If user is NOT logged in: respondentEmail might be empty
+
+NOTE 2: Name in Email Template
+--------------------------------
+If you need name in email template:
+- Option 1: Get from Google Sheets (search by email)
+- Option 2: Keep name field in form (but user has to type it)
+
+NOTE 3: Testing
+---------------
+- Test while logged into Google account
+- respondentEmail should be captured automatically
+- If empty, user needs to log in or use pre-filled form
+
+================================================================================
+

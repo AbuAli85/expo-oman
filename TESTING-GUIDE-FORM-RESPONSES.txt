@@ -1,0 +1,314 @@
+================================================================================
+TESTING GUIDE - FORM RESPONSES
+Testing "Yes, I'll attend" and "No, I cannot attend"
+================================================================================
+
+This guide will help you test your scenario with both attendance responses
+and verify everything is working correctly.
+
+================================================================================
+PRE-TEST CHECKLIST
+================================================================================
+
+Before testing, verify:
+
+☐ Scenario is saved and activated in Make.com
+☐ All email modules have HTML content added
+☐ All "To" fields are set to: [{"value": "{{2.email}}"}]
+☐ Router filters are correctly configured
+☐ Subject lines are correct (not corrupted)
+☐ Google Sheets connection is working
+☐ Resend email connection is working
+
+================================================================================
+TEST 1: "YES, I'LL ATTEND" RESPONSE
+================================================================================
+
+STEP 1: Submit Form Response
+----------------------------
+1. Open your Google Form
+2. Fill in the form with:
+   - Name: "Test User Yes"
+   - Email: your-test-email@example.com (use a real email you can check)
+   - Attendance: Select "Yes, I'll attend"
+   - Comments: "Testing yes response"
+3. Submit the form
+
+STEP 2: Check Make.com Execution
+---------------------------------
+1. Go to Make.com
+2. Open your scenario
+3. Check the latest execution
+4. Verify the flow:
+
+   Expected Flow:
+   ┌─────────────────────────────────────────┐
+   │ Module 1: Google Forms Trigger          │ ✅ Should execute
+   │ Module 2: Set Variables                │ ✅ Should execute
+   │ Module 11: Filter Rows (Search)        │ ✅ Should execute
+   │ Module 12: Basic Aggregator             │ ✅ Should execute
+   │ Module 5: Set Variables (row info)     │ ✅ Should execute
+   │ Module 6: Router                        │ ✅ Should route
+   │                                         │
+   │ IF EMAIL EXISTS IN SHEET:               │
+   │   Route 1 (Update Existing Row):        │
+   │     Module 7: Update Row                │ ✅ Should execute
+   │     Module 13: Basic Aggregator         │ ✅ Should execute
+   │     Module 15: Router (by attendance)    │ ✅ Should execute
+   │       Route 1A: "Yes, I'll attend"      │ ✅ Should route here
+   │         Module 16: Agreement Email      │ ✅ Should execute
+   │                                         │
+   │ IF EMAIL NOT IN SHEET:                  │
+   │   Route 2 (Add New Row):                │
+   │     Module 10: Add Row                  │ ✅ Should execute
+   │     Module 14: Basic Aggregator         │ ✅ Should execute
+   │     Module 18: Router (by attendance)   │ ✅ Should execute
+   │       Route 2A: "Yes, I'll attend"      │ ✅ Should route here
+   │         Module 19: Agreement Email      │ ✅ Should execute
+   └─────────────────────────────────────────┘
+
+STEP 3: Check Google Sheets
+----------------------------
+1. Open your Google Sheets
+2. Find the row with the test email
+3. Verify:
+   ☐ Name column (A): "Test User Yes"
+   ☐ Email column (B): your-test-email@example.com
+   ☐ Response column (K): "Accepted"
+   ☐ Response Date column (L): Current date/time
+   ☐ Comments column (M): "Testing yes response"
+
+STEP 4: Check Email Received
+-----------------------------
+1. Check the email inbox for your-test-email@example.com
+2. Verify:
+   ☐ Email was received
+   ☐ Subject: "Agreement - UAE Property Expo"
+   ☐ Email shows: "Dear Test User Yes," (name appears correctly)
+   ☐ Email shows: "Thank You for Accepting!"
+   ☐ Email shows event details (26–27 December 2025, Grand Hyatt, Muscat)
+   ☐ Email shows contact information
+   ☐ Email is properly formatted (not broken HTML)
+
+STEP 5: Check Make.com Execution Logs
+--------------------------------------
+1. In Make.com, click on the execution
+2. Check each module:
+   ☐ All modules executed successfully (green checkmarks)
+   ☐ No errors or warnings
+   ☐ Execution time is reasonable (< 10 seconds)
+   ☐ Operations count is as expected
+
+================================================================================
+TEST 2: "NO, I CANNOT ATTEND" RESPONSE
+================================================================================
+
+STEP 6: Submit Second Form Response
+------------------------------------
+1. Open your Google Form again
+2. Fill in the form with:
+   - Name: "Test User No"
+   - Email: your-test-email-2@example.com (use a DIFFERENT email)
+   - Attendance: Select "No, I cannot attend"
+   - Comments: "Testing no response"
+3. Submit the form
+
+STEP 7: Check Make.com Execution
+---------------------------------
+1. Go to Make.com
+2. Open your scenario
+3. Check the latest execution
+4. Verify the flow:
+
+   Expected Flow:
+   ┌─────────────────────────────────────────┐
+   │ Module 1: Google Forms Trigger          │ ✅ Should execute
+   │ Module 2: Set Variables                 │ ✅ Should execute
+   │ Module 11: Filter Rows (Search)         │ ✅ Should execute
+   │ Module 12: Basic Aggregator             │ ✅ Should execute
+   │ Module 5: Set Variables (row info)      │ ✅ Should execute
+   │ Module 6: Router                        │ ✅ Should route
+   │                                         │
+   │ IF EMAIL EXISTS IN SHEET:               │
+   │   Route 1 (Update Existing Row):        │
+   │     Module 7: Update Row                │ ✅ Should execute
+   │     Module 13: Basic Aggregator         │ ✅ Should execute
+   │     Module 15: Router (by attendance)   │ ✅ Should execute
+   │       Route 1B: "No, I cannot attend"   │ ✅ Should route here
+   │         Module 17: Thank You Email      │ ✅ Should execute
+   │                                         │
+   │ IF EMAIL NOT IN SHEET:                  │
+   │   Route 2 (Add New Row):                │
+   │     Module 10: Add Row                  │ ✅ Should execute
+   │     Module 14: Basic Aggregator         │ ✅ Should execute
+   │     Module 18: Router (by attendance)  │ ✅ Should execute
+   │       Route 2B: "No, I cannot attend"  │ ✅ Should route here
+   │         Module 20: Thank You Email      │ ✅ Should execute
+   └─────────────────────────────────────────┘
+
+STEP 8: Check Google Sheets
+----------------------------
+1. Open your Google Sheets
+2. Find the row with the second test email
+3. Verify:
+   ☐ Name column (A): "Test User No"
+   ☐ Email column (B): your-test-email-2@example.com
+   ☐ Response column (K): "Rejected"
+   ☐ Response Date column (L): Current date/time
+   ☐ Comments column (M): "Testing no response"
+
+STEP 9: Check Email Received
+-----------------------------
+1. Check the email inbox for your-test-email-2@example.com
+2. Verify:
+   ☐ Email was received
+   ☐ Subject: "Thank You - UAE Property Expo"
+   ☐ Email shows: "Dear Test User No," (name appears correctly)
+   ☐ Email shows: "Thank You!" (not "Thank You for Accepting!")
+   ☐ Email shows: "We understand that you cannot attend this time"
+   ☐ Email shows "Stay Connected" section
+   ☐ Email shows contact information
+   ☐ Email is properly formatted (not broken HTML)
+
+STEP 10: Check Make.com Execution Logs
+---------------------------------------
+1. In Make.com, click on the execution
+2. Check each module:
+   ☐ All modules executed successfully (green checkmarks)
+   ☐ No errors or warnings
+   ☐ Execution time is reasonable (< 10 seconds)
+   ☐ Operations count is as expected
+
+================================================================================
+TEST 3: UPDATE EXISTING ROW (Optional)
+================================================================================
+
+To test the "Update Existing Row" path:
+
+STEP 11: Submit Form with Existing Email
+----------------------------------------
+1. Use the SAME email from Test 1 or Test 2
+2. Submit the form again with:
+   - Name: "Updated Test User"
+   - Email: (same email from previous test)
+   - Attendance: Select "Yes, I'll attend" (or "No, I cannot attend")
+   - Comments: "Updated response"
+3. Submit the form
+
+STEP 12: Verify Update
+-----------------------
+1. Check Google Sheets:
+   ☐ Same row was updated (not a new row created)
+   ☐ Response column (K): Updated to new value
+   ☐ Response Date column (L): Updated to new date/time
+   ☐ Comments column (M): Updated to "Updated response"
+   
+2. Check Make.com execution:
+   ☐ Should go through Route 1 (Update Existing Row)
+   ☐ Should NOT go through Route 2 (Add New Row)
+   ☐ Should send appropriate email based on attendance
+
+================================================================================
+COMMON ISSUES AND SOLUTIONS
+================================================================================
+
+ISSUE: Email not received
+--------------------------
+Solutions:
+1. Check spam/junk folder
+2. Verify email address is correct in form
+3. Check Resend connection in Make.com
+4. Check Make.com execution logs for errors
+5. Verify email module executed successfully
+
+ISSUE: Wrong email template sent
+---------------------------------
+Solutions:
+1. Check router filters are set correctly
+2. Verify attendance response value matches filter exactly
+3. Check that router routes are connected to correct email modules
+4. Verify email module is in the correct router route
+
+ISSUE: Name not appearing in email
+-----------------------------------
+Solutions:
+1. Check that HTML uses {{2.name}} (not {{4.name}})
+2. Verify Module 2 (Set Variables) executed successfully
+3. Check that name variable is set correctly
+4. Verify form field ID matches in Module 2
+
+ISSUE: Wrong response in Google Sheets
+--------------------------------------
+Solutions:
+1. Check Module 7 (Update) or Module 10 (Add) values
+2. Verify if() statement for Response column (K)
+3. Check that attendance variable is set correctly
+4. Verify column numbers match your sheet structure
+
+ISSUE: Execution fails at router
+---------------------------------
+Solutions:
+1. Check router filter conditions
+2. Verify variable values match filter exactly (case-sensitive)
+3. Check that rowExists variable is set correctly
+4. Verify router has fallback route configured
+
+ISSUE: Multiple emails sent
+----------------------------
+Solutions:
+1. Check that array aggregators are before email modules
+2. Verify only one email module executes per route
+3. Check that router filters are mutually exclusive
+4. Verify scenario is not running multiple times
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+Your scenario is working correctly if:
+
+✅ Test 1 ("Yes, I'll attend"):
+   - Form response triggers scenario
+   - Row added/updated in Google Sheets
+   - Response = "Accepted"
+   - Agreement email sent with correct template
+   - Name appears correctly in email
+
+✅ Test 2 ("No, I cannot attend"):
+   - Form response triggers scenario
+   - Row added/updated in Google Sheets
+   - Response = "Rejected"
+   - Thank You email sent with correct template
+   - Name appears correctly in email
+
+✅ Test 3 (Update existing row):
+   - Form response with existing email triggers scenario
+   - Existing row updated (not new row created)
+   - Appropriate email sent based on attendance
+
+✅ All executions:
+   - No errors in Make.com
+   - All modules execute successfully
+   - Execution completes in reasonable time
+   - Operations count is acceptable
+
+================================================================================
+NEXT STEPS AFTER TESTING
+================================================================================
+
+If all tests pass:
+1. ✅ Scenario is ready for production
+2. Monitor first few real submissions
+3. Keep testing scenario active for 24 hours
+4. Check execution logs regularly
+
+If tests fail:
+1. Review error messages in Make.com
+2. Check the FIX-REMAINING-ISSUES.txt guide
+3. Verify all configurations match this guide
+4. Test individual modules if needed
+
+================================================================================
+END OF TESTING GUIDE
+================================================================================
+

@@ -1,0 +1,152 @@
+================================================================================
+FIX: MODULE 9 NAME AND EMAIL ARE NULL
+================================================================================
+
+Your Module 9 output shows:
+  ✅ language: "en" (working!)
+  ❌ name: null
+  ❌ email: null
+
+The language field works because it's using {{12.language}} correctly.
+But name and email are still using wrong field references!
+
+================================================================================
+THE FIX
+================================================================================
+
+In Module 9 (Set Variables), update:
+
+CURRENT (WRONG):
+─────────────────
+name: {{12.`0`}}  ❌
+email: {{12.`1`}}  ❌
+language: {{12.language}}  ✅ (already correct!)
+
+CHANGE TO (CORRECT):
+─────────────────────
+name: {{12.name}}
+email: {{12.email}}
+language: {{12.language}}  (already correct!)
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Open Module 9
+──────────────────────
+
+1. Open Make.com scenario editor
+2. Click Module 9 (Set Variables)
+
+STEP 2: Fix "name" Variable
+─────────────────────────────
+
+1. Find "name" variable
+2. Click the value field
+3. DELETE: {{12.`0`}}
+4. TYPE: {{12.name}}
+5. OR use field selector:
+   - Click map icon (🔍)
+   - Browse Module 12 output
+   - Find "name" field
+   - Click on it
+
+STEP 3: Fix "email" Variable
+──────────────────────────────
+
+1. Find "email" variable
+2. Click the value field
+3. DELETE: {{12.`1`}}
+4. TYPE: {{12.email}}
+5. OR use field selector:
+   - Click map icon (🔍)
+   - Browse Module 12 output
+   - Find "email" field
+   - Click on it
+
+STEP 4: Keep "language" Variable
+──────────────────────────────────
+
+Don't change this one - it's already working!
+  language: {{12.language}}
+
+STEP 5: Save Module 9
+──────────────────────
+
+1. Click Save
+2. Test again with testLastRow()
+
+================================================================================
+USING FIELD SELECTOR (EASIEST)
+================================================================================
+
+1. Open Module 9
+2. For "name" variable:
+   a. Click value field
+   b. Click "Map" icon
+   c. Browse Module 12 output
+   d. Find "name" field
+   e. Click on it → Auto-fills {{12.name}}
+
+3. For "email" variable:
+   a. Click value field
+   b. Click "Map" icon
+   c. Browse Module 12 output
+   d. Find "email" field
+   e. Click on it → Auto-fills {{12.email}}
+
+This is easier and ensures correctness!
+
+================================================================================
+WHAT WEBHOOK ACTUALLY SENDS
+================================================================================
+
+Your webhook sends:
+{
+  "name": "fahad alamri",
+  "email": "luxsess2001@gmail.com",
+  "language": "en",
+  ...
+}
+
+So you need to access it as:
+  • {{12.name}}  (not {{12.`0`}})
+  • {{12.email}}  (not {{12.`1`}})
+  • {{12.language}}  (already correct!)
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, run testLastRow() again and check Module 9 output:
+
+SHOULD SHOW:
+{
+  "name": "fahad alamri",  ✅
+  "email": "luxsess2001@gmail.com",  ✅
+  "language": "en"  ✅
+}
+
+NOT:
+{
+  "name": null,  ❌
+  "email": null,  ❌
+  "language": "en"  ✅
+}
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Open Module 9
+□ Change name: {{12.`0`}} → {{12.name}}
+□ Change email: {{12.`1`}} → {{12.email}}
+□ Keep language: {{12.language}} (already correct)
+□ Save Module 9
+□ Run testLastRow() again
+□ Check Module 9 output - should show all values!
+
+================================================================================
+END
+================================================================================
+

@@ -1,0 +1,103 @@
+================================================================================
+CRITICAL FIXES CHECKLIST
+Do These 3 Things Right Now
+================================================================================
+
+These are the 3 CRITICAL fixes that will make Email 1 work:
+
+================================================================================
+FIX 1: ROUTER FILTERS (MOST CRITICAL!)
+================================================================================
+
+STATUS: □ NOT DONE  □ DONE
+
+ACTION:
+-------
+1. Open Module 2 (Router)
+2. Route 1: Add filter {{8.language}} = "en"
+3. Route 2: Add filter {{8.language}} = "ar"
+4. Save
+
+WHY:
+----
+Without filters, BOTH emails sent to EVERYONE!
+
+VERIFY:
+-------
+After saving, you should see filters on both routes.
+
+================================================================================
+FIX 2: TO FIELD FORMAT (CRITICAL!)
+================================================================================
+
+STATUS: □ NOT DONE  □ DONE
+
+MODULE 3 (English):
+-------------------
+1. Open Module 3
+2. To field: Change ["{{8.email}}"] to [{"value": "{{8.email}}"}]
+3. Save
+
+MODULE 4 (Arabic):
+------------------
+1. Open Module 4
+2. To field: Change ["{{8.email}}"] to [{"value": "{{8.email}}"}]
+3. Save
+
+WHY:
+----
+Wrong format = emails won't send!
+
+VERIFY:
+-------
+To field should show: [{"value": "{{8.email}}"}]
+
+================================================================================
+FIX 3: SCENARIO IS ON
+================================================================================
+
+STATUS: □ NOT DONE  □ DONE
+
+ACTION:
+-------
+1. Check top-right of scenario
+2. Toggle should be GREEN/ON
+3. If OFF: Click to turn ON
+
+WHY:
+----
+Scenario must be ON to trigger!
+
+VERIFY:
+-------
+Toggle is green/enabled.
+
+================================================================================
+AFTER ALL 3 FIXES
+================================================================================
+
+1. Save all changes
+2. Import your CSV to Google Sheets
+3. Wait 15 seconds
+4. Check execution logs
+5. Email should send!
+
+================================================================================
+QUICK TEST
+================================================================================
+
+After fixes:
+1. Add test lead to Google Sheets
+2. Wait 15 seconds
+3. Check:
+   □ Execution appears
+   □ Execution shows SUCCESS
+   □ Email received
+   □ Google Sheets updated
+
+If all checked: ✅ WORKING!
+
+If any not checked: Check that fix again.
+
+================================================================================
+

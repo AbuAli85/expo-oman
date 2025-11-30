@@ -1,0 +1,199 @@
+================================================================================
+QUICK TEST GUIDE FOR YOUR WEBHOOK SCRIPT
+================================================================================
+
+Your script is set up correctly! The error message you saw is actually GOOD - it
+means the script is protecting itself from being run incorrectly.
+
+================================================================================
+CURRENT SETUP
+================================================================================
+
+✓ Script file: CLEAN-SCRIPT-FOR-PASTE.js
+✓ Sheet name: "leads" (updated correctly)
+✓ Webhook URL: Configured
+✓ Error handling: Working correctly
+
+================================================================================
+STEP 1: TEST WEBHOOK CONNECTION (Start Here)
+================================================================================
+
+1. In Apps Script Editor:
+   □ Select function: testWebhook
+   □ Click Run (▶️) button
+   □ Click "Review Permissions" if prompted
+   □ Authorize the script
+
+2. Check the Logs:
+   □ Click View → Logs (or press Ctrl+Enter)
+   □ Look for:
+     ✓ "Testing webhook with sample data..."
+     ✓ "✓ Test successful! Status: 200"
+     ✓ "Check Make.com for the execution."
+
+3. Check Make.com:
+   □ Go to your Make.com scenario
+   □ Look for a new execution
+   □ Check if webhook received the test data
+
+Expected Result:
+  ✓ Logs show "Test successful!"
+  ✓ Make.com shows new execution
+  ✓ Webhook is working correctly
+
+================================================================================
+STEP 2: TEST WITH YOUR SHEET DATA
+================================================================================
+
+1. Verify Your Sheet Has Data:
+   □ Open your Google Sheet
+   □ Check the "leads" sheet tab exists
+   □ Verify you have at least one row of data (like "fahad alamri")
+
+2. Run testLastRow():
+   □ In Apps Script, select function: testLastRow
+   □ Click Run (▶️)
+   □ Check logs for output
+
+3. Check Logs:
+   □ Should show:
+     - "Processing last row (X) from sheet..."
+     - "Data extracted:"
+     - Name, Email, Language values
+     - "✓ Successfully sent data to webhook!"
+
+4. Check Make.com:
+   □ Look for new execution
+   □ Verify data received matches your sheet data
+
+Expected Result:
+  ✓ Last row from your sheet is processed
+  ✓ Data is extracted correctly
+  ✓ Webhook receives the data
+  ✓ Make.com processes it
+
+================================================================================
+STEP 3: DIAGNOSE SHEET STRUCTURE (Optional)
+================================================================================
+
+If you want to verify your column mappings:
+
+1. Run diagnoseSheetStructure():
+   □ Select function: diagnoseSheetStructure
+   □ Click Run (▶️)
+   □ Check logs
+
+2. Review Output:
+   □ Shows all columns in your sheet
+   □ Shows header row
+   □ Verifies column mappings
+   □ Shows any warnings
+
+Use this to verify:
+  ✓ Sheet name is correct
+  ✓ Columns match your structure
+  ✓ Mappings are accurate
+
+================================================================================
+STEP 4: INSTALL THE TRIGGER (To Make It Automatic)
+================================================================================
+
+Once testing works, install the trigger so it runs automatically:
+
+1. Click Clock Icon (⏰):
+   □ In Apps Script left sidebar
+   □ Click the clock/trigger icon
+
+2. Add Trigger:
+   □ Click "+ Add Trigger" button
+
+3. Configure:
+   □ Function: onFormSubmit
+   □ Event source: From form
+   □ Event type: On form submit
+   □ Failure notifications: Immediately
+
+4. Save:
+   □ Click "Save"
+   □ Authorize if prompted
+   □ Trigger should show as "Active"
+
+5. Test with Real Form:
+   □ Submit a test form response
+   □ Check Make.com for instant execution
+   □ Verify data is processed automatically
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: "Sheet 'leads' not found"
+──────────────────────────────────
+Solution:
+  □ Verify sheet tab name is exactly "leads" (case-sensitive)
+  □ Run diagnoseSheetStructure() to see available sheets
+  □ Update SHEET_NAME if different
+
+ISSUE: "No data rows found"
+─────────────────────────────
+Solution:
+  □ Add at least one row of data to your sheet
+  □ Make sure data is in the "leads" sheet tab
+  □ Then run testLastRow() again
+
+ISSUE: Webhook test fails
+───────────────────────────
+Solution:
+  □ Check webhook URL is correct in script
+  □ Verify Make.com scenario is saved and active
+  □ Check Make.com for error messages
+  □ Test webhook URL manually
+
+ISSUE: Wrong data extracted
+────────────────────────────
+Solution:
+  □ Run diagnoseSheetStructure() to verify columns
+  □ Check if Timestamp column exists (Column A)
+  □ Adjust COLUMN_MAPPING if needed
+  □ Verify column numbers match your sheet
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Functions to Run:
+─────────────────
+✓ testWebhook()          - Test webhook connection (run this first)
+✓ testLastRow()          - Test with your sheet data
+✓ diagnoseSheetStructure() - Check sheet structure
+✗ onFormSubmit()         - DON'T run manually (auto-trigger only)
+
+Your Configuration:
+───────────────────
+Sheet Name: "leads"
+Webhook URL: https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u
+
+Column Structure:
+─────────────────
+Column A: Name
+Column B: Email
+Column C: Phone
+Column D: Language
+... etc
+
+================================================================================
+NEXT STEPS AFTER TESTING
+================================================================================
+
+Once testWebhook() and testLastRow() both work:
+
+1. ✅ Webhook is working
+2. ✅ Sheet data extraction is working
+3. ✅ Ready to install trigger
+4. ✅ Install trigger for automatic processing
+5. ✅ Test with real form submission
+6. ✅ Monitor Make.com executions
+
+================================================================================
+END OF QUICK TEST GUIDE
+================================================================================

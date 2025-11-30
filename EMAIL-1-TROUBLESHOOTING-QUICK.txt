@@ -1,0 +1,161 @@
+================================================================================
+EMAIL 1 - INVITATION: QUICK TROUBLESHOOTING
+================================================================================
+
+Let's quickly diagnose what's wrong. Please check these common issues:
+
+================================================================================
+COMMON ISSUES CHECKLIST
+================================================================================
+
+ISSUE 1: Scenario Not Triggering
+─────────────────────────────────
+
+□ Check trigger type:
+  • Using Webhook? → Check if webhook URL is correct
+  • Using Watch New Rows? → May be broken if rows/columns deleted
+
+□ Check execution history:
+  • Are there any executions?
+  • When was the last execution?
+  • Any error messages?
+
+ISSUE 2: Variables Not Working
+───────────────────────────────
+
+□ Check Module 2 (Set Variables) output:
+  • Are variables populated?
+  • Any null values?
+  • Check variable mappings
+
+ISSUE 3: Email Not Sending
+───────────────────────────
+
+□ Check Resend connection:
+  • Is API key valid?
+  • Is connection active?
+
+□ Check "To" field format:
+  • Should be: "{{email}}" (string)
+  • NOT: ["{{email}}"] (array)
+
+□ Check execution log:
+  • Any error messages?
+  • Which module failed?
+
+ISSUE 4: Wrong Email Sending
+─────────────────────────────
+
+□ Check router filters:
+  • Language filters working?
+  • Both routes executing?
+
+ISSUE 5: Sheet Not Updating
+────────────────────────────
+
+□ Check Update Row module:
+  • Row number reference correct?
+  • Columns mapped correctly?
+  • Module executing successfully?
+
+================================================================================
+QUICK FIXES
+================================================================================
+
+FIX 1: Webhook Not Working
+───────────────────────────
+
+If using webhook:
+  1. Verify webhook URL in Google Apps Script
+  2. Check Apps Script is running
+  3. Test webhook manually
+  4. Check Make.com webhook is active
+
+FIX 2: Watch New Rows Broken
+─────────────────────────────
+
+If Watch New Rows not triggering:
+  1. Right-click module → "Choose where to start"
+  2. Re-select sheet and range
+  3. Check if rows/columns were deleted
+
+FIX 3: Module Reference Error
+───────────────────────────────
+
+If "Module references non-existing module":
+  1. Check module numbers
+  2. Update references to correct module IDs
+  3. Re-map variables in Set Variables module
+
+FIX 4: Email "To" Field Error
+───────────────────────────────
+
+If 422 error in Resend:
+  Change "To" field from:
+    ["{{email}}"]
+  To:
+    "{{email}}"
+
+================================================================================
+WHAT TO SHARE
+================================================================================
+
+Please share:
+
+1. What specifically isn't working?
+   □ Not triggering
+   □ Variables empty
+   □ Email not sending
+   □ Wrong email sent
+   □ Sheet not updating
+   □ Other: _______________
+
+2. Execution log or error messages
+
+3. Latest execution details:
+   □ Date/time
+   □ Status
+   □ Error message
+
+4. Trigger type:
+   □ Webhook
+   □ Watch New Rows
+
+================================================================================
+COMMON FIXES BASED ON SYMPTOMS
+================================================================================
+
+SYMPTOM: "No executions"
+─────────────────────────
+→ Check trigger configuration
+→ Verify webhook URL or Watch New Rows setup
+→ Test trigger manually
+
+SYMPTOM: "Variables are null"
+──────────────────────────────
+→ Check Module 2 mappings
+→ Verify form field IDs
+→ Use Make.com field selector to map correctly
+
+SYMPTOM: "Email not sending"
+─────────────────────────────
+→ Check Resend connection
+→ Fix "To" field format
+→ Check execution log for errors
+
+SYMPTOM: "Wrong email sent"
+────────────────────────────
+→ Check router filters
+→ Verify language variable
+→ Check filter conditions
+
+SYMPTOM: "Sheet not updating"
+──────────────────────────────
+→ Check Update Row module
+→ Verify row number reference
+→ Check column mappings
+
+================================================================================
+END
+================================================================================
+

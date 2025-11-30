@@ -1,0 +1,274 @@
+================================================================================
+FIX: "Cannot read properties of undefined (reading 'source')" Error
+================================================================================
+
+This error occurs when you try to run `onFormSubmit()` manually from the Apps
+Script editor. This function can ONLY be called automatically by Google Forms
+when a form is submitted.
+
+================================================================================
+WHY THIS ERROR HAPPENS
+================================================================================
+
+The `onFormSubmit(e)` function expects an event object `e` that contains form
+submission information. This event object is only provided when:
+
+✓ Google Form is submitted
+✓ Trigger is properly installed
+✓ Function is called automatically by the trigger
+
+When you click "Run" in Apps Script editor:
+✗ No event object is provided
+✗ `e` is undefined
+✗ `e.source` causes the error
+
+================================================================================
+SOLUTION: USE TEST FUNCTIONS INSTEAD
+================================================================================
+
+The script now includes two test functions you can run manually:
+
+1. testWebhook() - Tests webhook with sample data
+2. testLastRow() - Tests with actual data from your sheet
+
+================================================================================
+HOW TO TEST PROPERLY
+================================================================================
+
+OPTION 1: Test Webhook Connection (Recommended First)
+──────────────────────────────────────────────────────
+
+1. In Apps Script editor:
+   □ Select function: testWebhook
+   □ Click Run (▶️)
+   □ Check logs (View → Logs)
+
+2. What it does:
+   ✓ Sends sample test data to webhook
+   ✓ Verifies webhook URL is working
+   ✓ Checks if Make.com receives the data
+
+3. Expected result:
+   ✓ Logs show "Test successful!"
+   ✓ Make.com shows new execution
+   ✓ No errors in logs
+
+
+OPTION 2: Test with Your Sheet Data
+─────────────────────────────────────
+
+1. In Apps Script editor:
+   □ Select function: testLastRow
+   □ Click Run (▶️)
+   □ Check logs (View → Logs)
+
+2. What it does:
+   ✓ Reads the last row from your sheet
+   ✓ Extracts data using column mappings
+   ✓ Sends to webhook
+
+3. Requirements:
+   ✓ Sheet must have at least one data row
+   ✓ SHEET_NAME must be correct
+   ✓ Last row must have valid email
+
+4. Expected result:
+   ✓ Logs show extracted data
+   ✓ Logs show "Successfully sent data"
+   ✓ Make.com receives the data
+
+
+OPTION 3: Test with Real Form Submission
+─────────────────────────────────────────
+
+1. Install the trigger first (see below)
+
+2. Submit a test form response:
+   □ Go to your Google Form
+   □ Fill out and submit
+   □ Check Make.com execution
+
+3. What happens:
+   ✓ Google Forms triggers onFormSubmit automatically
+   ✓ Event object is properly provided
+   ✓ Function processes the submission
+   ✓ Data is sent to webhook
+
+================================================================================
+UPDATED SCRIPT FEATURES
+================================================================================
+
+The script has been updated with:
+
+✓ Error handling for manual calls
+✓ Clear error messages
+✓ Two test functions for manual testing
+✓ Better logging
+
+Key changes:
+- onFormSubmit() now checks if event exists
+- Shows helpful message if called manually
+- testLastRow() function added for testing with sheet data
+
+================================================================================
+INSTALLING THE TRIGGER (DO THIS TO ACTIVATE)
+================================================================================
+
+To make onFormSubmit() work automatically:
+
+STEP 1: Save Your Script
+─────────────────────────
+□ Click File → Save (or Ctrl+S)
+□ Name: "Make.com Webhook Trigger"
+
+STEP 2: Open Triggers
+──────────────────────
+□ Click clock icon (⏰) in left sidebar
+□ This opens the Triggers page
+
+STEP 3: Add Trigger
+────────────────────
+□ Click "+ Add Trigger" button (bottom right)
+
+STEP 4: Configure Trigger
+──────────────────────────
+Set these options:
+  • Choose which function to run: onFormSubmit
+  • Choose which event source: From form
+  • Select event type: On form submit
+  • Failure notification settings: Immediately (or Daily)
+
+STEP 5: Save and Authorize
+───────────────────────────
+□ Click "Save"
+□ Authorize the script when prompted
+□ Grant necessary permissions
+
+STEP 6: Verify
+──────────────
+□ Trigger should show as "Active"
+□ Status: "Active" (green indicator)
+□ Next execution: "Waiting"
+
+Now when you submit a form, onFormSubmit() will run automatically!
+
+================================================================================
+TESTING WORKFLOW
+================================================================================
+
+RECOMMENDED TESTING ORDER:
+
+1. FIRST: Test Webhook Connection
+   □ Run testWebhook()
+   □ Verify Make.com receives data
+   □ Check logs for success
+
+2. SECOND: Test Sheet Data Processing
+   □ Run testLastRow()
+   □ Verify data is extracted correctly
+   □ Check column mappings
+
+3. THIRD: Install Trigger
+   □ Follow steps above
+   □ Verify trigger is active
+
+4. FOURTH: Test Real Form Submission
+   □ Submit test form
+   □ Check Make.com execution
+   □ Verify data is correct
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ERROR: "Sheet not found"
+─────────────────────────
+Solution:
+□ Check SHEET_NAME in script matches your sheet tab name exactly
+□ Run diagnoseSheetStructure() to see available sheets
+□ Update SHEET_NAME if needed
+
+ERROR: "Email is required but not found"
+─────────────────────────────────────────
+Solution:
+□ Check your sheet has data in the email column
+□ Verify column mapping (EMAIL: 3 means Column C)
+□ Run diagnoseSheetStructure() to verify column structure
+
+ERROR: "No data rows found"
+───────────────────────────
+Solution:
+□ Your sheet needs at least one row of data (beyond header)
+□ Add a test row to your sheet
+□ Then run testLastRow() again
+
+ERROR: Webhook test fails
+──────────────────────────
+Solution:
+□ Check webhook URL is correct
+□ Verify Make.com scenario is saved and active
+□ Check Make.com for error messages
+□ Test webhook URL manually (see below)
+
+================================================================================
+MANUAL WEBHOOK TEST (Alternative)
+================================================================================
+
+If you want to test the webhook URL directly:
+
+Using curl (command line):
+──────────────────────────
+curl -X POST https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test","email":"test@example.com"}'
+
+Using Postman or similar tool:
+───────────────────────────────
+1. Method: POST
+2. URL: https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u
+3. Headers: Content-Type: application/json
+4. Body: JSON with test data
+5. Send
+
+Check Make.com for new execution!
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Functions in Script:
+────────────────────
+• onFormSubmit(e)      - Auto-triggered by form submissions (DON'T run manually)
+• testWebhook()        - Test webhook with sample data (RUN THIS FIRST)
+• testLastRow()        - Test with actual sheet data (RUN THIS SECOND)
+• diagnoseSheetStructure() - Show sheet structure (for debugging)
+
+Running Functions:
+──────────────────
+1. Select function from dropdown (top of editor)
+2. Click Run (▶️) button
+3. Check View → Logs for results
+
+Installing Trigger:
+───────────────────
+1. Click clock icon (⏰)
+2. Click "+ Add Trigger"
+3. Function: onFormSubmit
+4. Event: From form → On form submit
+5. Save and authorize
+
+================================================================================
+SUMMARY
+================================================================================
+
+✓ Don't run onFormSubmit() manually - it needs a form trigger
+✓ Use testWebhook() to test webhook connection
+✓ Use testLastRow() to test with your sheet data
+✓ Install trigger to activate automatic processing
+✓ Submit form to trigger onFormSubmit() automatically
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+
+

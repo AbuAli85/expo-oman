@@ -1,0 +1,321 @@
+================================================================================
+FIX CRITICAL ISSUES IN MAKE.COM "EMAIL 1 - INVITATION" SCENARIO
+================================================================================
+
+You have errors in your Make.com scenario that prevent it from working.
+This guide will help you fix them.
+
+================================================================================
+CRITICAL ERRORS FOUND
+================================================================================
+
+1. ❌ Module 9 (Set Variables) references Module 10 (doesn't exist)
+2. ❌ Module 5 (Update Row) references Module 10 (doesn't exist)
+3. ❌ Module 7 (Update Row) references Module 10 (doesn't exist)
+
+The webhook is Module 12, but your modules are trying to use Module 10.
+
+================================================================================
+YOUR CURRENT FLOW STRUCTURE
+================================================================================
+
+Module 12: Webhook Trigger (Custom Webhook)
+    ↓
+Module 9: Set Variables
+    ↓ (trying to use Module 10 data - ERROR!)
+Module 2: Router (by language)
+    ↓
+Route 1 (English): Module 3 (Email) → Module 5 (Update Sheet)
+Route 2 (Arabic): Module 4 (Email) → Module 7 (Update Sheet)
+
+================================================================================
+PROBLEM ANALYSIS
+================================================================================
+
+Module 9 (Set Variables) is configured with:
+  name: {{10.`0`}}
+  email: {{10.`1`}}
+  language: {{10.`3`}}
+
+But Module 10 doesn't exist! The webhook is Module 12.
+
+Your webhook receives data in this format (from Google Apps Script):
+{
+  "timestamp": "...",
+  "name": "fahad alamri",
+  "email": "chairman@falconeyegroup.net",
+  "phone": "",
+  "language": "en",
+  "status": "",
+  "response": "",
+  "responseDate": "",
+  "comments": ""
+}
+
+================================================================================
+FIX 1: UPDATE MODULE 9 (SET VARIABLES)
+================================================================================
+
+Current (WRONG):
+─────────────────
+name: {{10.`0`}}
+email: {{10.`1`}}
+language: {{10.`3`}}
+
+Should be (CORRECT):
+────────────────────
+name: {{12.name}}
+email: {{12.email}}
+language: {{12.language}}
+
+STEP-BY-STEP:
+─────────────
+1. Open your Make.com scenario
+2. Click on Module 9 (Set Variables)
+3. Update the variable mappings:
+
+   Variable 1: name
+   Value: {{12.name}}
+   (Change from {{10.`0`}} to {{12.name}})
+
+   Variable 2: email
+   Value: {{12.email}}
+   (Change from {{10.`1`}} to {{12.email}})
+
+   Variable 3: language
+   Value: {{12.language}}
+   (Change from {{10.`3`}} to {{12.language}})
+
+4. Save the module
+
+================================================================================
+FIX 2: UPDATE MODULE 5 (UPDATE ROW - ENGLISH ROUTE)
+================================================================================
+
+Current (WRONG):
+─────────────────
+Row number: {{10.__ROW_NUMBER__}}
+
+Problem:
+  • Module 10 doesn't exist
+  • You need to find the row by email instead
+
+Solution Options:
+──────────────────
+
+OPTION A: Use Email to Find Row (Recommended)
+1. Click on Module 5 (Update Row)
+2. Change "Row number" field
+3. You'll need to add a "Search Rows" module BEFORE the update
+4. Or use a different method to identify the row
+
+OPTION B: Remove Row Number Requirement
+1. Change the module to use email-based search
+2. Use "Search rows" to find by email
+3. Then update that row
+
+OPTION C: Use Webhook Data Directly (If row already exists)
+If the webhook includes row information, use:
+  Row number: {{12.rowNumber}}
+  (But your webhook doesn't send this currently)
+
+RECOMMENDED APPROACH:
+──────────────────────
+Add a "Search Rows" module between Router and Update:
+1. Google Sheets → Search Rows
+2. Search by: Email column
+3. Filter: Email equals {{9.email}}
+4. Use the found row number for update
+
+Then Module 5 would use:
+  Row number: {{searchRow.number}} (or similar output from Search)
+
+================================================================================
+FIX 3: UPDATE MODULE 7 (UPDATE ROW - ARABIC ROUTE)
+================================================================================
+
+Same issue as Module 5 - fix using the same approach above.
+
+Current (WRONG):
+─────────────────
+Row number: {{10.__ROW_NUMBER__}}
+
+Fix using one of the options above.
+
+================================================================================
+COMPLETE FIXED FLOW STRUCTURE
+================================================================================
+
+Here's how your flow should look:
+
+Module 12: Webhook (Custom Webhook)
+    ↓ (receives: name, email, language, etc.)
+Module 9: Set Variables
+    name = {{12.name}}
+    email = {{12.email}}
+    language = {{12.language}}
+    ↓
+Module 2: Router (by language)
+    ↓
+    ├─ Route 1 (language = "en"):
+    │     ↓
+    │  [OPTIONAL] Module: Search Rows (find by email)
+    │     ↓
+    │  Module 3: Send Email (English)
+    │     ↓
+    │  Module 5: Update Row (use row from Search or find by email)
+    │
+    └─ Route 2 (language = "ar"):
+          ↓
+       [OPTIONAL] Module: Search Rows (find by email)
+          ↓
+       Module 4: Send Email (Arabic)
+          ↓
+       Module 7: Update Row (use row from Search or find by email)
+
+================================================================================
+DETAILED FIX INSTRUCTIONS
+================================================================================
+
+STEP 1: Fix Module 9 (Set Variables)
+─────────────────────────────────────
+
+1. Click Module 9
+2. Click on "Variables" section
+3. For each variable, update the mapping:
+
+   OLD → NEW
+   ─────────
+   {{10.`0`}} → {{12.name}}
+   {{10.`1`}} → {{12.email}}
+   {{10.`3`}} → {{12.language}}
+
+4. Click "OK" to save
+
+STEP 2: Add Search Rows Module (Recommended)
+──────────────────────────────────────────────
+
+For each route (English and Arabic):
+
+1. After Router, add: Google Sheets → Search Rows
+2. Configure:
+   - Spreadsheet: Your spreadsheet
+   - Sheet: "leads"
+   - Search: Email column
+   - Filter: Email equals {{9.email}}
+3. This will find the row to update
+
+STEP 3: Fix Module 5 (Update Row - English Route)
+──────────────────────────────────────────────────
+
+If you added Search Rows:
+  - Row number: {{searchRow.rowNumber}} (adjust based on Search output)
+
+If not using Search Rows:
+  - Use email-based update method
+  - Or find row dynamically using email
+
+Current configuration to update:
+  - Column 4 (Status): "Email 1 Sent"
+  - Column 6 (Email 1 Date): {{now}}
+
+Keep these mappings, just fix the row number reference.
+
+STEP 4: Fix Module 7 (Update Row - Arabic Route)
+──────────────────────────────────────────────────
+
+Same as Module 5 - fix the row number reference.
+
+================================================================================
+ALTERNATIVE: SIMPLER FIX WITHOUT SEARCH ROWS
+================================================================================
+
+If you want to avoid adding Search Rows modules, you can:
+
+1. Change Update Row modules to use "Search by" mode
+2. Update by Email column matching {{9.email}}
+3. Make sure Email column is unique in your sheet
+
+Or:
+
+1. Have the webhook send the row number (requires Google Apps Script update)
+2. Use {{12.rowNumber}} in Update modules
+
+================================================================================
+WEBHOOK DATA STRUCTURE
+================================================================================
+
+Your webhook (Module 12) receives this data structure:
+
+{
+  "timestamp": "2025-01-15T10:30:00.000Z",
+  "name": "fahad alamri",
+  "email": "chairman@falconeyegroup.net",
+  "phone": "",
+  "language": "en",
+  "status": "",
+  "response": "",
+  "responseDate": "",
+  "comments": "",
+  "attendance": ""
+}
+
+To access in Make.com:
+  {{12.name}}
+  {{12.email}}
+  {{12.language}}
+  {{12.timestamp}}
+  etc.
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+□ Module 9: Change {{10.`0`}} to {{12.name}}
+□ Module 9: Change {{10.`1`}} to {{12.email}}
+□ Module 9: Change {{10.`3`}} to {{12.language}}
+□ Module 5: Fix row number reference (remove {{10.__ROW_NUMBER__}})
+□ Module 7: Fix row number reference (remove {{10.__ROW_NUMBER__}})
+□ Add Search Rows modules (optional but recommended)
+□ Test the scenario with a webhook call
+
+================================================================================
+TESTING AFTER FIX
+================================================================================
+
+1. Use testWebhook() in Google Apps Script
+2. Check Make.com execution
+3. Verify:
+   ✓ Webhook receives data
+   ✓ Variables are set correctly
+   ✓ Email is sent
+   ✓ Sheet is updated
+
+Or test manually:
+1. In Make.com, click "Run once"
+2. Send test webhook data
+3. Check execution logs
+4. Verify all modules execute successfully
+
+================================================================================
+ADDITIONAL RECOMMENDATIONS
+================================================================================
+
+1. ADD DEDUPLICATION CHECK:
+   Before sending email, check if email already exists in sheet
+   Use Search Rows to find by email
+   If found and Email 1 Date is already set, skip sending
+
+2. ADD ERROR HANDLING:
+   Wrap email send in error handler
+   Only update sheet if email succeeds
+
+3. VERIFY ROW NUMBER LOGIC:
+   Current approach relies on finding row
+   Make sure email column is unique
+   Or use row number from webhook
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

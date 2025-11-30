@@ -1,0 +1,203 @@
+================================================================================
+COMPLETE FLOW VISUAL GUIDE
+Email 1 - Invitation Scenario
+================================================================================
+
+This shows the EXACT flow your scenario should have.
+
+================================================================================
+CORRECT FLOW STRUCTURE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    EMAIL 1 - INVITATION FLOW                    │
+└─────────────────────────────────────────────────────────────────┘
+
+[Module 1] Google Sheets Watch Rows
+    │
+    │ (triggers when new row added)
+    │
+    ▼
+[Module 8] Set Variables
+    │
+    │ Sets: name={{1.0}}, email={{1.1}}, language={{1.3}}
+    │
+    ▼
+[Module 2] Router (Language Check)
+    │
+    ├─ Route 1 (if language = "en")
+    │   │
+    │   ▼
+    │   [Module 3] Send English Email
+    │       │
+    │       ▼
+    │       [Module 5] Update Row (Status="Email 1 Sent")
+    │
+    └─ Route 2 (if language = "ar")
+        │
+        ▼
+        [Module 4] Send Arabic Email
+            │
+            ▼
+            [Module 7] Update Row (Status="Email 1 Sent")
+
+================================================================================
+MODULE CONNECTIONS CHECKLIST
+================================================================================
+
+Check each connection in Make.com:
+
+□ CONNECTION 1: Module 1 → Module 8
+   - Line should go from Module 1 output to Module 8 input
+   - Module 8 should show "Connected to Module 1"
+
+□ CONNECTION 2: Module 8 → Module 2
+   - Line should go from Module 8 output to Module 2 input
+   - Module 2 should show "Connected to Module 8"
+
+□ CONNECTION 3: Module 2 Route 1 → Module 3
+   - Line should go from Route 1 to Module 3
+   - Module 3 should be inside Route 1
+
+□ CONNECTION 4: Module 2 Route 2 → Module 4
+   - Line should go from Route 2 to Module 4
+   - Module 4 should be inside Route 2
+
+□ CONNECTION 5: Module 3 → Module 5
+   - Line should go from Module 3 output to Module 5 input
+   - Module 5 should show "Connected to Module 3"
+
+□ CONNECTION 6: Module 4 → Module 7
+   - Line should go from Module 4 output to Module 7 input
+   - Module 7 should show "Connected to Module 4"
+
+================================================================================
+HOW TO CHECK CONNECTIONS IN MAKE.COM
+================================================================================
+
+METHOD 1: Visual Check
+----------------------
+1. Open scenario
+2. Look at the flow diagram
+3. You should see lines connecting modules
+4. If no lines, modules are NOT connected
+
+METHOD 2: Module Settings
+--------------------------
+1. Click on a module (e.g., Module 8)
+2. Look for "Input" or "Connected to" field
+3. It should show the previous module name
+4. If empty or wrong, connection is broken
+
+METHOD 3: Execution Log
+------------------------
+1. Run scenario
+2. Check execution history
+3. If Module 8 doesn't appear, it's not connected
+4. If Module 8 appears but shows error, configuration issue
+
+================================================================================
+HOW TO FIX BROKEN CONNECTIONS
+================================================================================
+
+IF MODULE 8 NOT CONNECTED TO MODULE 1:
+--------------------------------------
+1. Click on Module 8
+2. Look for connection/input option
+3. Select "Module 1" or "Google Sheets Watch Rows"
+4. Save
+
+OR:
+
+1. Hover over Module 1
+2. Find output connector (small circle/dot)
+3. Drag to Module 8 input connector
+4. Release
+5. Save
+
+IF MODULE 2 NOT CONNECTED TO MODULE 8:
+--------------------------------------
+1. Click on Module 2 (Router)
+2. Check input connection
+3. Should be connected to Module 8
+4. If not, connect it
+5. Save
+
+IF ROUTER ROUTES NOT CONNECTED:
+-------------------------------
+1. Click on Module 2 (Router)
+2. Click on Route 1
+3. Module 3 should be inside Route 1
+4. If not, drag Module 3 into Route 1
+5. Do same for Route 2 and Module 4
+6. Save
+
+================================================================================
+MODULE CONFIGURATION SUMMARY
+================================================================================
+
+MODULE 1 (Google Sheets Watch Rows):
+------------------------------------
+- Spreadsheet ID: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+- Sheet: leads
+- Table First Row: A1:J1
+- Includes Headers: Yes
+- Limit: 1
+
+MODULE 8 (Set Variables):
+--------------------------
+- Variable "name": {{1.0}}
+- Variable "email": {{1.1}}
+- Variable "language": {{1.3}}
+- Scope: One cycle / Roundtrip
+
+MODULE 2 (Router):
+------------------
+- Route 1 Filter: {{8.language}} = "en"
+- Route 2 Filter: {{8.language}} = "ar"
+
+MODULE 3 (English Email):
+--------------------------
+- To: [{"value": "{{8.email}}"}]
+- Subject: {{8.name}}, You're Invited...
+- Filter: {{8.language}} = "en"
+
+MODULE 4 (Arabic Email):
+-------------------------
+- To: [{"value": "{{8.email}}"}]
+- Subject: {{8.name}}، أنت مدعو!...
+- Filter: {{8.language}} = "ar"
+
+MODULE 5 & 7 (Update Row):
+--------------------------
+- Status (Column E): "Email 1 Sent"
+- Email 1 Date (Column G): {{now}}
+- Row Number: {{1.__ROW_NUMBER__}}
+
+================================================================================
+TESTING THE COMPLETE FLOW
+================================================================================
+
+1. Save all modules
+2. Make sure scenario is ON
+3. Add test lead:
+   - Name: Flow Test
+   - Email: your-email@example.com
+   - Language: en
+
+4. Wait 30 seconds
+
+5. Check execution history - should see:
+   ✅ Module 1: Data retrieved
+   ✅ Module 8: Variables set (name, email, language)
+   ✅ Module 2: Routed to Route 1 (English)
+   ✅ Module 3: Email sent
+   ✅ Module 5: Row updated
+
+If any step fails, check that module's connection and configuration.
+
+================================================================================
+
+
+
+

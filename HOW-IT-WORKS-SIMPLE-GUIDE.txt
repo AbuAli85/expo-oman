@@ -1,0 +1,322 @@
+================================================================================
+HOW IT WORKS - SIMPLE GUIDE
+Adding Leads to Google Sheets → Automatic Email Sending
+================================================================================
+
+YES! You just add details to Google Sheets, and everything else happens
+automatically! Here's exactly how it works:
+
+================================================================================
+STEP 1: YOU ADD LEAD TO GOOGLE SHEETS
+================================================================================
+
+WHAT YOU DO:
+------------
+1. Open your Google Sheets
+2. Add a new row with lead information:
+
+   | Name          | Email                | Phone          | Language | Status |
+   |---------------|----------------------|----------------|----------|--------|
+   | John Smith    | john@example.com     | +968 12345678  | en       | New    |
+   | أحمد محمد     | ahmed@example.com    | +968 87654321  | ar       | New    |
+
+REQUIRED COLUMNS:
+-----------------
+- Column A: Name (required)
+- Column B: Email (required)
+- Column C: Phone (optional but recommended)
+- Column D: Language (required: "en" or "ar")
+- Column E: Status (can leave empty, will auto-update)
+- Column F: Date Added (auto-filled)
+- Column G: Email 1 Date (auto-filled)
+- Column H: Email 2 Date (auto-filled)
+- Column I: Email 3 Date (auto-filled)
+
+THAT'S IT! Just add the row and save.
+
+================================================================================
+STEP 2: AUTOMATIC - EMAIL 1 SENT IMMEDIATELY
+================================================================================
+
+WHAT HAPPENS AUTOMATICALLY:
+---------------------------
+1. Make.com detects new row in Google Sheets
+2. Checks Language column (D)
+3. Routes to correct email:
+   - If Language = "en" → Sends English Email 1
+   - If Language = "ar" → Sends Arabic Email 1
+4. Updates Google Sheets:
+   - Status = "Email 1 Sent"
+   - Email 1 Date = Current date/time
+
+YOU DON'T NEED TO DO ANYTHING!
+The email is sent automatically within seconds.
+
+================================================================================
+STEP 3: AUTOMATIC - EMAIL 2 SENT (3 DAYS LATER)
+================================================================================
+
+WHAT HAPPENS AUTOMATICALLY:
+---------------------------
+1. Every day at 9:00 AM, Make.com runs Scenario 2
+2. Searches Google Sheets for leads:
+   - Status = "Email 1 Sent"
+   - Email 1 Date = More than 3 days ago
+3. For each eligible lead:
+   - Checks Language
+   - Sends Email 2 (English or Arabic)
+   - Updates Status = "Email 2 Sent"
+   - Updates Email 2 Date = Current date/time
+
+YOU DON'T NEED TO DO ANYTHING!
+This happens automatically every day.
+
+================================================================================
+STEP 4: AUTOMATIC - EMAIL 3 SENT (4 DAYS AFTER EMAIL 2)
+================================================================================
+
+WHAT HAPPENS AUTOMATICALLY:
+---------------------------
+1. Every day at 9:00 AM, Make.com runs Scenario 3
+2. Searches Google Sheets for leads:
+   - Status = "Email 2 Sent"
+3. For each eligible lead:
+   - Checks Language
+   - Sends Email 3 (English or Arabic)
+   - Updates Status = "Email 3 Sent"
+   - Updates Email 3 Date = Current date/time
+
+YOU DON'T NEED TO DO ANYTHING!
+This happens automatically every day.
+
+================================================================================
+COMPLETE WORKFLOW EXAMPLE
+================================================================================
+
+DAY 0 - Monday 9:00 AM:
+------------------------
+YOU: Add new lead to Google Sheets
+     Name: "John Smith"
+     Email: "john@example.com"
+     Language: "en"
+     Status: "New"
+
+AUTOMATIC (within seconds):
+→ Email 1 sent to john@example.com ✅
+→ Google Sheets updated:
+   Status = "Email 1 Sent"
+   Email 1 Date = Monday 9:00 AM
+
+DAY 3 - Thursday 9:00 AM:
+--------------------------
+AUTOMATIC (Scenario 2 runs):
+→ Finds "John Smith" (Email 1 sent 3 days ago)
+→ Email 2 sent to john@example.com ✅
+→ Google Sheets updated:
+   Status = "Email 2 Sent"
+   Email 2 Date = Thursday 9:00 AM
+
+DAY 7 - Monday 9:00 AM (next week):
+-----------------------------------
+AUTOMATIC (Scenario 3 runs):
+→ Finds "John Smith" (Email 2 sent 4 days ago)
+→ Email 3 sent to john@example.com ✅
+→ Google Sheets updated:
+   Status = "Email 3 Sent"
+   Email 3 Date = Monday 9:00 AM
+
+CAMPAIGN COMPLETE! 🎉
+
+YOU ONLY ADDED THE LEAD ONCE - Everything else was automatic!
+
+================================================================================
+WHAT YOU NEED TO DO
+================================================================================
+
+ONLY ONE THING:
+---------------
+✅ Add lead details to Google Sheets
+
+That's it! Everything else is automatic.
+
+OPTIONAL (But Recommended):
+---------------------------
+□ Check execution logs occasionally
+□ Monitor email delivery
+□ Verify Google Sheets updates correctly
+
+================================================================================
+WHAT HAPPENS AUTOMATICALLY
+================================================================================
+
+✅ Email 1 sent immediately
+✅ Email 2 sent after 3 days
+✅ Email 3 sent after 4 more days (7 days total)
+✅ Google Sheets updated automatically
+✅ Status tracking automatic
+✅ Date tracking automatic
+✅ Language routing automatic
+✅ No duplicate emails (status prevents this)
+
+================================================================================
+GOOGLE SHEETS FORMAT
+================================================================================
+
+MINIMUM REQUIRED COLUMNS:
+-------------------------
+A: Name (e.g., "John Smith")
+B: Email (e.g., "john@example.com")
+D: Language (e.g., "en" or "ar")
+
+OPTIONAL COLUMNS:
+-----------------
+C: Phone (e.g., "+968 12345678")
+E: Status (auto-filled, but can set to "New")
+F: Date Added (auto-filled)
+G: Email 1 Date (auto-filled)
+H: Email 2 Date (auto-filled)
+I: Email 3 Date (auto-filled)
+J: Notes (for your reference)
+
+EXAMPLE ROW:
+------------
+| A: John Smith | B: john@example.com | C: +968 12345678 | D: en | E: New |
+
+After Email 1 sent:
+| A: John Smith | B: john@example.com | C: +968 12345678 | D: en | E: Email 1 Sent | G: 2025-01-15 09:00 |
+
+After Email 2 sent:
+| A: John Smith | B: john@example.com | C: +968 12345678 | D: en | E: Email 2 Sent | G: 2025-01-15 09:00 | H: 2025-01-18 09:00 |
+
+After Email 3 sent:
+| A: John Smith | B: john@example.com | C: +968 12345678 | D: en | E: Email 3 Sent | G: 2025-01-15 09:00 | H: 2025-01-18 09:00 | I: 2025-01-22 09:00 |
+
+================================================================================
+SETUP CHECKLIST (ONE TIME ONLY)
+================================================================================
+
+BEFORE YOU START ADDING LEADS:
+-------------------------------
+□ Scenario 1 (Email 1) is created and activated
+□ Scenario 2 (Email 2) is created and activated
+□ Scenario 3 (Email 3) is created and activated
+□ All scenarios are turned ON (toggle switch)
+□ Google Sheets has correct column structure
+□ Tested with one lead to verify it works
+
+AFTER SETUP:
+------------
+✅ Just add leads to Google Sheets
+✅ Everything else is automatic!
+
+================================================================================
+COMMON QUESTIONS
+================================================================================
+
+Q: Do I need to do anything after adding a lead?
+A: NO! Just add the lead. Emails send automatically.
+
+Q: How long until Email 1 is sent?
+A: Within seconds of adding the lead to Google Sheets.
+
+Q: How long until Email 2 is sent?
+A: 3 days after Email 1 (Scenario 2 runs daily and finds eligible leads).
+
+Q: How long until Email 3 is sent?
+A: 4 days after Email 2 (Scenario 3 runs daily and finds eligible leads).
+
+Q: What if I add multiple leads at once?
+A: Each lead gets processed automatically. Email 1 sends to all immediately.
+
+Q: What if a lead's email is invalid?
+A: Make.com will show an error in execution logs. The lead's status won't update.
+
+Q: Can I add leads manually or import from CSV?
+A: YES! Both work. Just make sure columns match the format.
+
+Q: What if I want to skip Email 2 or Email 3 for a specific lead?
+A: You can manually change Status to "Email 2 Sent" or "Email 3 Sent" to skip.
+
+================================================================================
+BULK IMPORT EXAMPLE
+================================================================================
+
+If you have many leads in CSV/Excel:
+
+1. Export to CSV
+2. Import to Google Sheets
+3. Make sure columns match:
+   - Column A: Name
+   - Column B: Email
+   - Column D: Language ("en" or "ar")
+4. Save the sheet
+5. Make.com will detect all new rows
+6. Email 1 will be sent to all new leads automatically!
+
+================================================================================
+MONITORING
+================================================================================
+
+TO CHECK IF IT'S WORKING:
+--------------------------
+1. Go to Make.com
+2. Check execution logs for each scenario
+3. Verify emails are being sent
+4. Check Google Sheets - Status and dates should update automatically
+
+TO SEE WHAT'S HAPPENING:
+------------------------
+1. Open Google Sheets
+2. Check Status column (E) - shows current email stage
+3. Check date columns (G, H, I) - shows when each email was sent
+4. All updates happen automatically
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+IF EMAIL 1 NOT SENDING:
+-----------------------
+□ Is Scenario 1 turned ON?
+□ Does the row have valid email in column B?
+□ Is Language column (D) filled with "en" or "ar"?
+□ Check Make.com execution logs for errors
+
+IF EMAIL 2 NOT SENDING:
+-----------------------
+□ Is Scenario 2 turned ON?
+□ Is schedule trigger set correctly?
+□ Are there leads with Status = "Email 1 Sent"?
+□ Is Email 1 Date more than 3 days ago?
+□ Check execution logs
+
+IF EMAIL 3 NOT SENDING:
+-----------------------
+□ Is Scenario 3 turned ON?
+□ Is schedule trigger set correctly?
+□ Are there leads with Status = "Email 2 Sent"?
+□ Check execution logs
+
+================================================================================
+SUMMARY
+================================================================================
+
+YOUR WORKFLOW:
+--------------
+1. Add lead to Google Sheets ✅
+2. That's it! Everything else is automatic! 🎉
+
+AUTOMATIC WORKFLOW:
+-------------------
+1. Email 1 sent immediately ✅
+2. Email 2 sent after 3 days ✅
+3. Email 3 sent after 4 more days ✅
+4. Google Sheets updated automatically ✅
+5. Status tracked automatically ✅
+
+RESULT:
+-------
+Complete email campaign automation with zero manual work after initial setup! 🚀
+
+================================================================================
+

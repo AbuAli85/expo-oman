@@ -1,0 +1,271 @@
+================================================================================
+GOOGLE SHEET STRUCTURE VERIFICATION
+Sheet Reference and Column Mapping Confirmation
+================================================================================
+
+SHEET URL:
+---------
+https://docs.google.com/spreadsheets/d/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ/edit?gid=0#gid=0
+
+SHEET NAME:
+----------
+"leads" (configured in GOOGLE-APPS-SCRIPT-COMPLETE-UPDATED.js)
+
+================================================================================
+CONFIRMED COLUMN STRUCTURE
+================================================================================
+
+From your Google Sheet headers:
+
+Column A (1): Name
+Column B (2): Email
+Column C (3): Phone
+Column D (4): Language
+Column E (5): Status
+Column F (6): Date Added
+Column G (7): Email 1 Date
+Column H (8): Email 2 Date
+Column I (9): Email 3 Date
+Column J (10): Notes
+Column K (11): Response
+Column L (12): Response Date
+Column M (13): Comments
+
+================================================================================
+VERIFICATION: Script Column Mapping
+================================================================================
+
+Your Google Apps Script (GOOGLE-APPS-SCRIPT-COMPLETE-UPDATED.js) maps:
+
+✅ NAME: 1          → Column A (Name)
+✅ EMAIL: 2         → Column B (Email)
+✅ PHONE: 3         → Column C (Phone)
+✅ LANGUAGE: 4      → Column D (Language)
+✅ STATUS: 5        → Column E (Status)
+✅ DATE_ADDED: 6    → Column F (Date Added)
+✅ EMAIL_1_DATE: 7  → Column G (Email 1 Date)
+✅ EMAIL_2_DATE: 8  → Column H (Email 2 Date)
+✅ EMAIL_3_DATE: 9  → Column I (Email 3 Date)
+✅ NOTES: 10        → Column J (Notes)
+✅ RESPONSE: 11     → Column K (Response)
+✅ RESPONSE_DATE: 12 → Column L (Response Date)
+✅ COMMENTS: 13     → Column M (Comments)
+
+STATUS: ✅ ALL COLUMN MAPPINGS CORRECT
+
+================================================================================
+SAMPLE DATA ANALYSIS
+================================================================================
+
+Row 2 (Example):
+----------------
+Name: fahad alamri
+Email: luxsess2001@gmail.com
+Phone: (empty)
+Language: en
+Status: Email 2 Sent
+Date Added: 2025-11-29T21:00:16.925Z
+Email 1 Date: (empty)
+Email 2 Date: 2025-11-30T05:00:14.647Z
+Email 3 Date: (empty)
+Notes: (empty)
+Response: (empty)
+Response Date: (empty)
+Comments: (empty)
+
+Observations:
+- ✅ Email present (required field)
+- ✅ Language is "en" (English)
+- ✅ Status shows "Email 2 Sent" (Email 2 workflow has processed this lead)
+- ✅ Date Added has timestamp
+- ✅ Email 2 Date has timestamp (confirms Email 2 was sent)
+- ℹ️ Phone is empty (optional field, OK)
+- ℹ️ Response fields empty (not yet responded to invitation)
+
+Row 3 & 4:
+----------
+- New leads with Name and Email
+- Status is empty (waiting for Email 1)
+- These should trigger Email 1 webhook when form is submitted
+
+================================================================================
+MAKE.COM WORKFLOW COLUMN MAPPING
+================================================================================
+
+When updating rows in Make.com, use these column indexes:
+
+UPDATE EMAIL 1 DATE:
+- Column G (index 7): Email 1 Date = {{now}}
+
+UPDATE EMAIL 2 DATE:
+- Column H (index 8): Email 2 Date = {{now}}
+
+UPDATE EMAIL 3 DATE:
+- Column I (index 9): Email 3 Date = {{now}}
+
+UPDATE STATUS:
+- Column E (index 5): Status
+  - "Email 1 Sent"
+  - "Email 2 Sent"
+  - "Email 3 Sent"
+  - "Campaign Complete"
+
+UPDATE RESPONSE (from Accept/Reject form):
+- Column K (index 11): Response
+  - "Accepted" (if Yes, I'll attend)
+  - "Rejected" (if No, I cannot attend)
+
+UPDATE RESPONSE DATE:
+- Column L (index 12): Response Date = {{now}}
+
+UPDATE COMMENTS:
+- Column M (index 13): Comments = {{comments}}
+
+SEARCH BY EMAIL:
+- Column B (index 1 or index 2 if 0-based): Email
+- Use for: Finding existing leads, updating rows by email
+
+================================================================================
+IMPORTANT NOTES FOR MAKE.COM SCENARIOS
+================================================================================
+
+1. SEARCH ROWS (for finding leads):
+   - Search by: Column B (Email)
+   - Index: 1 (1-based) or 1 (if using column name "Email")
+   - Operator: equals
+   - Value: {{email}} or {{2.email}}
+
+2. UPDATE ROW (use Search Rows mode):
+   - Mode: Search Rows (NOT "rowNumber" mode)
+   - Search Filter: Column B (Email) = {{email}}
+   - Values to Update:
+     - Column K (11): Response
+     - Column L (12): Response Date
+     - Column M (13): Comments
+   - Status: Column E (5)
+   - Email dates: Columns G (7), H (8), I (9)
+
+3. ADD ROW (for new leads):
+   - Column A (1): Name
+   - Column B (2): Email
+   - Column C (3): Phone (optional)
+   - Column D (4): Language
+   - Column F (6): Date Added = {{now}}
+
+================================================================================
+GOOGLE APPS SCRIPT CONFIGURATION
+================================================================================
+
+Script File: GOOGLE-APPS-SCRIPT-COMPLETE-UPDATED.js
+Sheet Name: 'leads' ✅ (matches your sheet name)
+Webhook URL: https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+To verify script is working:
+1. Open Google Sheet
+2. Go to Extensions → Apps Script
+3. Run diagnoseSheetStructure() function
+4. Check logs to verify column mapping
+
+To test webhook:
+1. Run testWebhook() function
+2. Check Make.com execution log
+3. Verify data is received correctly
+
+To test with actual data:
+1. Run testLastRow() function
+2. Processes last row from your sheet
+3. Sends to webhook
+
+================================================================================
+CURRENT SHEET STATUS
+================================================================================
+
+Row 2: ✅ Email 2 Sent (has Date Added, Email 2 Date)
+Row 3: ⏳ Waiting for Email 1 (has Name, Email)
+Row 4: ⏳ Waiting for Email 1 (has Name, Email)
+
+Next Actions:
+- Row 3 and 4 should trigger Email 1 when form is submitted
+- Row 2 already received Email 2 (Status: "Email 2 Sent")
+- Row 2 will receive Email 3 after 4 days from Email 2 Date
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+Sheet Structure:
+  ✅ Sheet name: "leads"
+  ✅ Column headers match expected structure
+  ✅ Column mappings in script are correct
+  ✅ Data present: Name, Email, Language fields populated
+
+Script Configuration:
+  ✅ SHEET_NAME = 'leads'
+  ✅ COLUMN_MAPPING matches sheet structure
+  ✅ WEBHOOK_URL configured for Email 1 workflow
+  ⚠️ Trigger needs to be installed (see script instructions)
+
+Make.com Configuration:
+  ✅ Email 1 webhook URL should match: m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+  ⚠️ Verify Email 2 scenario exists and scheduled
+  ⚠️ Verify Email 3 scenario exists and scheduled
+  ⚠️ Response Form scenario needs to be created
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Script can't find sheet
+------------------------------
+→ Verify sheet name is exactly "leads" (case-sensitive)
+→ Run diagnoseSheetStructure() to see available sheets
+→ Update SHEET_NAME in script if different
+
+ISSUE: Columns don't match
+--------------------------
+→ Run diagnoseSheetStructure() to see actual column structure
+→ Update COLUMN_MAPPING in script if columns are different
+→ Check if Google Forms auto-added Timestamp column
+
+ISSUE: Data not sending to webhook
+-----------------------------------
+→ Check email field is not empty (required)
+→ Run testLastRow() to see what data is extracted
+→ Check webhook URL is correct
+→ Verify Make.com scenario is active
+
+ISSUE: Update Row fails in Make.com
+------------------------------------
+→ See: FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt
+→ Use "Search Rows" mode instead of "rowNumber" mode
+→ Search by Email (Column B, index 1)
+
+================================================================================
+QUICK REFERENCE: Column Indexes
+================================================================================
+
+For Make.com Google Sheets modules:
+
+Search Rows / Update Row by Email:
+  - Column: B (Email)
+  - Index: 1 (1-based) or column name "Email"
+
+Update Values:
+  - Column E (5): Status
+  - Column G (7): Email 1 Date
+  - Column H (8): Email 2 Date
+  - Column I (9): Email 3 Date
+  - Column K (11): Response
+  - Column L (12): Response Date
+  - Column M (13): Comments
+
+Add Row Values:
+  - Column A (1): Name
+  - Column B (2): Email (required)
+  - Column D (4): Language ("en" or "ar")
+  - Column F (6): Date Added
+
+================================================================================
+END
+================================================================================
+

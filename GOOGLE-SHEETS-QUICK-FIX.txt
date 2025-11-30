@@ -1,0 +1,64 @@
+================================================================================
+QUICK FIX: GOOGLE SHEETS NOT SHOWING DATA
+5-Minute Fix
+================================================================================
+
+PROBLEM: Module 1 not retrieving data from Google Sheets
+
+================================================================================
+QUICK CHECKS (2 MINUTES)
+================================================================================
+
+CHECK 1: Connection
+--------------------
+1. Open Module 1
+2. Is connection showing?
+3. If error, click "Reconnect"
+4. Save
+
+CHECK 2: Spreadsheet ID
+------------------------
+1. Open Google Sheets
+2. Copy ID from URL (the long string after /d/)
+3. Open Module 1
+4. Paste in "Spreadsheet ID"
+5. Save
+
+CHECK 3: Sheet Name
+--------------------
+1. Open Google Sheets
+2. What is the tab name? (exact spelling)
+3. Open Module 1
+4. Update "Sheet Name" to match exactly
+5. Save
+
+CHECK 4: Data Exists
+--------------------
+1. Open Google Sheets
+2. Do you have data rows? (besides header)
+3. If no, add test row:
+   - Name: Test
+   - Email: test@test.com
+   - Language: en
+4. Save sheet
+
+================================================================================
+TEST (1 MINUTE)
+================================================================================
+
+1. In Make.com, click Module 1
+2. Click "Run once" button
+3. Does it show data?
+
+IF YES:
+-------
+→ Module 1 works!
+→ Make sure scenario is ON
+
+IF NO:
+------
+→ Check connection, ID, sheet name
+→ See detailed guide: FIX-GOOGLE-SHEETS-NOT-SHOWING-DATA.txt
+
+================================================================================
+

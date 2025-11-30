@@ -1,0 +1,207 @@
+================================================================================
+IMMEDIATE FIX: Missing Row Number in Update Row Module
+Google Sheets - Update a Row5 Error Fix
+================================================================================
+
+ERROR:
+------
+"Validation failed for 1 parameter(s).
+- Missing value of required parameter 'rowNumber'."
+
+WORKFLOW ISSUE:
+---------------
+Your current flow:
+1. Webhook → Receives data
+2. Set Variables → Sets email, name, attendance, comments
+3. Router → Routes to Route 1
+4. Send Email → Sends email
+5. Search Rows → Finds row by email
+6. Update Row → FAILS (missing rowNumber) ❌
+
+PROBLEM:
+--------
+The "Update a Row5" module is configured in "rowNumber" mode, but:
+- The rowNumber from "Search Rows13" is not being passed to it
+- OR the rowNumber variable is empty/undefined
+
+================================================================================
+SOLUTION 1: CHANGE UPDATE ROW TO "SEARCH ROWS" MODE (RECOMMENDED)
+================================================================================
+
+This is the EASIEST fix - no need to pass rowNumber!
+
+STEP 1: Open Update Row Module
+-------------------------------
+1. Go to Make.com scenario
+2. Click on "Google Sheets - Update a Row5"
+3. You should see "Mode" field
+
+STEP 2: Change Mode to "Search Rows"
+-------------------------------------
+1. Find the "Mode" or "Search Method" dropdown
+2. Change from "rowNumber" or "Select" to "Search Rows"
+3. When you select "Search Rows", the "Row Number" field will disappear
+
+STEP 3: Configure Search Filter
+--------------------------------
+1. After changing to "Search Rows" mode, you'll see "Search Filter" section
+2. Add a filter:
+   - Column: "1" (or "Email" if you have column names)
+   - Operator: "equals"
+   - Value: {{2.email}} (or {{email}} - use the variable from Set Variables)
+
+STEP 4: Configure Values to Update
+-----------------------------------
+1. Keep your existing values:
+   - Column 10 (K): Response value (Accepted/Rejected)
+   - Column 11 (L): {{now}} (Response Date)
+   - Column 12 (M): {{2.comments}} (Comments)
+
+STEP 5: Save
+------------
+1. Click "OK" or "Save"
+2. Test the workflow
+
+================================================================================
+SOLUTION 2: PASS ROW NUMBER FROM SEARCH ROWS (IF SOLUTION 1 NOT AVAILABLE)
+================================================================================
+
+If "Search Rows" mode is not available in Update Row:
+
+STEP 1: Check Search Rows Output
+---------------------------------
+1. Click on "Google Sheets - Search Rows13"
+2. Verify it's finding rows correctly
+3. Check the output format - should have "__ROW_NUMBER__" field
+
+STEP 2: Use Row Number from Search Results
+-------------------------------------------
+1. Open "Google Sheets - Update a Row5"
+2. In "Row Number" field, enter:
+   {{13[0].__ROW_NUMBER__}}
+   OR
+   {{13[0].rowNumber}}
+   
+   (Replace "13" with your actual Search Rows module number)
+
+STEP 3: Alternative - Use Variable
+-----------------------------------
+If you have a Set Variables module after Search Rows:
+
+1. Add "Tools - Set multiple variables" after Search Rows13
+2. Set variable:
+   - Name: "rowNumber"
+   - Value: {{13[0].__ROW_NUMBER__}}
+3. In Update Row5, use: {{rowNumber}}
+
+================================================================================
+SOLUTION 3: RESTRUCTURE WORKFLOW (BEST PRACTICE)
+================================================================================
+
+Reorganize your workflow to match this order:
+
+NEW FLOW:
+---------
+1. Webhook → Receives data
+2. Set Variables → Sets email, name, attendance, comments
+3. Search Rows → Finds row by email FIRST
+4. Router → Route 1: Row found, Route 2: Row not found
+   Route 1:
+     5a. Update Row → Update existing row
+     6a. Send Email → Send confirmation
+   Route 2:
+     5b. Add Row → Add new row
+     6b. Send Email → Send confirmation
+
+This ensures Search Rows happens BEFORE Update Row, and rowNumber is available.
+
+================================================================================
+QUICK FIX STEPS (MOST COMMON SOLUTION)
+================================================================================
+
+FOR YOUR EXACT WORKFLOW:
+
+1. Open Make.com scenario
+2. Click "Google Sheets - Update a Row5"
+3. Find "Mode" dropdown
+4. Change to "Search Rows" (or "Search" if available)
+5. If "Search Rows" not available, look for "Search Method" and set to "Search"
+6. Add Search Filter:
+   - Column: "1" (Email column)
+   - Operator: "equals"  
+   - Value: {{2.email}} (use your email variable)
+7. Keep your Values section as is
+8. Remove or clear "Row Number" field if it's still visible
+9. Save
+10. Test workflow
+
+================================================================================
+VERIFY YOUR VARIABLE NAMES
+================================================================================
+
+Check your "Tools - Set multiple variables9" module:
+- Variable name for email might be: {{email}}, {{2.email}}, {{variables.email}}
+- Update Row needs to use the SAME variable reference
+
+Common variable formats:
+- {{2.email}} - from module 2 (Set Variables)
+- {{email}} - if scope is execution
+- {{variables.email}} - if using variables module
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: "Search Rows" mode not available
+---------------------------------------
+→ Your Make.com plan might not support it
+→ Use Solution 2 instead (pass rowNumber from Search Rows)
+
+ISSUE: Row number is still empty
+---------------------------------
+→ Check Search Rows13 output format
+→ Try: {{13.__ROW_NUMBER__}} instead of {{13[0].__ROW_NUMBER__}}
+→ Check if Search Rows actually found a row
+
+ISSUE: "Column index out of range"
+-----------------------------------
+→ Verify columns 10, 11, 12 (K, L, M) exist in your Google Sheet
+→ Add them if missing
+
+ISSUE: Multiple rows found
+---------------------------
+→ Search Rows should have Limit: 1
+→ Update Row will update only the first match
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After applying the fix:
+
+□ Update Row module mode is "Search Rows" OR rowNumber is properly set
+□ Search Filter matches email column correctly
+□ Values to update are configured (columns 10, 11, 12)
+□ Row Number field is empty OR set to correct variable reference
+□ Module is saved
+□ Test workflow with a form submission
+□ Check workflow execution log - no more "missing rowNumber" error
+
+================================================================================
+EXPECTED WORKFLOW AFTER FIX
+================================================================================
+
+CORRECT FLOW:
+-------------
+1. Webhook → Receives form response
+2. Set Variables → email = {{...}}, name = {{...}}, etc.
+3. Router → Routes based on conditions
+4. [Route 1]
+5. Send Email → Email sent
+6. Search Rows → Finds row by email → Returns rowNumber
+7. Update Row → Uses Search Rows mode OR {{rowNumber}} → SUCCESS ✅
+
+================================================================================
+END
+================================================================================
+

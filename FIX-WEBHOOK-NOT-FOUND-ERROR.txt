@@ -1,0 +1,177 @@
+================================================================================
+FIX: "Hook (device) not found '3647950'"
+================================================================================
+
+This error means the webhook ID in your scenario doesn't exist anymore.
+The webhook may have been deleted or recreated.
+
+================================================================================
+THE PROBLEM
+================================================================================
+
+Your scenario references webhook ID: 3647950
+But this webhook no longer exists in Make.com.
+
+Possible causes:
+  • Webhook was deleted
+  • Webhook was recreated (new ID)
+  • Scenario is pointing to wrong webhook
+
+================================================================================
+THE FIX: RECONFIGURE WEBHOOK MODULE
+================================================================================
+
+STEP 1: Check Current Webhook Status
+──────────────────────────────────────
+
+1. Open Make.com
+2. Go to your scenario
+3. Click Module 12 (Webhook trigger)
+4. Check if webhook URL is shown
+5. Note the webhook URL if visible
+
+STEP 2: Reconfigure Webhook Module
+─────────────────────────────────────
+
+Option A: If Webhook Still Exists
+───────────────────────────────────
+
+1. Click Module 12 (Webhook)
+2. Click "Reconfigure" or "Edit"
+3. Select the webhook from the list
+4. Save
+
+Option B: Create New Webhook
+──────────────────────────────
+
+1. Delete Module 12 (or disconnect it)
+2. Add new Webhook module
+3. Create new webhook:
+   - Give it a name: "EMAIL 1 INVITATION"
+   - Copy the webhook URL
+4. Save the module
+
+STEP 3: Update Webhook URL
+────────────────────────────
+
+Your webhook URL should be:
+  https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u
+
+1. In Module 12, verify this URL
+2. Copy the webhook URL
+3. Update your Google Apps Script if needed:
+   const WEBHOOK_URL = 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u';
+
+================================================================================
+QUICK FIX STEPS
+================================================================================
+
+STEP 1: Delete and Recreate Webhook Module
+────────────────────────────────────────────
+
+1. In Make.com scenario editor
+2. Click Module 12 (Webhook)
+3. Click the "..." menu or right-click
+4. Select "Delete" or disconnect it
+5. Add new "Webhooks" module
+6. Select "Custom webhook"
+7. Give it name: "EMAIL 1 INVITATION"
+8. Save
+
+STEP 2: Get New Webhook URL
+─────────────────────────────
+
+1. After creating, copy the webhook URL
+2. It will look like: https://hook.eu2.make.com/...
+3. Update Google Apps Script if URL changed
+
+STEP 3: Update Google Apps Script (If URL Changed)
+────────────────────────────────────────────────────
+
+If the new webhook URL is different:
+
+1. Open Google Apps Script
+2. Find: const WEBHOOK_URL = '...';
+3. Update to new webhook URL
+4. Save script
+
+STEP 4: Test Again
+───────────────────
+
+1. Run testWebhook() in Apps Script
+2. Check Make.com for execution
+3. Verify webhook is working
+
+================================================================================
+ALTERNATIVE: FIX EXISTING WEBHOOK
+================================================================================
+
+If you want to keep using the same webhook URL:
+
+1. In Make.com, go to your scenario
+2. Click Module 12
+3. Check if webhook is "inactive" or "error"
+4. Click "Reconfigure" or "Activate"
+5. Select/create the webhook
+6. Use URL: https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing:
+
+□ Module 12 webhook is active
+□ Webhook URL is correct
+□ No error messages
+□ testWebhook() works
+□ Make.com receives data
+
+================================================================================
+WHAT TO CHECK
+================================================================================
+
+Check these in Make.com:
+
+1. Module 12 status:
+   □ Active?
+   □ Error message?
+   □ Webhook URL visible?
+
+2. Webhook URL:
+   □ Is it: https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u?
+   □ Or is it a different URL?
+
+3. Execution history:
+   □ Are there previous successful executions?
+   □ When did it last work?
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Open Make.com scenario
+□ Check Module 12 (Webhook) status
+□ If error → Reconfigure or recreate webhook
+□ Verify webhook URL
+□ Update Apps Script if URL changed
+□ Test webhook connection
+□ Verify Make.com receives data
+
+================================================================================
+MOST LIKELY FIX
+================================================================================
+
+Simply reconfigure Module 12:
+
+1. Click Module 12
+2. Click "Reconfigure" or edit icon
+3. Select/create webhook
+4. Save
+
+The webhook URL should remain the same, just need to reconnect it.
+
+================================================================================
+END
+================================================================================
+

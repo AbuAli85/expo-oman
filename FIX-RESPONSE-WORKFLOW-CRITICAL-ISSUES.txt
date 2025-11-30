@@ -1,0 +1,190 @@
+================================================================================
+CRITICAL FIXES: "Handle Expo Form Responses" Workflow
+================================================================================
+
+Quick fix guide for the most important issues in your response workflow.
+
+================================================================================
+CRITICAL FIX 1: EMAIL "TO" FIELD (ALL 4 EMAIL MODULES)
+================================================================================
+
+PROBLEM:
+  All email modules use: "to": ["{{2.email}}"]
+  This causes 422 error: "The `to` field must be a `string`"
+
+FIX ALL 4 MODULES:
+───────────────────
+
+Module 16 (Agreement Email - Update Path):
+  Current: "to": ["{{2.email}}"]
+  Change to: "to": "{{2.email}}"
+
+Module 17 (Thank You Email - Update Path):
+  Current: "to": ["{{2.email}}"]
+  Change to: "to": "{{2.email}}"
+
+Module 19 (Agreement Email - Add Path):
+  Current: "to": ["{{2.email}}"]
+  Change to: "to": "{{2.email}}"
+
+Module 20 (Thank You Email - Add Path):
+  Current: "to": ["{{2.email}}"]
+  Change to: "to": "{{2.email}}"
+
+QUICK STEPS:
+────────────
+1. Open Module 16
+2. Find "To" field
+3. Remove brackets: Change ["{{2.email}}"] to {{2.email}}
+4. Save
+5. Repeat for Modules 17, 19, 20
+
+================================================================================
+CRITICAL FIX 2: ROUTER FILTERS (ROUTER 15 & 18)
+================================================================================
+
+PROBLEM:
+  Router 15 and Router 18 need explicit filters to route by attendance
+  Without filters, both routes might execute (sending duplicate emails)
+
+FIX ROUTER 15:
+───────────────
+
+Route 1 (Agreement Email):
+  Filter: {{2.attendance}} equals "Yes, I'll attend"
+  → Routes to Module 16
+
+Route 2 (Thank You Email):
+  Filter: {{2.attendance}} equals "No, I cannot attend"
+  → Routes to Module 17
+
+STEPS:
+──────
+1. Open Router 15
+2. Click Route 1
+3. Add filter:
+   • Field: {{2.attendance}}
+   • Operator: equals
+   • Value: "Yes, I'll attend"
+   • Case sensitive: No
+4. Click Route 2
+5. Add filter:
+   • Field: {{2.attendance}}
+   • Operator: equals
+   • Value: "No, I cannot attend"
+   • Case sensitive: No
+6. Save
+
+FIX ROUTER 18:
+───────────────
+
+Route 1 (Agreement Email):
+  Filter: {{2.attendance}} equals "Yes, I'll attend"
+  → Routes to Module 19
+
+Route 2 (Thank You Email):
+  Filter: {{2.attendance}} equals "No, I cannot attend"
+  → Routes to Module 20
+
+STEPS:
+──────
+1. Open Router 18
+2. Click Route 1
+3. Add filter:
+   • Field: {{2.attendance}}
+   • Operator: equals
+   • Value: "Yes, I'll attend"
+   • Case sensitive: No
+4. Click Route 2
+5. Add filter:
+   • Field: {{2.attendance}}
+   • Operator: equals
+   • Value: "No, I cannot attend"
+   • Case sensitive: No
+6. Save
+
+================================================================================
+QUICK FIX CHECKLIST
+================================================================================
+
+FIX ALL 4 EMAIL MODULES:
+─────────────────────────
+□ Module 16: Change "To" from ["{{2.email}}"] to {{2.email}}
+□ Module 17: Change "To" from ["{{2.email}}"] to {{2.email}}
+□ Module 19: Change "To" from ["{{2.email}}"] to {{2.email}}
+□ Module 20: Change "To" from ["{{2.email}}"] to {{2.email}}
+
+FIX ROUTER FILTERS:
+───────────────────
+□ Router 15 Route 1: Add filter {{2.attendance}} = "Yes, I'll attend"
+□ Router 15 Route 2: Add filter {{2.attendance}} = "No, I cannot attend"
+□ Router 18 Route 1: Add filter {{2.attendance}} = "Yes, I'll attend"
+□ Router 18 Route 2: Add filter {{2.attendance}} = "No, I cannot attend"
+
+VERIFY:
+───────
+□ All "To" fields are simple strings (not arrays)
+□ Router filters are mutually exclusive
+□ Filters use case-insensitive matching
+□ Save scenario after all changes
+
+================================================================================
+EXPECTED BEHAVIOR AFTER FIXES
+================================================================================
+
+TEST CASE 1: Existing Email, "Yes" Response
+─────────────────────────────────────────────
+1. Form submitted with existing email
+2. Response: "Yes, I'll attend"
+3. Expected flow:
+   ✓ Module 11: Finds email in sheet
+   ✓ Module 6: Routes to Route 1 (Update)
+   ✓ Module 7: Updates row with "Accepted"
+   ✓ Router 15: Routes to Route 1 (Yes)
+   ✓ Module 16: Sends Agreement email
+   ✗ Module 17: Does NOT execute
+   ✓ Only ONE email sent
+
+TEST CASE 2: Existing Email, "No" Response
+────────────────────────────────────────────
+1. Form submitted with existing email
+2. Response: "No, I cannot attend"
+3. Expected flow:
+   ✓ Module 11: Finds email in sheet
+   ✓ Module 6: Routes to Route 1 (Update)
+   ✓ Module 7: Updates row with "Rejected"
+   ✓ Router 15: Routes to Route 2 (No)
+   ✓ Module 17: Sends Thank You email
+   ✗ Module 16: Does NOT execute
+   ✓ Only ONE email sent
+
+TEST CASE 3: New Email, "Yes" Response
+────────────────────────────────────────
+1. Form submitted with new email
+2. Response: "Yes, I'll attend"
+3. Expected flow:
+   ✓ Module 11: Doesn't find email
+   ✓ Module 6: Routes to Route 2 (Add)
+   ✓ Module 10: Adds new row with "Accepted"
+   ✓ Router 18: Routes to Route 1 (Yes)
+   ✓ Module 19: Sends Agreement email
+   ✗ Module 20: Does NOT execute
+   ✓ Only ONE email sent
+
+TEST CASE 4: New Email, "No" Response
+───────────────────────────────────────
+1. Form submitted with new email
+2. Response: "No, I cannot attend"
+3. Expected flow:
+   ✓ Module 11: Doesn't find email
+   ✓ Module 6: Routes to Route 2 (Add)
+   ✓ Module 10: Adds new row with "Rejected"
+   ✓ Router 18: Routes to Route 2 (No)
+   ✓ Module 20: Sends Thank You email
+   ✗ Module 19: Does NOT execute
+   ✓ Only ONE email sent
+
+================================================================================
+END OF QUICK FIX GUIDE
+================================================================================
+

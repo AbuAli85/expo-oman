@@ -1,0 +1,60 @@
+================================================================================
+QUICK FIX: CONNECT MODULE 1 TO MODULE 2
+5-Minute Fix
+================================================================================
+
+PROBLEM: Flow stops at Module 1
+
+FIX: Connect Module 1 to Module 2
+
+================================================================================
+STEP-BY-STEP (2 MINUTES)
+================================================================================
+
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Look at Module 1 (Google Sheets)
+4. Look at Module 2 (Router)
+
+QUESTION: Do you see a LINE between them?
+
+IF NO:
+------
+→ Click and drag from Module 1 (right side) to Module 2
+→ A line should appear
+→ Save scenario
+→ DONE!
+
+IF YES:
+-------
+→ Connection exists
+→ Check Module 2 configuration
+→ Check execution logs for Module 2 errors
+
+================================================================================
+VISUAL CHECK
+================================================================================
+
+CORRECT:
+--------
+[Module 1] ────→ [Module 2]
+
+WRONG:
+------
+[Module 1]      [Module 2]
+(no line)
+
+================================================================================
+AFTER FIXING
+================================================================================
+
+1. Save scenario
+2. Add test lead to Google Sheets
+3. Wait 30 seconds
+4. Check execution history:
+   - Module 1 ✅
+   - Module 2 ✅ (should now run!)
+   - Module 3 or 4 ✅
+
+================================================================================
+

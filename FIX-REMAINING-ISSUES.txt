@@ -1,0 +1,228 @@
+================================================================================
+FIX REMAINING ISSUES IN YOUR SCENARIO
+================================================================================
+
+Good news: You've added the routers! However, there are several issues that need
+to be fixed in the email modules.
+
+================================================================================
+ISSUES FOUND
+================================================================================
+
+1. ❌ Module 16: Missing HTML content
+2. ❌ Module 17: Missing HTML content + Corrupted subject line
+3. ❌ Module 19: Missing HTML content
+4. ❌ Module 20: Missing HTML content + Corrupted subject line
+5. ❌ All email modules: Wrong "to" field format
+6. ❌ Module 16: Filter should be in router, not in email module
+
+================================================================================
+FIX FOR MODULE 16 (Agreement Email - Route 1A)
+================================================================================
+
+STEP 1: Fix "To" Field
+-----------------------
+1. Click on Module 16
+2. Go to "To" field
+3. Current: ["{{2.email}}"]
+4. Change to: Click "Add item" → Select "Object"
+5. In the object, add:
+   - Key: "value"
+   - Value: {{2.email}}
+6. Should show: [{"value": "{{2.email}}"}]
+
+STEP 2: Remove Filter (Router handles this)
+-------------------------------------------
+1. In Module 16, go to Filter tab
+2. Delete the filter condition
+3. The router (Module 15) already filters by attendance
+
+STEP 3: Add HTML Content
+-------------------------
+1. In Module 16, go to "HTML Content" field
+2. Copy the entire content from AGREEMENT-EMAIL-TEMPLATE.html
+3. Paste it into the HTML field
+4. IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save
+
+================================================================================
+FIX FOR MODULE 17 (Thank You Email - Route 1B)
+================================================================================
+
+STEP 4: Fix "To" Field
+-----------------------
+1. Click on Module 17
+2. Go to "To" field
+3. Change to: [{"value": "{{2.email}}"}]
+   (Same as Module 16)
+
+STEP 5: Fix Subject Line
+------------------------
+1. In Module 17, go to "Subject" field
+2. Current (corrupted): "ue\": \"{{2.email}}\"}]\r\n   - Subject: \"Thank You - UAE Property Expo"
+3. Change to: "Thank You - UAE Property Expo"
+4. Save
+
+STEP 6: Add HTML Content
+------------------------
+1. In Module 17, go to "HTML Content" field
+2. Copy the entire content from THANK-YOU-EMAIL-TEMPLATE.html
+3. Paste it into the HTML field
+4. IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save
+
+STEP 7: Add Router Filter (If not already set)
+-----------------------------------------------
+1. Click on Module 15 (Router)
+2. Click on Route 1B (the route containing Module 17)
+3. Make sure it has a filter:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "No, I cannot attend"
+4. Save
+
+================================================================================
+FIX FOR MODULE 19 (Agreement Email - Route 2A)
+================================================================================
+
+STEP 8: Fix "To" Field
+-----------------------
+1. Click on Module 19
+2. Go to "To" field
+3. Change to: [{"value": "{{2.email}}"}]
+   (Same as Module 16)
+
+STEP 9: Add HTML Content
+------------------------
+1. In Module 19, go to "HTML Content" field
+2. Copy the entire content from AGREEMENT-EMAIL-TEMPLATE.html
+3. Paste it into the HTML field
+4. IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save
+
+STEP 10: Add Router Filter (If not already set)
+------------------------------------------------
+1. Click on Module 18 (Router)
+2. Click on Route 2A (the route containing Module 19)
+3. Make sure it has a filter:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "Yes, I'll attend"
+4. Save
+
+================================================================================
+FIX FOR MODULE 20 (Thank You Email - Route 2B)
+================================================================================
+
+STEP 11: Fix "To" Field
+-----------------------
+1. Click on Module 20
+2. Go to "To" field
+3. Change to: [{"value": "{{2.email}}"}]
+   (Same as Module 16)
+
+STEP 12: Fix Subject Line
+--------------------------
+1. In Module 20, go to "Subject" field
+2. Current (corrupted): "ue\": \"{{2.email}}\"}]\r\n   - Subject: \"Thank You - UAE Property Expo"
+3. Change to: "Thank You - UAE Property Expo"
+4. Save
+
+STEP 13: Add HTML Content
+--------------------------
+1. In Module 20, go to "HTML Content" field
+2. Copy the entire content from THANK-YOU-EMAIL-TEMPLATE.html
+3. Paste it into the HTML field
+4. IMPORTANT: Replace {{4.name}} with {{2.name}}
+5. Save
+
+STEP 14: Add Router Filter (If not already set)
+------------------------------------------------
+1. Click on Module 18 (Router)
+2. Click on Route 2B (the route containing Module 20)
+3. Make sure it has a filter:
+   - Field: {{2.attendance}}
+   - Operator: equals
+   - Value: "No, I cannot attend"
+4. Save
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After fixing, verify:
+
+☐ Module 16:
+  ☐ To: [{"value": "{{2.email}}"}]
+  ☐ Subject: "Agreement - UAE Property Expo"
+  ☐ HTML: Full template with {{2.name}}
+  ☐ No filter (router handles routing)
+
+☐ Module 17:
+  ☐ To: [{"value": "{{2.email}}"}]
+  ☐ Subject: "Thank You - UAE Property Expo" (not corrupted)
+  ☐ HTML: Full template with {{2.name}}
+  ☐ Router Route 1B has filter for "No, I cannot attend"
+
+☐ Module 19:
+  ☐ To: [{"value": "{{2.email}}"}]
+  ☐ Subject: "Agreement - UAE Property Expo"
+  ☐ HTML: Full template with {{2.name}}
+  ☐ Router Route 2A has filter for "Yes, I'll attend"
+
+☐ Module 20:
+  ☐ To: [{"value": "{{2.email}}"}]
+  ☐ Subject: "Thank You - UAE Property Expo" (not corrupted)
+  ☐ HTML: Full template with {{2.name}}
+  ☐ Router Route 2B has filter for "No, I cannot attend"
+
+☐ Router 15 (Module 15):
+  ☐ Route 1A: Filter = "Yes, I'll attend" → Module 16
+  ☐ Route 1B: Filter = "No, I cannot attend" → Module 17
+
+☐ Router 18 (Module 18):
+  ☐ Route 2A: Filter = "Yes, I'll attend" → Module 19
+  ☐ Route 2B: Filter = "No, I cannot attend" → Module 20
+
+================================================================================
+QUICK REFERENCE: EMAIL TEMPLATE FILES
+================================================================================
+
+Agreement Email Template:
+- File: AGREEMENT-EMAIL-TEMPLATE.html
+- Replace: {{4.name}} → {{2.name}}
+- Subject: "Agreement - UAE Property Expo"
+
+Thank You Email Template:
+- File: THANK-YOU-EMAIL-TEMPLATE.html
+- Replace: {{4.name}} → {{2.name}}
+- Subject: "Thank You - UAE Property Expo"
+
+================================================================================
+TESTING
+================================================================================
+
+After fixing, test:
+
+1. Submit form with "Yes, I'll attend"
+   - Should go to Route 1 or Route 2
+   - Should send Agreement email (Module 16 or 19)
+   - Check email received has correct HTML
+
+2. Submit form with "No, I cannot attend"
+   - Should go to Route 1 or Route 2
+   - Should send Thank You email (Module 17 or 20)
+   - Check email received has correct HTML
+
+3. Test with existing email (in sheet)
+   - Should use Route 1 (Update)
+   - Should send appropriate email
+
+4. Test with new email (not in sheet)
+   - Should use Route 2 (Add)
+   - Should send appropriate email
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

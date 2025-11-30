@@ -1,0 +1,75 @@
+================================================================================
+QUICK FORM SIMPLIFICATION
+Remove Email and Name Fields
+================================================================================
+
+YOUR GOAL:
+----------
+Form should ONLY ask for reply (Accept/Reject)
+Email and Name come from Google Sheets automatically
+
+================================================================================
+QUICK STEPS (5 MINUTES)
+================================================================================
+
+STEP 1: Update Google Form (2 min)
+-----------------------------------
+1. Open Google Form
+2. Delete "Email Address" field
+3. Delete "Full Name" field
+4. Keep only:
+   - "Will you attend the expo?"
+   - "Comments" (optional)
+
+STEP 2: Enable Email Collection (1 min)
+----------------------------------------
+1. Click Settings (gear icon)
+2. Under "General"
+3. Check "Collect email addresses"
+4. Save
+
+STEP 3: Verify Make.com (Already Correct!)
+--------------------------------------------
+Your Module 4 already uses:
+- email: {{1.respondentEmail}} ✅
+
+No changes needed!
+
+STEP 4: Test (2 min)
+--------------------
+1. Submit form while logged into Google
+2. Check Make.com execution
+3. Verify: respondentEmail is captured
+
+DONE! ✅
+
+================================================================================
+HOW IT WORKS
+================================================================================
+
+1. User clicks form link from email
+2. Form shows: Only attendance question
+3. User submits reply
+4. Google Forms captures: respondentEmail (if logged in)
+5. Make.com receives: respondentEmail + attendance + comments
+6. System matches email with Google Sheets
+7. Gets name from sheet
+8. Updates sheet and sends email
+
+================================================================================
+IMPORTANT
+================================================================================
+
+✅ Form is simpler (only 2 questions)
+✅ Email comes from Google account automatically
+✅ Name comes from Google Sheets automatically
+✅ No duplicate data entry
+
+⚠️ User must be logged into Google account
+⚠️ If not logged in, use pre-filled form link (see full guide)
+
+================================================================================
+
+
+
+

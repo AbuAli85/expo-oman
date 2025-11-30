@@ -1,0 +1,263 @@
+================================================================================
+FIX EMAIL 1 RIGHT NOW - STEP BY STEP
+Complete Solution to Get It Working
+================================================================================
+
+Follow these steps EXACTLY. This will fix Email 1.
+
+================================================================================
+STEP 1: FIX MODULE 2 (ROUTER) - ADD FILTERS (5 minutes)
+================================================================================
+
+PROBLEM: Router has no filters = both emails sent to everyone
+
+FIX:
+----
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click Module 2 (Router)
+4. Click Route 1 (English route)
+5. Click "Add filter" or "Filter" button
+6. Set filter:
+   - Field: {{8.language}}
+   - Operator: equals
+   - Value: "en"
+7. Click Route 2 (Arabic route)
+8. Click "Add filter"
+9. Set filter:
+   - Field: {{8.language}}
+   - Operator: equals
+   - Value: "ar"
+10. Save
+
+VERIFY:
+-------
+After saving, Route 1 should show filter: {{8.language}} = "en"
+Route 2 should show filter: {{8.language}} = "ar"
+
+================================================================================
+STEP 2: FIX MODULE 3 (ENGLISH EMAIL) - TO FIELD (3 minutes)
+================================================================================
+
+PROBLEM: Wrong format = emails won't send
+
+CURRENT (WRONG):
+----------------
+"to": ["{{8.email}}"]
+
+FIX:
+----
+1. Click Module 3 (English Email - Resend)
+2. Click "To" field
+3. DELETE the current value: ["{{8.email}}"]
+4. Click "Add item" button
+5. Select "Object" (not "Text" or "Array")
+6. In the object, add field: "value"
+7. Map: {{8.email}}
+8. Should now show: [{"value": "{{8.email}}"}]
+9. Save
+
+VERIFY:
+-------
+After saving, "To" field should show:
+[{"value": "{{8.email}}"}]
+
+NOT:
+["{{8.email}}"] ❌
+
+================================================================================
+STEP 3: FIX MODULE 4 (ARABIC EMAIL) - TO FIELD (3 minutes)
+================================================================================
+
+PROBLEM: Same as Module 3
+
+FIX:
+----
+1. Click Module 4 (Arabic Email - Resend)
+2. Repeat Step 2 above
+3. Change ["{{8.email}}"] to [{"value": "{{8.email}}"}]
+4. Save
+
+================================================================================
+STEP 4: FIX MODULE 8 (SET VARIABLES) - REMOVE BACKTICKS (2 minutes)
+================================================================================
+
+PROBLEM: Backticks might cause issues
+
+CURRENT:
+--------
+- language: {{1.`3`}}
+- email: {{1.`1`}}
+- name: {{1.`0`}}
+
+FIX:
+----
+1. Click Module 8 (Set Variables)
+2. For "language" variable:
+   - Change: {{1.`3`}}
+   - To: {{1.3}}
+3. For "email" variable:
+   - Change: {{1.`1`}}
+   - To: {{1.1}}
+4. For "name" variable:
+   - Change: {{1.`0`}}
+   - To: {{1.0}}
+5. Save
+
+================================================================================
+STEP 5: VERIFY SCENARIO IS ON (30 seconds)
+================================================================================
+
+1. Look at top-right of scenario
+2. Is toggle switch GREEN/ON?
+3. If GRAY/OFF: Click to turn ON
+4. Wait 5 seconds
+
+================================================================================
+STEP 6: TEST WITH YOUR CSV LEAD (2 minutes)
+================================================================================
+
+1. Import your CSV to Google Sheets (if not already done)
+2. Make sure the lead is in the sheet:
+   - Name: fahad alamri
+   - Email: luxsess2001@hotmail.com
+   - Language: en
+3. Wait 15 seconds
+4. Check Make.com execution logs
+5. Do you see a new execution?
+
+IF YES:
+-------
+- Click on the execution
+- Check if it shows SUCCESS
+- Check which modules executed
+- Check if email was sent
+
+IF NO:
+------
+- Check scenario is ON
+- Check Google Sheets connection
+- Try "Run once" on Module 1
+
+================================================================================
+TROUBLESHOOTING IF STILL NOT WORKING
+================================================================================
+
+ISSUE 1: No Execution Appears
+------------------------------
+Check:
+□ Scenario is ON (green toggle)
+□ Google Sheets connection is active
+□ Lead is in the sheet
+□ Language column has "en" (exact match)
+
+Fix:
+- Turn scenario OFF and ON again
+- Reconnect Google Sheets
+- Test Module 1: Click "Run once"
+
+ISSUE 2: Execution Appears But Email Not Sent
+----------------------------------------------
+Check execution logs:
+- Which module failed?
+- What error message?
+
+Common errors:
+- "Missing value of required parameter 'to'"
+  → Fix: To field should be [{"value": "{{8.email}}"}]
+  
+- "Filter condition not met"
+  → Fix: Check Language value matches filter exactly
+
+ISSUE 3: Both Emails Sent
+--------------------------
+Problem: Router filters not working
+Fix:
+- Verify Route 1 filter: {{8.language}} = "en"
+- Verify Route 2 filter: {{8.language}} = "ar"
+- Make sure filters are saved
+
+ISSUE 4: Email Sent But Not Received
+-------------------------------------
+Check:
+- Spam/junk folder
+- Email address is correct
+- Resend connection is active
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+After making all fixes, verify:
+
+□ Module 2 (Router):
+  - Route 1 has filter: {{8.language}} = "en"
+  - Route 2 has filter: {{8.language}} = "ar"
+
+□ Module 3 (English Email):
+  - To field: [{"value": "{{8.email}}"}]
+  - Subject: Has space after comma
+  - HTML: Uses {{8.name}}
+
+□ Module 4 (Arabic Email):
+  - To field: [{"value": "{{8.email}}"}]
+  - Subject: Has space after comma
+  - HTML: Uses {{8.name}}
+
+□ Module 8 (Set Variables):
+  - language: {{1.3}} (no backticks)
+  - email: {{1.1}} (no backticks)
+  - name: {{1.0}} (no backticks)
+
+□ Scenario is ON (green toggle)
+
+□ Google Sheets has lead:
+  - Name: fahad alamri
+  - Email: luxsess2001@hotmail.com
+  - Language: en
+
+================================================================================
+EXPECTED RESULT AFTER FIXES
+================================================================================
+
+When you add/import the lead:
+
+1. Module 1 (Watch Rows): ✅ Detects new row
+2. Module 8 (Set Variables): ✅ Sets variables
+3. Module 2 (Router): ✅ Routes to Route 1 (because Language = "en")
+4. Module 3 (English Email): ✅ Sends email to luxsess2001@hotmail.com
+5. Module 5 (Update Row): ✅ Updates Google Sheets:
+   - Status = "Email 1 Sent"
+   - Email 1 Date = current date/time
+
+Email received:
+- To: luxsess2001@hotmail.com
+- Subject: "fahad alamri, You're Invited to Showcase your project..."
+- Body: "Dear fahad alamri,"
+
+================================================================================
+STILL NOT WORKING?
+================================================================================
+
+If you've done all steps and it still doesn't work:
+
+1. SHARE EXECUTION LOGS:
+   - Screenshot of execution
+   - Which module failed?
+   - Error message?
+
+2. VERIFY FIXES:
+   - Module 2: Do filters show?
+   - Module 3: Does To field show [{"value": "{{8.email}}"}]?
+   - Module 8: No backticks?
+
+3. MANUAL TEST:
+   - Click "Run once" on Module 1
+   - Does it return your lead data?
+   - Click "Run once" on Module 3
+   - Does email send?
+
+This will help identify the exact issue.
+
+================================================================================
+

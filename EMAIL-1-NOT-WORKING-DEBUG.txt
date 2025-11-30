@@ -1,0 +1,444 @@
+================================================================================
+EMAIL 1 NOT WORKING - COMPLETE DEBUGGING GUIDE
+Step-by-Step Troubleshooting
+================================================================================
+
+Follow these steps in order to identify and fix the issue.
+
+================================================================================
+STEP 1: CHECK SCENARIO STATUS
+================================================================================
+
+IS THE SCENARIO ACTIVATED?
+---------------------------
+1. Go to Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Check the toggle switch at the top
+4. Is it ON (green/enabled)?
+
+❌ If OFF: Turn it ON and try again
+✅ If ON: Continue to Step 2
+
+================================================================================
+STEP 2: CHECK EXECUTION LOGS
+================================================================================
+
+DID THE SCENARIO RUN?
+---------------------
+1. In Make.com, go to "Execution history" or "Logs"
+2. Look for recent executions
+3. Do you see any executions after adding the lead?
+
+❌ If NO executions: Scenario not triggering → Go to Step 3
+⚠️ If executions with ERRORS: Check error messages → Go to Step 6
+✅ If executions SUCCESSFUL: But email not sent → Go to Step 7
+
+================================================================================
+STEP 3: CHECK GOOGLE SHEETS TRIGGER
+================================================================================
+
+IS THE WATCH ROWS MODULE WORKING?
+----------------------------------
+1. Open Email 1 scenario
+2. Click on Module 1 (Google Sheets - Watch Rows)
+3. Check configuration:
+   □ Spreadsheet is selected correctly
+   □ Sheet name is "leads" (or your sheet name)
+   □ Limit is set (usually 1)
+   □ Connection is active
+
+4. Test the module:
+   - Click "Run once" or "Test"
+   - Does it return data?
+
+❌ If NO data returned:
+   - Check Google Sheets connection
+   - Verify spreadsheet ID is correct
+   - Check sheet name matches exactly
+   - Verify the lead row exists
+
+✅ If data returned: Continue to Step 4
+
+================================================================================
+STEP 4: CHECK ROUTER CONFIGURATION
+================================================================================
+
+IS THE ROUTER WORKING?
+----------------------
+1. Click on Module 2 (Router)
+2. Check if filters are set on routes:
+   - Route 1: Should filter for Language = "en"
+   - Route 2: Should filter for Language = "ar"
+
+3. Check your lead's Language value:
+   - Open Google Sheets
+   - Check Column D (Language)
+   - What value is there? "en", "EN", "ar", "AR"?
+
+IMPORTANT: Filters must match EXACTLY!
+
+If your sheet has "EN" (uppercase) but filter checks "en" (lowercase):
+→ It won't match!
+
+FIX:
+----
+Option 1: Change filter to match your sheet:
+- If sheet has "EN" → Filter should check "EN"
+- If sheet has "en" → Filter should check "en"
+
+Option 2: Change sheet to use lowercase:
+- Change all "EN" to "en"
+- Change all "AR" to "ar"
+
+================================================================================
+STEP 5: CHECK EMAIL MODULE CONFIGURATION
+================================================================================
+
+IS THE EMAIL MODULE CONFIGURED CORRECTLY?
+------------------------------------------
+1. Click on Module 3 (English Email) or Module 4 (Arabic Email)
+2. Check the filter (if it has one):
+   - Should match: `{{1.3}}` = "en" (or "EN")
+   - NOT: `{{1.`3`}}` (with backticks)
+
+3. Check the mapper:
+   - To field: Should be `[{"value": "{{1.1}}"}]`
+   - NOT: `["{{1.`1`}}"]` (with backticks or wrong format)
+   - From: Should be "sales@thesmartpro.io"
+   - Subject: Should have proper spacing
+   - HTML: Should have `{{1.0}}` (not `{{1.`0`}}`)
+
+4. Check Resend connection:
+   - Is the connection active?
+   - Is the API key valid?
+
+================================================================================
+STEP 6: CHECK FOR ERRORS
+================================================================================
+
+WHAT ERRORS DO YOU SEE?
+-----------------------
+Common errors and fixes:
+
+ERROR 1: "Missing value of required parameter 'to'"
+---------------------------------------------------
+Cause: Email address not found or variable not resolving
+Fix:
+- Check Column B (Email) has a value
+- Fix variable: `{{1.1}}` (not `{{1.`1`}}`)
+- Fix `to` format: `[{"value": "{{1.1}}"}]`
+
+ERROR 2: "The 'to' field must be a 'string'"
+---------------------------------------------
+Cause: Wrong `to` field format
+Fix: Change `["{{1.1}}"]` to `[{"value": "{{1.1}}"}]`
+
+ERROR 3: "Filter condition not met"
+-----------------------------------
+Cause: Language value doesn't match filter
+Fix: Check Language column value matches filter exactly
+
+ERROR 4: "Connection error"
+--------------------------
+Cause: Google Sheets or Resend connection issue
+Fix:
+- Reconnect Google Sheets
+- Reconnect Resend
+- Check API keys are valid
+
+ERROR 5: "No rows found"
+-------------------------
+Cause: Watch Rows not finding new rows
+Fix:
+- Check if row was actually added
+- Check spreadsheet ID is correct
+- Try "Run once" to test
+
+================================================================================
+STEP 7: MANUAL TESTING
+================================================================================
+
+TEST EACH MODULE INDIVIDUALLY
+------------------------------
+
+TEST 1: Test Watch Rows Module
+-------------------------------
+1. Click Module 1 (Watch Rows)
+2. Click "Run once" or "Test"
+3. Does it return your lead data?
+   ❌ If NO: Fix Google Sheets connection
+   ✅ If YES: Continue
+
+TEST 2: Test Router
+-------------------
+1. After Module 1 runs, check Module 2 (Router)
+2. Does it route correctly?
+3. Check which route it takes (English or Arabic)
+   ❌ If no route: Fix filter conditions
+   ✅ If routes: Continue
+
+TEST 3: Test Email Module
+--------------------------
+1. Click on Module 3 or 4 (Email module)
+2. Check the data it receives:
+   - Does it have email address?
+   - Does it have name?
+   - Does it have language?
+3. Click "Run once" or "Test"
+   ❌ If error: Fix the error
+   ✅ If success: Email should send
+
+TEST 4: Test Update Row Module
+-------------------------------
+1. Click on Module 5 or 7 (Update Row)
+2. Check configuration:
+   - Row number: `{{1.__ROW_NUMBER__}}`
+   - Status: "Email 1 Sent"
+   - Email 1 Date: `{{now}}`
+3. Click "Run once" or "Test"
+   ❌ If error: Fix configuration
+   ✅ If success: Google Sheets should update
+
+================================================================================
+STEP 8: VERIFY GOOGLE SHEETS DATA
+================================================================================
+
+CHECK YOUR LEAD DATA
+---------------------
+1. Open Google Sheets
+2. Find the row you added
+3. Verify:
+   □ Column A (Name): Has a value
+   □ Column B (Email): Has a valid email address
+   □ Column D (Language): Has "en" or "ar" (exact match)
+   □ Column E (Status): Is empty or "New"
+
+COMMON ISSUES:
+--------------
+Issue 1: Language column is empty
+→ Add "en" or "ar" to Column D
+
+Issue 2: Email column is empty
+→ Add email address to Column B
+
+Issue 3: Language value doesn't match
+→ Sheet has "EN" but filter checks "en"
+→ Fix: Make them match
+
+Issue 4: Row was added but not saved
+→ Make sure you saved the sheet (Ctrl+S)
+
+================================================================================
+STEP 9: CHECK VARIABLE MAPPING
+================================================================================
+
+VERIFY VARIABLE NAMES
+---------------------
+In Make.com, check what variables Module 1 outputs:
+
+Module 1 (Watch Rows) should output:
+- `{{1.0}}` = Name (Column A)
+- `{{1.1}}` = Email (Column B)
+- `{{1.3}}` = Language (Column D)
+- `{{1.__ROW_NUMBER__}}` = Row number
+
+If your columns are different:
+- Column A = Name → `{{1.0}}`
+- Column B = Email → `{{1.1}}`
+- Column C = Phone → `{{1.2}}`
+- Column D = Language → `{{1.3}}`
+
+Make sure all modules use correct variable numbers!
+
+================================================================================
+STEP 10: QUICK FIX CHECKLIST
+================================================================================
+
+GO THROUGH THIS CHECKLIST:
+---------------------------
+
+SCENARIO SETUP:
+□ Scenario is turned ON (activated)
+□ Scenario has no errors (red indicators)
+□ All modules are connected properly
+
+GOOGLE SHEETS:
+□ Spreadsheet ID is correct
+□ Sheet name is "leads" (matches exactly)
+□ Connection is active
+□ Lead row exists and is saved
+□ Column B (Email) has valid email
+□ Column D (Language) has "en" or "ar"
+
+MODULE 1 (Watch Rows):
+□ Module is configured correctly
+□ Returns data when tested
+□ No errors in execution
+
+MODULE 2 (Router):
+□ Routes are configured
+□ Filters match Language values exactly
+□ Routes to correct email module
+
+MODULE 3/4 (Email):
+□ Filter condition matches (if has filter)
+□ To field: `[{"value": "{{1.1}}"}]`
+□ No backticks in variables: `{{1.1}}` not `{{1.`1`}}`
+□ Resend connection is active
+□ Email address is valid
+
+MODULE 5/7 (Update Row):
+□ Row number: `{{1.__ROW_NUMBER__}}`
+□ Status: "Email 1 Sent"
+□ Email 1 Date: `{{now}}`
+
+================================================================================
+COMMON FIXES
+================================================================================
+
+FIX 1: Scenario Not Triggering
+--------------------------------
+Problem: No executions in logs
+Solution:
+1. Turn scenario OFF and ON again
+2. Check Google Sheets connection
+3. Try "Run once" on Module 1
+4. Add a new test lead
+
+FIX 2: Wrong Language Filter
+-----------------------------
+Problem: Filter doesn't match sheet value
+Solution:
+1. Check what value is in Column D
+2. Update filter to match exactly
+3. Or change sheet value to match filter
+
+FIX 3: Variables Not Resolving
+-------------------------------
+Problem: Variables show as literal text
+Solution:
+1. Remove backticks: `{{1.`1`}}` → `{{1.1}}`
+2. Check variable numbers match columns
+3. Test module to see actual values
+
+FIX 4: Email Not Sending
+-------------------------
+Problem: Scenario runs but email not sent
+Solution:
+1. Check Resend connection
+2. Verify `to` field format: `[{"value": "{{1.1}}"}]`
+3. Check email address is valid
+4. Check execution logs for errors
+
+FIX 5: Google Sheets Not Updating
+-----------------------------------
+Problem: Email sent but sheet not updated
+Solution:
+1. Check Update Row module configuration
+2. Verify row number: `{{1.__ROW_NUMBER__}}`
+3. Check Google Sheets connection
+4. Verify column numbers are correct
+
+================================================================================
+TESTING PROCEDURE
+================================================================================
+
+FOLLOW THIS EXACT PROCEDURE:
+-----------------------------
+
+1. PREPARE TEST LEAD:
+   - Name: "Test User"
+   - Email: your-test-email@example.com
+   - Language: "en" (lowercase, exact)
+   - Status: (leave empty)
+   - Save the sheet
+
+2. CHECK SCENARIO:
+   - Is it ON?
+   - Any red error indicators?
+   - All modules connected?
+
+3. WAIT 10-15 SECONDS:
+   - Make.com needs time to detect new row
+
+4. CHECK EXECUTION LOGS:
+   - Go to execution history
+   - Look for new execution
+   - Check if it succeeded or failed
+
+5. CHECK EMAIL:
+   - Check your inbox
+   - Check spam folder
+   - Email should arrive within 30 seconds
+
+6. CHECK GOOGLE SHEETS:
+   - Status should be "Email 1 Sent"
+   - Email 1 Date should be filled
+
+7. IF NOT WORKING:
+   - Check execution logs for errors
+   - Follow error messages
+   - Use this guide to fix
+
+================================================================================
+STILL NOT WORKING?
+================================================================================
+
+If you've tried everything and it still doesn't work:
+
+1. CHECK EXECUTION LOGS:
+   - What exact error message do you see?
+   - Copy the error message
+   - Check which module failed
+
+2. VERIFY ALL CONFIGURATIONS:
+   - Compare with working Email 3
+   - Make sure formats match exactly
+
+3. TEST WITH SIMPLE CONFIGURATION:
+   - Remove filters temporarily
+   - Send to a fixed email address
+   - See if basic sending works
+
+4. CHECK CONNECTIONS:
+   - Reconnect Google Sheets
+   - Reconnect Resend
+   - Verify API keys
+
+5. CONTACT SUPPORT:
+   - Share execution logs
+   - Share error messages
+   - Share configuration details
+
+================================================================================
+QUICK DIAGNOSIS QUESTIONS
+================================================================================
+
+Answer these to identify the issue:
+
+1. Is the scenario turned ON?
+   □ Yes → Continue
+   □ No → Turn it ON
+
+2. Do you see any executions in logs?
+   □ Yes → Check if they succeeded or failed
+   □ No → Scenario not triggering
+
+3. Does Module 1 (Watch Rows) return data when tested?
+   □ Yes → Continue
+   □ No → Fix Google Sheets connection
+
+4. Does the router route correctly?
+   □ Yes → Continue
+   □ No → Fix filter conditions
+
+5. Does the email module have correct `to` field?
+   □ Yes → Continue
+   □ No → Fix to `[{"value": "{{1.1}}"}]`
+
+6. Are there any errors in execution logs?
+   □ Yes → Fix the errors
+   □ No → Check email was actually sent
+
+================================================================================
+

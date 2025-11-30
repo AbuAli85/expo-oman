@@ -1,0 +1,279 @@
+================================================================================
+ANALYSIS: UPDATED "Handle Expo Form Responses" Scenario
+================================================================================
+
+Good news! I can see you've added filters to the email modules. However, there
+are still critical issues that need to be fixed.
+
+================================================================================
+ISSUES FOUND IN UPDATED SCENARIO
+================================================================================
+
+ISSUE 1: Email "To" Field Still Wrong Format ❌
+────────────────────────────────────────────────
+
+All 4 email modules (16, 17, 19, 20) still use:
+  "to": ["{{1.respondentEmail}}"]
+
+This is array of strings format which causes 422 error.
+
+CORRECT FORMAT:
+  "to": "{{1.respondentEmail}}"  (simple string)
+  OR
+  "to": [{"value": "{{1.respondentEmail}}"}]  (array of objects)
+
+ISSUE 2: Using {{1.respondentEmail}} Instead of {{2.email}} ⚠️
+───────────────────────────────────────────────────────────────
+
+Modules 16, 17, 19, 20 use:
+  "to": ["{{1.respondentEmail}}"]
+
+But Module 2 sets:
+  email = {{1.respondentEmail}}
+
+Both should work, but {{2.email}} is more consistent with your workflow.
+
+ISSUE 3: Filters on Email Modules vs Router ⚠️
+─────────────────────────────────────────────────
+
+Current: Filters are on the email modules themselves (Module 16, 17, 19, 20)
+
+This works, but filters on Router would be cleaner. However, if it works, 
+it's fine to keep as-is.
+
+================================================================================
+WHAT'S WORKING
+================================================================================
+
+✅ Module 2: Sets variables correctly
+✅ Module 11: Searches for email in sheet
+✅ Module 12: Aggregates search results
+✅ Module 5: Sets rowNumber and rowExists
+✅ Module 6: Routes by email existence
+✅ Module 7: Updates row correctly
+✅ Module 10: Adds row correctly
+✅ Module 16 & 17: Have filters for attendance
+✅ Module 19 & 20: Have filters for attendance
+
+Good structure overall! Just need to fix the "To" field format.
+
+================================================================================
+CRITICAL FIX: EMAIL "TO" FIELD (ALL 4 MODULES)
+================================================================================
+
+You need to change the "to" field in ALL 4 email modules:
+
+MODULE 16 (Agreement Email - Update Path):
+───────────────────────────────────────────
+Current: "to": ["{{1.respondentEmail}}"]
+Change to: "to": "{{1.respondentEmail}}"
+OR use variable: "to": "{{2.email}}"
+
+MODULE 17 (Thank You Email - Update Path):
+───────────────────────────────────────────
+Current: "to": ["{{1.respondentEmail}}"]
+Change to: "to": "{{1.respondentEmail}}"
+OR use variable: "to": "{{2.email}}"
+
+MODULE 19 (Agreement Email - Add Path):
+─────────────────────────────────────────
+Current: "to": ["{{1.respondentEmail}}"]
+Change to: "to": "{{1.respondentEmail}}"
+OR use variable: "to": "{{2.email}}"
+
+MODULE 20 (Thank You Email - Add Path):
+─────────────────────────────────────────
+Current: "to": ["{{1.respondentEmail}}"]
+Change to: "to": "{{1.respondentEmail}}"
+OR use variable: "to": "{{2.email}}"
+
+RECOMMENDED: Use {{2.email}} for consistency with your workflow variables.
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+FIX MODULE 16:
+───────────────
+1. Open Module 16 (Resend - Send an Email)
+2. Find "To" field
+3. Current: ["{{1.respondentEmail}}"]
+4. Change to: {{2.email}}
+   OR: {{1.respondentEmail}} (without brackets)
+5. Save
+
+FIX MODULE 17:
+───────────────
+1. Open Module 17 (Resend - Send an Email)
+2. Find "To" field
+3. Current: ["{{1.respondentEmail}}"]
+4. Change to: {{2.email}}
+   OR: {{1.respondentEmail}} (without brackets)
+5. Save
+
+FIX MODULE 19:
+───────────────
+1. Open Module 19 (Resend - Send an Email)
+2. Find "To" field
+3. Current: ["{{1.respondentEmail}}"]
+4. Change to: {{2.email}}
+   OR: {{1.respondentEmail}} (without brackets)
+5. Save
+
+FIX MODULE 20:
+───────────────
+1. Open Module 20 (Resend - Send an Email)
+2. Find "To" field
+3. Current: ["{{1.respondentEmail}}"]
+4. Change to: {{2.email}}
+   OR: {{1.respondentEmail}} (without brackets)
+5. Save
+
+================================================================================
+WHICH EMAIL TO USE?
+================================================================================
+
+You have two options:
+
+OPTION 1: Use {{2.email}} (Recommended)
+─────────────────────────────────────────
+Pros:
+  ✓ Consistent with Module 2 variables
+  ✓ If you change email source, only update Module 2
+  ✓ Cleaner workflow
+
+Cons:
+  None
+
+OPTION 2: Use {{1.respondentEmail}}
+─────────────────────────────────────
+Pros:
+  ✓ Direct from form response
+  ✓ One less variable to maintain
+
+Cons:
+  ✗ Less flexible if source changes
+
+RECOMMENDATION: Use {{2.email}} for consistency.
+
+================================================================================
+FILTER ANALYSIS
+================================================================================
+
+Current Setup:
+──────────────
+Module 16: Filter on email module itself
+  {{2.attendance}} equals "Yes, I'll attend"
+
+Module 17: Filter on email module itself
+  {{2.attendance}} equals "No, I cannot attend"
+
+Module 19: Filter on email module itself
+  {{2.attendance}} equals "Yes, I'll attend"
+
+Module 20: Filter on email module itself
+  {{2.attendance}} equals "No, I cannot attend"
+
+This setup works! Filters on email modules will prevent both from executing.
+However, it's more common to have filters on Router instead.
+
+Current approach (filters on modules) is fine if it works. The main issue
+is just the "To" field format.
+
+================================================================================
+VERIFICATION AFTER FIX
+================================================================================
+
+After changing "To" fields, verify:
+
+□ Module 16: "To" = {{2.email}} (no brackets)
+□ Module 17: "To" = {{2.email}} (no brackets)
+□ Module 19: "To" = {{2.email}} (no brackets)
+□ Module 20: "To" = {{2.email}} (no brackets)
+□ Filters are still in place on each email module
+□ Scenario saves without errors
+□ Test execution completes successfully
+
+================================================================================
+TESTING
+================================================================================
+
+After fixes, test both scenarios:
+
+TEST 1: Existing Email, "Yes" Response
+────────────────────────────────────────
+1. Submit form with existing email
+2. Response: "Yes, I'll attend"
+3. Expected:
+   ✓ Row updated
+   ✓ Module 16 filter passes (sends Agreement email)
+   ✓ Module 17 filter fails (doesn't send)
+   ✓ Only ONE email sent
+
+TEST 2: Existing Email, "No" Response
+───────────────────────────────────────
+1. Submit form with existing email
+2. Response: "No, I cannot attend"
+3. Expected:
+   ✓ Row updated
+   ✓ Module 16 filter fails (doesn't send)
+   ✓ Module 17 filter passes (sends Thank You email)
+   ✓ Only ONE email sent
+
+TEST 3: New Email, "Yes" Response
+───────────────────────────────────
+1. Submit form with new email
+2. Response: "Yes, I'll attend"
+3. Expected:
+   ✓ New row added
+   ✓ Module 19 filter passes (sends Agreement email)
+   ✓ Module 20 filter fails (doesn't send)
+   ✓ Only ONE email sent
+
+TEST 4: New Email, "No" Response
+──────────────────────────────────
+1. Submit form with new email
+2. Response: "No, I cannot attend"
+3. Expected:
+   ✓ New row added
+   ✓ Module 19 filter fails (doesn't send)
+   ✓ Module 20 filter passes (sends Thank You email)
+   ✓ Only ONE email sent
+
+================================================================================
+SUMMARY OF FIXES NEEDED
+================================================================================
+
+CRITICAL (Must Fix):
+────────────────────
+□ Module 16: Change "To" from ["{{1.respondentEmail}}"] to {{2.email}}
+□ Module 17: Change "To" from ["{{1.respondentEmail}}"] to {{2.email}}
+□ Module 19: Change "To" from ["{{1.respondentEmail}}"] to {{2.email}}
+□ Module 20: Change "To" from ["{{1.respondentEmail}}"] to {{2.email}}
+
+OPTIONAL (Nice to Have):
+─────────────────────────
+□ Consider moving filters to Router 15 and Router 18 for cleaner structure
+□ Use {{2.email}} instead of {{1.respondentEmail}} for consistency
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+Email Module "To" Field Format:
+
+❌ WRONG (causes 422 error):
+  "to": ["{{1.respondentEmail}}"]
+  "to": ["{{2.email}}"]
+
+✅ CORRECT (works):
+  "to": "{{1.respondentEmail}}"
+  "to": "{{2.email}}"
+  "to": [{"value": "{{1.respondentEmail}}"}]
+
+Use the simple string format for single recipients!
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

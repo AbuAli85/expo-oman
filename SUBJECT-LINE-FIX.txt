@@ -1,0 +1,68 @@
+================================================================================
+FIX SUBJECT LINE - QUICK GUIDE
+================================================================================
+
+Your subject line needs a small fix.
+
+================================================================================
+CURRENT (WRONG)
+================================================================================
+
+Module 3 Subject:
+"8. name,You're Invited to Showcase your project at UAE Property Expo Muscat Oman"
+
+Problems:
+- Missing curly braces: Should be {{8.name}}
+- Missing space after comma: Should be ", "
+
+================================================================================
+FIX TO (CORRECT)
+================================================================================
+
+Module 3 Subject:
+"{{8.name}}, You're Invited to Showcase your project at UAE Property Expo Muscat Oman"
+
+Changes:
+- Added curly braces: {{8.name}}
+- Added space after comma: ", "
+
+================================================================================
+HOW TO FIX
+================================================================================
+
+MODULE 3 (English):
+-------------------
+1. Open Module 3
+2. Find "Subject" field
+3. Change:
+   FROM: "8. name,You're Invited..."
+   TO: "{{8.name}}, You're Invited..."
+4. Save
+
+MODULE 4 (Arabic):
+------------------
+1. Open Module 4
+2. Find "Subject" field
+3. Change:
+   FROM: "8. name,أنت مدعو!..."
+   TO: "{{8.name}}، أنت مدعو!..."
+4. Save
+
+================================================================================
+VERIFY AFTER FIXING
+================================================================================
+
+After fixing, subject should show:
+- Module 3: "{{8.name}}, You're Invited..."
+- Module 4: "{{8.name}}، أنت مدعو!..."
+
+When email is sent, it will show:
+- "fahad alamri, You're Invited..." (with actual name)
+- "fahad alamri، أنت مدعو!..." (Arabic version)
+
+================================================================================
+
+
+
+
+

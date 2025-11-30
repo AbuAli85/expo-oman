@@ -1,0 +1,410 @@
+================================================================================
+COMPLETE WORKFLOW WEBHOOK GUIDE
+All 4 Workflows - Email 1, Email 2, Email 3, Response Form
+================================================================================
+
+OVERVIEW:
+---------
+You have 4 separate workflows in Make.com, each with different triggers:
+
+1. ✅ Email 1 - Invitation (WEBHOOK triggered)
+2. ⏰ Email 2 - Reminder (SCHEDULED trigger - NO webhook)
+3. ⏰ Email 3 - Final Call (SCHEDULED trigger - NO webhook)
+4. 🔄 Response Form - Accept/Reject (WEBHOOK triggered)
+
+================================================================================
+WORKFLOW 1: EMAIL 1 - INVITATION
+================================================================================
+
+PURPOSE:
+--------
+Send invitation email immediately when a new lead is added to Google Sheets.
+
+TRIGGER TYPE:
+-------------
+✅ WEBHOOK (Custom webhook from Google Apps Script)
+
+WEBHOOK URL:
+-----------
+https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+HOW IT WORKS:
+-------------
+1. New row added to Google Sheets (form submission)
+2. Google Apps Script triggers automatically
+3. Script sends data to webhook
+4. Make.com receives webhook → sends Email 1
+5. Updates Google Sheets: Status = "Email 1 Sent", Email 1 Date = now
+
+GOOGLE APPS SCRIPT:
+------------------
+✅ Script: GOOGLE-APPS-SCRIPT-COMPLETE-UPDATED.js
+✅ Webhook URL configured: m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+✅ Trigger: onFormSubmit (automatic on form submission)
+
+MAKE.COM SCENARIO:
+-----------------
+Scenario Name: "Email 1 - Invitation"
+Module 1: Webhooks → Custom webhook
+  - URL: https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+Module 2: Set Variables (email, name, language, etc.)
+Module 3: Router (Language: EN/AR)
+Module 4/5: Send Email 1 (EN or AR)
+Module 6: Update Google Sheets (Status, Email 1 Date)
+
+PAYLOAD STRUCTURE:
+-----------------
+See: WEBHOOK-PAYLOAD-REFERENCE.txt
+
+STATUS: ✅ CONFIGURED
+--------------------------------------------------------------------------------
+
+================================================================================
+WORKFLOW 2: EMAIL 2 - REMINDER
+================================================================================
+
+PURPOSE:
+--------
+Send reminder email to leads who received Email 1 (3+ days ago).
+
+TRIGGER TYPE:
+-------------
+⏰ SCHEDULED (Daily at 9:00 AM) - NO WEBHOOK NEEDED
+
+WEBHOOK URL:
+-----------
+❌ N/A - Uses scheduled trigger, not webhook
+
+HOW IT WORKS:
+-------------
+1. Make.com runs daily at 9:00 AM (scheduled)
+2. Search Google Sheets for leads:
+   - Status = "Email 1 Sent"
+   - Email 1 Date < 3 days ago
+3. For each matching lead → Send Email 2
+4. Update Google Sheets: Status = "Email 2 Sent", Email 2 Date = now
+
+MAKE.COM SCENARIO:
+-----------------
+Scenario Name: "Email 2 - Reminder"
+Module 1: Schedule → Every day at 9:00 AM
+Module 2: Set Variable (threeDaysAgo = addDays(now; -3))
+Module 3: Google Sheets → Search Rows
+  - Filter: Status = "Email 1 Sent"
+  - Filter: Email 1 Date < {{threeDaysAgo}}
+Module 4: Router (Language: EN/AR)
+Module 5/6: Send Email 2 (EN or AR)
+Module 7: Update Google Sheets (Status, Email 2 Date)
+
+GOOGLE APPS SCRIPT:
+------------------
+❌ NOT NEEDED - This workflow doesn't use webhooks
+
+STATUS: ✅ USES SCHEDULED TRIGGER (NO WEBHOOK)
+--------------------------------------------------------------------------------
+
+================================================================================
+WORKFLOW 3: EMAIL 3 - FINAL CALL
+================================================================================
+
+PURPOSE:
+--------
+Send final call email to leads who received Email 2 (4+ days ago).
+
+TRIGGER TYPE:
+-------------
+⏰ SCHEDULED (Daily at 9:00 AM) - NO WEBHOOK NEEDED
+
+WEBHOOK URL:
+-----------
+❌ N/A - Uses scheduled trigger, not webhook
+
+HOW IT WORKS:
+-------------
+1. Make.com runs daily at 9:00 AM (scheduled)
+2. Search Google Sheets for leads:
+   - Status = "Email 2 Sent"
+   - Email 2 Date < 4 days ago
+3. For each matching lead → Send Email 3
+4. Update Google Sheets: Status = "Email 3 Sent", Email 3 Date = now
+
+MAKE.COM SCENARIO:
+-----------------
+Scenario Name: "Email 3 - Final Call"
+Module 1: Schedule → Every day at 9:00 AM
+Module 2: Set Variable (fourDaysAgo = addDays(now; -4))
+Module 3: Google Sheets → Search Rows
+  - Filter: Status = "Email 2 Sent"
+  - Filter: Email 2 Date < {{fourDaysAgo}}
+Module 4: Router (Language: EN/AR)
+Module 5/6: Send Email 3 (EN or AR)
+Module 7: Update Google Sheets (Status, Email 3 Date)
+
+GOOGLE APPS SCRIPT:
+------------------
+❌ NOT NEEDED - This workflow doesn't use webhooks
+
+STATUS: ✅ USES SCHEDULED TRIGGER (NO WEBHOOK)
+--------------------------------------------------------------------------------
+
+================================================================================
+WORKFLOW 4: RESPONSE FORM - ACCEPT/REJECT
+================================================================================
+
+PURPOSE:
+--------
+Handle form responses when leads click "Accept" or "Reject" buttons in emails.
+
+TRIGGER TYPE:
+-------------
+✅ WEBHOOK (Custom webhook from form submission)
+
+WEBHOOK URL:
+-----------
+⚠️ YOU NEED TO CREATE THIS IN MAKE.COM
+- Go to Make.com → Create new scenario "Handle Expo Response"
+- Add Webhook → Custom webhook module
+- Copy the webhook URL (will look like: https://hook.eu2.make.com/XXXXX...)
+- This will be DIFFERENT from Email 1 webhook URL
+
+HOW IT WORKS:
+-------------
+1. Lead clicks "Accept" or "Reject" button in email
+2. Button links to Make.com webhook URL with parameters:
+   - ?email=user@example.com
+   - &response=accept (or reject)
+   - &name=User Name
+3. Make.com webhook receives data
+4. Search Google Sheets for matching email
+5. Update row: Response = "Accepted" or "Rejected"
+6. Send confirmation email
+
+MAKE.COM SCENARIO:
+-----------------
+Scenario Name: "Handle Expo Response"
+Module 1: Webhooks → Custom webhook
+  - URL: https://hook.eu2.make.com/YOUR_NEW_WEBHOOK_ID
+  - Method: GET or POST
+Module 2: Set Variables
+  - email: {{1.query.email}} or {{1.body.email}}
+  - response: {{1.query.response}} or {{1.body.response}}
+  - name: {{1.query.name}} or {{1.body.name}}
+Module 3: Google Sheets → Search Rows
+  - Filter: Email (Column 1) = {{2.email}}
+Module 4: Router
+  - Route 1: response = "accept" → Update row with "Accepted"
+  - Route 2: response = "reject" → Update row with "Rejected"
+Module 5: Google Sheets → Update Row
+  - Mode: Search Rows (find by email)
+  - Column 11 (K): {{2.response}} → "Accepted" or "Rejected"
+  - Column 12 (L): {{now}} → Response Date
+  - Column 13 (M): {{2.comments}} → Comments (if any)
+Module 6: Send Email (confirmation based on response)
+
+EMAIL BUTTON LINKS:
+------------------
+In Email 1, 2, 3 templates, update buttons:
+
+ACCEPT BUTTON:
+<a href="https://hook.eu2.make.com/YOUR_RESPONSE_WEBHOOK_ID?email={{email}}&response=accept&name={{name}}">
+  Yes, I'll Attend
+</a>
+
+REJECT BUTTON:
+<a href="https://hook.eu2.make.com/YOUR_RESPONSE_WEBHOOK_ID?email={{email}}&response=reject&name={{name}}">
+  No, I Cannot Attend
+</a>
+
+GOOGLE APPS SCRIPT:
+------------------
+❌ NOT NEEDED - Form responses go directly to Make.com webhook
+
+STATUS: ⚠️ NEEDS TO BE CREATED (separate webhook from Email 1)
+--------------------------------------------------------------------------------
+
+================================================================================
+SUMMARY: WEBHOOK REQUIREMENTS
+================================================================================
+
+WORKFLOW                    WEBHOOK NEEDED?    WEBHOOK URL
+──────────────────────────────────────────────────────────────────────────────
+Email 1 - Invitation        ✅ YES             m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+Email 2 - Reminder          ❌ NO              N/A (Scheduled trigger)
+Email 3 - Final Call        ❌ NO              N/A (Scheduled trigger)
+Response Form               ✅ YES             ⚠️ CREATE NEW WEBHOOK
+
+TOTAL WEBHOOKS NEEDED: 2
+  - Email 1 webhook: ✅ Already configured
+  - Response Form webhook: ⚠️ Needs to be created
+
+================================================================================
+CURRENT CONFIGURATION STATUS
+================================================================================
+
+✅ Email 1 - Invitation
+   - Google Apps Script: ✅ Configured
+   - Webhook URL: ✅ m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+   - Make.com Scenario: ✅ Should be configured with this webhook
+
+⏰ Email 2 - Reminder
+   - Trigger: ✅ Scheduled (daily 9:00 AM)
+   - Webhook: ❌ Not needed
+
+⏰ Email 3 - Final Call
+   - Trigger: ✅ Scheduled (daily 9:00 AM)
+   - Webhook: ❌ Not needed
+
+⚠️ Response Form - Accept/Reject
+   - Make.com Scenario: ⚠️ Needs to be created
+   - Webhook: ⚠️ Needs to be created (different from Email 1)
+   - Email buttons: ⚠️ Need to be updated with new webhook URL
+
+================================================================================
+NEXT STEPS TO COMPLETE SETUP
+================================================================================
+
+STEP 1: Verify Email 1 Webhook
+-------------------------------
+1. Open Make.com scenario "Email 1 - Invitation"
+2. Check Module 1 (Webhook) URL matches:
+   https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+3. If different, update to match
+
+STEP 2: Create Response Form Webhook
+-------------------------------------
+1. Go to Make.com
+2. Create new scenario: "Handle Expo Response"
+3. Add module: Webhooks → Custom webhook
+4. Configure:
+   - Method: GET (for URL parameters) or POST (for JSON body)
+   - Copy the webhook URL (it will be different from Email 1)
+   - Example: https://hook.eu2.make.com/YYYYYYYY...
+5. Save scenario
+
+STEP 3: Configure Response Form Scenario
+-----------------------------------------
+1. Add Set Variables module
+2. Map webhook parameters:
+   - email: {{1.query.email}} (if GET) or {{1.body.email}} (if POST)
+   - response: {{1.query.response}} (if GET) or {{1.body.response}} (if POST)
+   - name: {{1.query.name}} (if GET) or {{1.body.name}} (if POST)
+3. Add Search Rows (find by email)
+4. Add Router (accept vs reject)
+5. Add Update Row (use Search Rows mode - see FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt)
+6. Add Send Email (confirmation)
+
+STEP 4: Update Email Templates
+-------------------------------
+1. Open Email 1, 2, 3 scenarios
+2. Find "Accept" and "Reject" button links
+3. Replace webhook URL with Response Form webhook URL from Step 2
+4. Update links:
+   - Accept: ?email={{email}}&response=accept&name={{name}}
+   - Reject: ?email={{email}}&response=reject&name={{name}}
+
+STEP 5: Test All Workflows
+---------------------------
+1. Test Email 1: Submit form → Check webhook → Verify email sent
+2. Test Response Form: Click Accept button → Verify Google Sheets updated
+3. Test Response Form: Click Reject button → Verify Google Sheets updated
+4. Verify Email 2 runs daily (check after 3 days)
+5. Verify Email 3 runs daily (check after 4 days from Email 2)
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+1. EMAIL 1 WEBHOOK IS ONLY FOR NEW LEADS
+   - Only triggers when Google Apps Script sends data
+   - Only used when new row is added to Google Sheets
+   - Don't use this webhook for response form
+
+2. EMAIL 2 & 3 DON'T NEED WEBHOOKS
+   - They run automatically on schedule
+   - They search Google Sheets directly
+   - No webhook or script needed
+
+3. RESPONSE FORM NEEDS SEPARATE WEBHOOK
+   - Create a NEW webhook in Make.com
+   - Different URL from Email 1 webhook
+   - This webhook receives Accept/Reject clicks from emails
+
+4. WEBHOOK URL STRUCTURE
+   - Email 1: https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+   - Response Form: https://hook.eu2.make.com/YYYYYYYY... (you'll create this)
+
+5. GOOGLE APPS SCRIPT
+   - Only needed for Email 1 workflow
+   - Already configured: GOOGLE-APPS-SCRIPT-COMPLETE-UPDATED.js
+   - No changes needed for Email 2, 3, or Response Form
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Email 1 not triggering
+------------------------------
+→ Check Google Apps Script webhook URL matches Make.com
+→ Check trigger is installed in Apps Script
+→ Run testWebhook() in Apps Script
+→ Check Make.com execution log
+
+ISSUE: Email 2/3 not sending
+-----------------------------
+→ Check schedule is enabled in Make.com
+→ Check scenario is active (turned on)
+→ Verify search filters are correct
+→ Check leads have correct status and dates
+
+ISSUE: Response form not working
+--------------------------------
+→ Verify Response Form webhook URL is created
+→ Check email button links have correct webhook URL
+→ Verify URL parameters are passed correctly
+→ Check Update Row uses "Search Rows" mode (see FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt)
+
+ISSUE: Update Row fails - missing rowNumber
+--------------------------------------------
+→ See: FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt
+→ Change Update Row mode to "Search Rows"
+→ OR pass rowNumber from Search Rows module
+
+================================================================================
+QUICK REFERENCE CHECKLIST
+================================================================================
+
+Email 1 - Invitation:
+  □ Google Apps Script installed with correct webhook URL
+  □ Make.com scenario has webhook module with matching URL
+  □ Trigger installed in Apps Script
+  □ Test: Submit form → Email 1 sent ✅
+
+Email 2 - Reminder:
+  □ Make.com scenario created with Schedule trigger
+  □ Schedule set to daily 9:00 AM
+  □ Search filters configured correctly
+  □ Scenario is active (turned on)
+  □ Test: Wait 3 days → Email 2 sent ✅
+
+Email 3 - Final Call:
+  □ Make.com scenario created with Schedule trigger
+  □ Schedule set to daily 9:00 AM
+  □ Search filters configured correctly
+  □ Scenario is active (turned on)
+  □ Test: Wait 4 days after Email 2 → Email 3 sent ✅
+
+Response Form - Accept/Reject:
+  □ Make.com scenario created: "Handle Expo Response"
+  □ Webhook module added (NEW webhook URL)
+  □ Set Variables configured
+  □ Search Rows configured
+  □ Router configured (accept/reject)
+  □ Update Row configured (Search Rows mode)
+  □ Email templates updated with Response Form webhook URL
+  □ Test: Click Accept → Google Sheets updated ✅
+  □ Test: Click Reject → Google Sheets updated ✅
+
+================================================================================
+END
+================================================================================
+

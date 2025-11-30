@@ -1,0 +1,371 @@
+================================================================================
+DIAGNOSE: EMAIL 1 NOT SENDING
+Find the Exact Problem
+================================================================================
+
+Since all settings are done but it's still not working, let's find the exact issue.
+
+================================================================================
+DIAGNOSTIC STEP 1: IS THE SCENARIO TRIGGERING?
+================================================================================
+
+ACTION:
+-------
+1. Add a test lead to Google Sheets:
+   - Name: "Diagnostic Test"
+   - Email: your-email@example.com
+   - Language: "en"
+   - Save sheet
+
+2. Wait 20 seconds
+
+3. Go to Make.com → "Execution history"
+
+QUESTION: Do you see a NEW execution?
+
+RESULT A: ✅ YES - Execution appears
+------------------------------------
+→ Scenario IS triggering
+→ Problem is in the execution
+→ Go to DIAGNOSTIC STEP 2
+
+RESULT B: ❌ NO - No execution
+-------------------------------
+→ Scenario is NOT triggering
+→ Problem is with the trigger
+→ Go to FIX TRIGGER ISSUE below
+
+================================================================================
+FIX TRIGGER ISSUE (If no execution appears)
+================================================================================
+
+CHECK 1: Is scenario ON?
+-------------------------
+1. Open "Email 1 - Invitation" scenario
+2. Top-right corner - toggle switch
+3. Is it GREEN/ON?
+
+IF OFF:
+→ Click to turn ON
+→ Wait 10 seconds
+→ Add test lead again
+→ Check execution logs
+
+IF ON:
+→ Continue to Check 2
+
+CHECK 2: Test Watch Rows module
+--------------------------------
+1. Click Module 1 (Google Sheets - Watch Rows)
+2. Click "Run once" button
+3. Does it return your test lead data?
+
+IF NO DATA:
+→ Google Sheets connection issue
+→ Click on connection → Reconnect
+→ Test again
+
+IF YES DATA:
+→ Module works, but not triggering automatically
+→ Check:
+   - Is "Watch" mode enabled?
+   - Is limit set (usually 1)?
+   - Try turning scenario OFF and ON again
+
+CHECK 3: Check spreadsheet ID
+------------------------------
+1. Module 1 → Check "Spreadsheet ID"
+2. Does it match your actual spreadsheet?
+3. Is the sheet name "leads" (or your sheet name)?
+
+IF WRONG:
+→ Select correct spreadsheet
+→ Select correct sheet
+→ Save
+→ Test again
+
+================================================================================
+DIAGNOSTIC STEP 2: WHAT HAPPENS IN THE EXECUTION?
+================================================================================
+
+If execution appears, click on it and check:
+
+QUESTION: What is the execution status?
+
+RESULT A: ✅ SUCCESS (Green checkmark)
+---------------------------------------
+→ All modules executed successfully
+→ But email not received?
+→ Go to DIAGNOSTIC STEP 3
+
+RESULT B: ❌ ERROR (Red X)
+---------------------------
+→ Some module failed
+→ Click on the error
+→ Read error message
+→ Go to FIX EXECUTION ERROR below
+
+RESULT C: ⚠️ WARNING (Yellow)
+-----------------------------
+→ Usually not critical
+→ Check warning message
+→ Continue to Step 3
+
+================================================================================
+FIX EXECUTION ERROR (If execution has error)
+================================================================================
+
+ERROR 1: "Missing value of required parameter 'to'"
+----------------------------------------------------
+MEANING: Email address not found
+
+FIX:
+1. Open Module 3 or 4 (Email module)
+2. Check "To" field format
+3. Should be: `[{"value": "{{1.1}}"}]`
+4. Also verify: Column B in Google Sheets has email
+
+ERROR 2: "The 'to' field must be a 'string'"
+---------------------------------------------
+MEANING: Wrong format
+
+FIX:
+1. Open Module 3 or 4
+2. "To" field should be: `[{"value": "{{1.1}}"}]`
+3. NOT: `["{{1.1}}"]` or `["{{1.`1`}}"]`
+
+ERROR 3: "Filter condition not met"
+------------------------------------
+MEANING: Language doesn't match
+
+FIX:
+1. Check Column D in Google Sheets - what value? ("en", "EN", "ar", "AR"?)
+2. Open Module 3 or 4
+3. Check filter condition - what does it check?
+4. Make them match EXACTLY (case-sensitive!)
+
+ERROR 4: Module 3/4 shows "Skipped" or "Not executed"
+-------------------------------------------------------
+MEANING: Filter condition not met
+
+FIX:
+1. Check Language value in Google Sheets
+2. Check filter in Module 3/4
+3. Make them match exactly
+
+ERROR 5: "Connection error" or "Authentication failed"
+-----------------------------------------------------
+MEANING: Resend connection broken
+
+FIX:
+1. Open Module 3 or 4
+2. Click on Resend connection
+3. Reconnect/Reauthorize
+4. Test again
+
+================================================================================
+DIAGNOSTIC STEP 3: EMAIL SENT BUT NOT RECEIVED?
+================================================================================
+
+If execution shows SUCCESS but no email received:
+
+CHECK 1: Spam folder
+--------------------
+1. Check spam/junk folder
+2. Check promotions tab (Gmail)
+3. Search for "UAE Property Expo"
+
+CHECK 2: Email address
+----------------------
+1. Check Column B in Google Sheets
+2. Is the email address correct?
+3. Try with a different email address
+
+CHECK 3: Resend delivery
+------------------------
+1. In Make.com execution, click on Module 3 or 4
+2. Check the output
+3. Does it show email was sent?
+4. Check Resend dashboard (if you have access)
+
+CHECK 4: Email domain
+---------------------
+1. Check "From" field in Module 3/4
+2. Should be: "sales@thesmartpro.io"
+3. Is this domain verified in Resend?
+
+================================================================================
+DIAGNOSTIC STEP 4: MANUAL MODULE TEST
+================================================================================
+
+Test each module individually:
+
+TEST 1: Module 1 (Watch Rows)
+------------------------------
+1. Click Module 1
+2. Click "Run once"
+3. Does it return your lead data?
+   ✅ YES → Module works
+   ❌ NO → Fix Google Sheets connection
+
+TEST 2: Module 2 (Router)
+-------------------------
+1. After Module 1 runs, check Module 2
+2. Does it route to Module 3 or 4?
+3. Check which route it takes
+   ✅ Routes correctly → Good
+   ❌ Doesn't route → Check filter conditions
+
+TEST 3: Module 3 or 4 (Email)
+------------------------------
+1. Click Module 3 or 4
+2. Check the data it receives:
+   - Does it have email? ({{1.1}})
+   - Does it have name? ({{1.0}})
+   - Does it have language? ({{1.3}})
+3. Click "Run once"
+4. Does email send?
+   ✅ YES → Module works
+   ❌ NO → Check error message
+
+TEST 4: Module 5 or 7 (Update Row)
+-----------------------------------
+1. Click Module 5 or 7
+2. Check configuration:
+   - Row number: `{{1.__ROW_NUMBER__}}`
+   - Status: "Email 1 Sent"
+   - Email 1 Date: `{{now}}`
+3. Click "Run once"
+4. Does Google Sheets update?
+   ✅ YES → Module works
+   ❌ NO → Check configuration
+
+================================================================================
+QUICK DIAGNOSIS QUESTIONS
+================================================================================
+
+Answer these to identify the issue:
+
+Q1: When you add a lead, do you see an execution in Make.com logs?
+   □ Yes → Go to Q2
+   □ No → Scenario not triggering (Fix: Turn ON, check connection)
+
+Q2: What is the execution status?
+   □ Success (green) → Go to Q3
+   □ Error (red) → Check error message, fix it
+   □ No execution → Go to Q1
+
+Q3: Did you receive the email?
+   □ Yes → ✅ WORKING!
+   □ No → Check spam, verify email address
+
+Q4: Is Google Sheets Status updated?
+   □ Yes → Email sent, check spam folder
+   □ No → Update Row module issue
+
+================================================================================
+MOST COMMON ISSUES (Check These First)
+================================================================================
+
+ISSUE 1: Scenario toggle is OFF
+--------------------------------
+SYMPTOM: No executions appear
+FIX: Turn scenario ON (top-right toggle)
+
+ISSUE 2: Language value mismatch
+---------------------------------
+SYMPTOM: Execution appears but Module 3/4 skipped
+FIX: Make Language value match filter exactly
+
+ISSUE 3: Wrong `to` field format
+---------------------------------
+SYMPTOM: Error "Missing value" or "must be a string"
+FIX: Change to `[{"value": "{{1.1}}"}]`
+
+ISSUE 4: Backticks in variables
+--------------------------------
+SYMPTOM: Variables not resolving
+FIX: Remove backticks: `{{1.1}}` not `{{1.`1`}}`
+
+ISSUE 5: Email in spam folder
+------------------------------
+SYMPTOM: Execution success but no email
+FIX: Check spam/junk folder
+
+================================================================================
+COMPLETE CHECKLIST
+================================================================================
+
+Go through this checklist:
+
+SCENARIO:
+□ Scenario is ON (green toggle)
+□ No red error indicators
+□ All modules connected
+
+GOOGLE SHEETS:
+□ Spreadsheet ID is correct
+□ Sheet name matches ("leads")
+□ Connection is active
+□ Test lead has:
+  - Name in Column A
+  - Email in Column B
+  - "en" or "ar" in Column D (exact match)
+
+MODULE 1 (Watch Rows):
+□ Returns data when tested
+□ No errors
+
+MODULE 2 (Router):
+□ Routes correctly
+□ Filter conditions match Language values
+
+MODULE 3/4 (Email):
+□ To field: `[{"value": "{{1.1}}"}]`
+□ No backticks in variables
+□ Filter matches Language value
+□ Resend connection active
+□ From: "sales@thesmartpro.io"
+
+MODULE 5/7 (Update Row):
+□ Row number: `{{1.__ROW_NUMBER__}}`
+□ Status: "Email 1 Sent"
+□ Email 1 Date: `{{now}}`
+
+EXECUTION:
+□ Execution appears in logs
+□ Execution shows success
+□ Email received (check spam)
+□ Google Sheets updated
+
+================================================================================
+STILL NOT WORKING? SHARE THIS INFO
+================================================================================
+
+If still not working, check and share:
+
+1. EXECUTION LOGS:
+   - Screenshot of execution
+   - Error message (if any)
+   - Which module failed?
+
+2. SCENARIO STATUS:
+   - Is toggle ON?
+   - Any red indicators?
+
+3. TEST LEAD DATA:
+   - Name: ?
+   - Email: ?
+   - Language: ?
+
+4. MODULE CONFIGURATION:
+   - To field format: ?
+   - Filter condition: ?
+   - Any backticks in variables?
+
+5. MANUAL TEST RESULTS:
+   - Module 1 "Run once": Works?
+   - Module 3/4 "Run once": Works?
+
+================================================================================
+

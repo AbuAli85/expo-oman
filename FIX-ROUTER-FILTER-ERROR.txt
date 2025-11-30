@@ -1,0 +1,193 @@
+================================================================================
+FIX ROUTER FILTER ERROR
+Invalid Reference to Module 1
+================================================================================
+
+ERROR MESSAGE:
+--------------
+"Invalid reference in filter '0-0' on link 'Update Google Sheets': 
+Variable '1.answers.677abd25.textAnswers.answers[0].value' references 
+not existing module '1'."
+
+PROBLEM:
+--------
+Router filters are trying to use Module 1 directly:
+❌ {{1.answers.677abd25.textAnswers.answers[0].value}}
+
+But they should use Module 4 (Set Variables):
+✅ {{4.attendance}}
+
+================================================================================
+FIX: UPDATE ROUTER FILTERS (3 minutes)
+================================================================================
+
+STEP 1: Fix Route 1 Filter (1 min)
+-----------------------------------
+1. Click on Router module (Module 2)
+2. Click on Route 1 (top route, "Update Google Sheets")
+3. Click on the filter icon (Y icon on the connection line)
+4. OR click on Route 1 settings
+5. Find the filter condition:
+   - Current (WRONG): {{1.answers.677abd25.textAnswers.answers[0].value}}
+   - Change to: {{4.attendance}}
+6. Keep operator: "equals"
+7. Keep value: "Yes, I'll attend"
+8. Save
+
+STEP 2: Fix Route 2 Filter (1 min)
+------------------------------------
+1. Click on Route 2 (bottom route, "Update Google Sheets")
+2. Click on the filter icon
+3. Find the filter condition:
+   - Current (WRONG): {{1.answers.677abd25.textAnswers.answers[0].value}}
+   - Change to: {{4.attendance}}
+4. Keep operator: "equals"
+5. Keep value: "No, I cannot attend"
+6. Save
+
+STEP 3: Save Scenario (30 sec)
+--------------------------------
+1. Click "Save" button
+2. Wait for save confirmation
+3. Error should be gone!
+
+================================================================================
+CORRECT FILTER CONFIGURATION
+================================================================================
+
+ROUTE 1 (Accept):
+------------------
+Filter Condition:
+- Field: {{4.attendance}}
+- Operator: equals
+- Value: "Yes, I'll attend"
+
+ROUTE 2 (Reject):
+------------------
+Filter Condition:
+- Field: {{4.attendance}}
+- Operator: equals
+- Value: "No, I cannot attend"
+
+================================================================================
+WHY THIS ERROR HAPPENED
+================================================================================
+
+PROBLEM:
+--------
+Router filters were configured to use Module 1 directly:
+{{1.answers.677abd25.textAnswers.answers[0].value}}
+
+But Module 1 might not be properly connected or the reference path is wrong.
+
+SOLUTION:
+---------
+Use Module 4 (Set Variables) which already extracts the attendance value:
+{{4.attendance}}
+
+This is cleaner and more reliable!
+
+================================================================================
+STEP-BY-STEP VISUAL GUIDE
+================================================================================
+
+STEP 1: Open Router
+-------------------
+1. Click on Router module (Module 2)
+2. You'll see two routes
+
+STEP 2: Fix Route 1
+-------------------
+1. Click on Route 1 (top route)
+2. Look for filter icon (Y icon) on the connection line
+3. Click it
+4. In filter settings:
+   - Field: Change to {{4.attendance}}
+   - Operator: equals
+   - Value: "Yes, I'll attend"
+5. Save
+
+STEP 3: Fix Route 2
+-------------------
+1. Click on Route 2 (bottom route)
+2. Look for filter icon (Y icon) on the connection line
+3. Click it
+4. In filter settings:
+   - Field: Change to {{4.attendance}}
+   - Operator: equals
+   - Value: "No, I cannot attend"
+5. Save
+
+STEP 4: Save Scenario
+----------------------
+1. Click "Save" button
+2. Error should disappear!
+
+================================================================================
+VERIFICATION
+================================================================================
+
+AFTER FIXING:
+-------------
+1. Save scenario
+2. Error message should disappear
+3. Scenario should validate successfully
+4. You can now turn scenario ON
+
+CHECK:
+------
+□ Route 1 filter: {{4.attendance}} = "Yes, I'll attend"
+□ Route 2 filter: {{4.attendance}} = "No, I cannot attend"
+□ Scenario saved
+□ No validation errors
+□ Scenario can be turned ON
+
+================================================================================
+ALTERNATIVE: IF YOU CAN'T FIND FILTER SETTINGS
+================================================================================
+
+IF FILTER ICON NOT VISIBLE:
+---------------------------
+1. Click on Router module (Module 2)
+2. Look for "Routes" or "Settings" button
+3. Click it
+4. You'll see Route 1 and Route 2
+5. Click on each route
+6. Update filter conditions
+
+OR:
+---
+1. Delete Router module
+2. Add new Router module
+3. Configure filters correctly:
+   - Route 1: {{4.attendance}} = "Yes, I'll attend"
+   - Route 2: {{4.attendance}} = "No, I cannot attend"
+4. Connect Module 4 → Router
+5. Connect Router → Route 1 and Route 2
+6. Save
+
+================================================================================
+QUICK FIX SUMMARY
+================================================================================
+
+PROBLEM:
+--------
+Router filters reference Module 1: {{1.answers...}}
+
+FIX:
+----
+Change to Module 4: {{4.attendance}}
+
+STEPS:
+------
+1. Router → Route 1 → Filter: {{4.attendance}} = "Yes, I'll attend"
+2. Router → Route 2 → Filter: {{4.attendance}} = "No, I cannot attend"
+3. Save scenario
+
+DONE! ✅
+
+================================================================================
+
+
+
+

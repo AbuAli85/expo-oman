@@ -1,0 +1,282 @@
+================================================================================
+FIX: MODULE 2 VARIABLE MAPPING
+All Variables Getting Same Value - CORRECTED
+================================================================================
+
+PROBLEM IDENTIFIED:
+------------------
+Current output shows all variables have the same value:
+
+❌ email: "chairman@falconeyegroup.net" ✅ (Correct)
+❌ name: "Yes, I'll attend" (WRONG - should be person's name)
+❌ attendance: "Yes, I'll attend" ✅ (Correct value)
+❌ comments: "Yes, I'll attend" (WRONG - should be comments text)
+
+CAUSE:
+------
+All three variables (name, attendance, comments) are using the same answer ID:
+{{1.answers.`677abd25`.textAnswers.answers[].value}}
+
+This answer ID appears to be the attendance field, which is why all get "Yes, I'll attend".
+
+================================================================================
+STEP 1: FIND THE CORRECT ANSWER IDs
+================================================================================
+
+You need to identify the correct answer IDs for each form field:
+
+1. Open your Make.com scenario
+2. Go to Module 1 (Google Forms - Watch Responses)
+3. Run the scenario manually OR check a recent execution
+4. Click on Module 1 output
+5. Look for the "answers" object structure
+
+You should see something like:
+{
+  "answers": {
+    "1865fa7d": { ... },  // This might be Name
+    "677abd25": { ... },  // This is Attendance (already identified)
+    "08d2bdde": { ... },  // This might be Comments
+    ...
+  }
+}
+
+Each answer ID corresponds to a form question.
+
+ALTERNATIVE METHOD:
+-------------------
+1. In Make.com, click Module 1
+2. Look at the "Expected output" or click "Run once" to test
+3. Check the execution log
+4. Find the data structure with all answer IDs
+
+================================================================================
+STEP 2: IDENTIFY WHICH ANSWER ID IS WHICH FIELD
+================================================================================
+
+Look at the answer structure for each ID:
+
+For Name field:
+{
+  "1865fa7d": {
+    "textAnswers": {
+      "answers": [
+        {
+          "value": "John Doe"  // This looks like a name
+        }
+      ]
+    }
+  }
+}
+
+For Attendance field (already identified):
+{
+  "677abd25": {
+    "textAnswers": {
+      "answers": [
+        {
+          "value": "Yes, I'll attend"  // This is attendance
+        }
+      ]
+    }
+  }
+}
+
+For Comments field:
+{
+  "08d2bdde": {
+    "textAnswers": {
+      "answers": [
+        {
+          "value": "Looking forward to it!"  // This looks like comments
+        }
+      ]
+    }
+  }
+}
+
+================================================================================
+STEP 3: UPDATE MODULE 2 VARIABLES
+================================================================================
+
+Once you've identified the correct answer IDs:
+
+1. Click Module 2 (Set Variables) in Make.com
+
+2. Update each variable:
+
+   VARIABLE 1: email ✅ (Already correct)
+   ────────────────────
+   Name: email
+   Value: {{1.respondentEmail}}
+   Status: ✅ Keep as is
+
+   VARIABLE 2: name ❌ (NEEDS FIX)
+   ────────────────────
+   Name: name
+   Value: {{1.answers.ANSWER_ID_NAME.textAnswers.answers[0].value}}
+   
+   Replace ANSWER_ID_NAME with actual ID, for example:
+   {{1.answers.1865fa7d.textAnswers.answers[0].value}}
+
+   VARIABLE 3: attendance ✅ (Value correct, but verify field)
+   ────────────────────
+   Name: attendance
+   Value: {{1.answers.677abd25.textAnswers.answers[0].value}}
+   
+   This appears correct (gets "Yes, I'll attend"), but verify this is
+   the right field ID from your form.
+
+   VARIABLE 4: comments ❌ (NEEDS FIX)
+   ────────────────────
+   Name: comments
+   Value: {{1.answers.ANSWER_ID_COMMENTS.textAnswers.answers[0].value}}
+   
+   Replace ANSWER_ID_COMMENTS with actual ID, for example:
+   {{1.answers.08d2bdde.textAnswers.answers[0].value}}
+
+3. Save Module 2
+
+================================================================================
+STEP 4: VERIFY THE FIX
+================================================================================
+
+After updating:
+
+1. Run the scenario manually or wait for next form submission
+2. Check Module 2 output
+3. Verify all variables have DIFFERENT values:
+
+✅ email: "chairman@falconeyegroup.net"
+✅ name: "John Doe" (actual name, not "Yes, I'll attend")
+✅ attendance: "Yes, I'll attend" (or "No, I cannot attend")
+✅ comments: "Looking forward to it!" (actual comments, not "Yes, I'll attend")
+
+================================================================================
+COMMON ANSWER ID PATTERNS
+================================================================================
+
+Based on the error log you showed earlier, your form might have:
+
+Answer ID: 1865fa7d → Name field
+Answer ID: 677abd25 → Attendance field (already identified)
+Answer ID: 08d2bdde → Comments field
+
+But you MUST verify these by checking Module 1 output!
+
+================================================================================
+QUICK REFERENCE: CORRECTED MODULE 2 CONFIGURATION
+================================================================================
+
+After fixing, Module 2 should look like:
+
+{
+  "scope": "execution",
+  "variables": [
+    {
+      "name": "email",
+      "value": "{{1.respondentEmail}}"
+    },
+    {
+      "name": "name",
+      "value": "{{1.answers.1865fa7d.textAnswers.answers[0].value}}"
+      // Replace 1865fa7d with actual Name field ID
+    },
+    {
+      "name": "attendance",
+      "value": "{{1.answers.677abd25.textAnswers.answers[0].value}}"
+      // Verify 677abd25 is correct attendance field
+    },
+    {
+      "name": "comments",
+      "value": "{{1.answers.08d2bdde.textAnswers.answers[0].value}}"
+      // Replace 08d2bdde with actual Comments field ID
+    }
+  ]
+}
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Can't find answer IDs in Module 1 output
+────────────────────────────────────────────────
+→ Run the scenario manually (click "Run once")
+→ Check execution log for Module 1 output
+→ Look for "answers" object in the output
+→ Each answer has an ID as the key
+
+ISSUE: Answer IDs don't match expected fields
+─────────────────────────────────────────────
+→ Check your Google Form structure
+→ Match answer IDs to form questions by value
+→ Test with a known form submission
+→ Verify values match expected fields
+
+ISSUE: Still getting same values after fix
+──────────────────────────────────────────
+→ Double-check answer IDs are different
+→ Verify [0] index is correct (use [0] for first answer)
+→ Check if form has multiple choice/single answer
+→ Test with Module 1 output to see actual structure
+
+ISSUE: Variable is empty
+────────────────────────
+→ Check if answer ID is correct
+→ Verify form question was answered
+→ Check if field type matches (textAnswers, etc.)
+→ Use [0] index for first answer in array
+
+================================================================================
+NEXT STEPS AFTER FIXING MODULE 2
+================================================================================
+
+After Module 2 is fixed:
+
+1. ✅ Verify Module 2 outputs correct values
+2. ⚠️ Fix Module 7 (Update Row) - see SCENARIO-ANALYSIS-AND-FIXES.txt
+3. ⚠️ Fix/Remove Module 22 - invalid variable name
+4. ⚠️ Fix Module 23 - displayName syntax
+5. ✅ Test complete workflow
+
+Priority Order:
+1. Fix Module 2 (this fix) 🔴 CRITICAL
+2. Fix Module 7 (Update Row error) 🔴 CRITICAL
+3. Fix Module 22 & 23 🟡 IMPORTANT
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+After applying fix:
+
+□ Opened Module 1 output to find answer IDs
+□ Identified correct answer ID for Name field
+□ Identified correct answer ID for Comments field
+□ Verified Attendance answer ID (677abd25)
+□ Updated Module 2 variable mappings
+□ Saved Module 2
+□ Tested scenario with form submission
+□ Verified Module 2 outputs:
+  □ email: correct email address
+  □ name: actual person's name (not "Yes, I'll attend")
+  □ attendance: "Yes, I'll attend" or "No, I cannot attend"
+  □ comments: actual comments text (not "Yes, I'll attend")
+
+================================================================================
+EXPECTED RESULT AFTER FIX
+================================================================================
+
+Module 2 output should now show:
+
+✅ email: "chairman@falconeyegroup.net"
+✅ name: "Actual Person Name" (different from attendance)
+✅ attendance: "Yes, I'll attend" (or "No, I cannot attend")
+✅ comments: "Actual comments text" (different from attendance)
+
+All four variables should have DIFFERENT values based on form responses.
+
+================================================================================
+END
+================================================================================
+

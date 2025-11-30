@@ -1,0 +1,213 @@
+================================================================================
+FIX: MODULE 22 VARIABLE NAME ERROR
+"Missing value of required parameter 'name'"
+================================================================================
+
+ERROR MESSAGE:
+─────────────
+"Validation failed for 1 parameter(s).
+Missing value of required parameter 'name'."
+
+PROBLEM:
+────────
+Module 22 (Set Variable) has an INVALID configuration:
+
+❌ Variable name: if(5.rowExists="true";12.array[0].Name;2.name)
+   - This is trying to use an EXPRESSION as the variable name
+   - Make.com doesn't allow dynamic variable names
+   - Variable names MUST be static strings
+
+❌ Variable value: (empty)
+   - The value field is empty
+   - Logic is in wrong place (name field instead of value field)
+
+================================================================================
+THE FIX
+================================================================================
+
+STEP 1: Open Module 22 in Make.com
+───────────────────────────────────
+1. Go to your Make.com scenario
+2. Find Module 22 (Set Variable)
+3. Click on it
+
+STEP 2: Fix Variable Name
+──────────────────────────
+1. Find "Variable name" field
+2. Change FROM:
+   if(5.rowExists="true";12.array[0].Name;2.name)
+   
+   TO a static name like:
+   finalName
+   
+   OR:
+   displayName
+   
+   OR:
+   selectedName
+
+   Variable names MUST be static text, not expressions!
+
+STEP 3: Move Logic to Value Field
+───────────────────────────────────
+1. Find "Variable value" field
+2. Set it to:
+   {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+   
+   Note:
+   - Use = instead of ="
+   - Remove quotes around "true"
+   - Logic goes in VALUE, not NAME
+
+STEP 4: Keep Variable Lifetime
+───────────────────────────────
+- Variable lifetime: roundtrip (keep as is)
+
+STEP 5: Save
+────────────
+1. Click "OK" or "Save"
+2. Error should be fixed!
+
+================================================================================
+CORRECTED CONFIGURATION
+================================================================================
+
+After fix, Module 22 should be:
+
+┌─────────────────────────────────────────────────────────────┐
+│ Variable name: finalName                                    │
+│               (STATIC TEXT - NOT AN EXPRESSION)             │
+│                                                             │
+│ Variable lifetime: roundtrip                                │
+│                                                             │
+│ Variable value: {{if(5.rowExists = "true";                 │
+│                    12.array[0].Name;                        │
+│                    2.name)}}                                │
+│               (EXPRESSION GOES HERE)                        │
+└─────────────────────────────────────────────────────────────┘
+
+KEY POINTS:
+- ✅ Variable name: Static string ("finalName")
+- ✅ Variable value: Expression with logic
+- ✅ Uses = not ="
+- ✅ No quotes around "true" in comparison
+
+================================================================================
+ALTERNATIVE: REMOVE MODULE 22 ENTIRELY
+================================================================================
+
+If Module 22 isn't necessary, you can just DELETE it:
+
+STEP 1: Remove Module 22
+─────────────────────────
+1. Delete Module 22 connection
+2. If Module 23 uses it, update Module 23 to use different source
+3. Cleaner workflow without unnecessary module
+
+STEP 2: Update Module 23
+─────────────────────────
+Module 23 (displayName) can get name directly:
+- From Module 12: {{12.array[0].Name}}
+- From Module 2: {{2.name}}
+- With condition: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+This eliminates the need for Module 22 entirely.
+
+================================================================================
+DETAILED EXPLANATION
+================================================================================
+
+WHY THIS ERROR OCCURS:
+─────────────────────
+
+Make.com requires:
+- Variable NAME: Must be a static string (text)
+- Variable VALUE: Can be an expression (dynamic)
+
+Your configuration had:
+- Variable NAME: Expression (WRONG ❌)
+- Variable VALUE: Empty (WRONG ❌)
+
+CORRECT CONFIGURATION:
+─────────────────────
+
+Variable NAME = Static text
+  Examples:
+  ✅ "finalName"
+  ✅ "displayName"
+  ✅ "userName"
+  ❌ "{{expression}}" (can't use expressions in name)
+  ❌ "if(...)" (can't use logic in name)
+
+Variable VALUE = Expression (can be dynamic)
+  Examples:
+  ✅ "{{2.name}}"
+  ✅ "{{if(condition; value1; value2)}}"
+  ✅ "{{12.array[0].Name}}"
+
+================================================================================
+SYNTAX CORRECTIONS
+================================================================================
+
+In your expression, also fix these syntax issues:
+
+WRONG SYNTAX:
+────────────
+if(5. rowExists="true";12. array[0].Name;2. name)
+
+Issues:
+1. Spaces after dots (5. should be 5.)
+2. =="true" should be = "true" (space, no quotes around true)
+3. Variable name should be static
+
+CORRECT SYNTAX:
+──────────────
+Variable name: finalName
+Variable value: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+OR without quotes around true:
+Variable value: {{if(5.rowExists = true; 12.array[0].Name; 2.name)}}
+
+OR compare to string:
+Variable value: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+================================================================================
+QUICK FIX SUMMARY
+================================================================================
+
+1. Open Module 22
+2. Change "Variable name" to: finalName (static text)
+3. Set "Variable value" to: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+4. Save
+
+That's it! The error will be resolved.
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing:
+
+1. Save Module 22
+2. Error should disappear
+3. Module 22 will set variable "finalName" with the correct value
+4. Other modules can use {{finalName}} to reference it
+
+================================================================================
+ALTERNATIVE WORKFLOW (Without Module 22)
+================================================================================
+
+If you want to simplify and remove Module 22:
+
+1. Delete Module 22
+2. Update Module 23 (displayName) directly:
+
+   Variable name: displayName
+   Variable value: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+3. This eliminates one module and potential errors
+
+================================================================================
+END
+================================================================================
+

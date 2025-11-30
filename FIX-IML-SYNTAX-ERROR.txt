@@ -1,0 +1,147 @@
+================================================================================
+FIX: IML SYNTAX ERROR
+================================================================================
+
+ERROR:
+  Invalid IML for parameter '{{if(5.rowExists = "true"; 5.sheetName; 2.name | split(2.email; "@") + [0] | "Guest")}}'
+  Unexpected [ at 70.
+
+The expression syntax is wrong. Let's fix it!
+
+================================================================================
+CORRECTED EXPRESSION
+================================================================================
+
+The problem is:
+  • Using `|` instead of `||` (OR operator)
+  • Wrong split() syntax
+  • Incorrect array access
+
+CORRECT SYNTAX:
+────────────────
+
+Option 1: Simple (RECOMMENDED)
+{{if(5.rowExists = "true"; 5.sheetName; 2.name || "Guest")}}
+
+Option 2: With Email Fallback
+{{if(5.rowExists = "true"; 5.sheetName; if(2.name; 2.name; "Guest"))}}
+
+Option 3: Complex (if split works)
+{{if(5.rowExists = "true"; 5.sheetName; 2.name || replace(2.email; /.*@/; "") || "Guest")}}
+
+================================================================================
+STEP-BY-STEP FIX
+================================================================================
+
+STEP 1: Update Module 5.5 Expression
+───────────────────────────────────────
+
+Use this SIMPLER expression:
+
+Variable Name: displayName
+Variable Value: {{if(5.rowExists = "true"; 5.sheetName; if(2.name; 2.name; "Guest"))}}
+
+Explanation:
+  • If row exists → Use name from sheet (5.sheetName)
+  • If row doesn't exist AND form has name → Use form name (2.name)
+  • Otherwise → Use "Guest"
+
+================================================================================
+EVEN SIMPLER OPTION
+================================================================================
+
+If you want to avoid nested if statements:
+
+Variable Name: displayName
+Variable Value: {{if(5.rowExists = "true"; 5.sheetName; 2.name || "Guest")}}
+
+This means:
+  • If row exists → Use sheet name
+  • If not → Use form name OR "Guest" if name is empty
+
+================================================================================
+WHAT TO CHANGE
+================================================================================
+
+IN MODULE 5.5:
+
+WRONG (causes error):
+──────────────────────
+{{if(5.rowExists = "true"; 5.sheetName; 2.name | split(2.email; "@") + [0] | "Guest")}}
+
+CORRECT (Option 1 - Simplest):
+────────────────────────────────
+{{if(5.rowExists = "true"; 5.sheetName; 2.name || "Guest")}}
+
+CORRECT (Option 2 - More checks):
+───────────────────────────────────
+{{if(5.rowExists = "true"; 5.sheetName; if(2.name; 2.name; "Guest"))}}
+
+================================================================================
+MAKE.COM SYNTAX RULES
+================================================================================
+
+✅ CORRECT:
+  • OR operator: `||`
+  • AND operator: `&&`
+  • Function: `if(condition; valueIfTrue; valueIfFalse)`
+  • String concatenation: `text1 + text2`
+  • Empty check: `if(variable; variable; "fallback")`
+
+❌ WRONG:
+  • `|` (should be `||`)
+  • `split()` might not work as expected
+  • Array access `[0]` in complex expressions may fail
+
+================================================================================
+RECOMMENDED FIX
+================================================================================
+
+USE THIS EXPRESSION IN MODULE 5.5:
+
+{{if(5.rowExists = "true"; 5.sheetName; 2.name || "Guest")}}
+
+Steps:
+1. Open Module 5.5 (Set Variables)
+2. Find displayName variable
+3. Replace the value with the expression above
+4. Save
+
+This will:
+  • Use sheet name if email exists
+  • Use form name if new email
+  • Use "Guest" if name is empty
+
+================================================================================
+TESTING
+================================================================================
+
+After fixing, test:
+
+TEST 1: Email Exists
+─────────────────────
+1. Submit form with existing email
+2. Check Module 5.5 output
+3. displayName should be name from sheet
+
+TEST 2: New Email
+──────────────────
+1. Submit form with new email
+2. Check Module 5.5 output
+3. displayName should be form name or "Guest"
+
+================================================================================
+QUICK CHECKLIST
+================================================================================
+
+□ Open Module 5.5
+□ Find displayName variable
+□ Replace value with: {{if(5.rowExists = "true"; 5.sheetName; 2.name || "Guest")}}
+□ Save module
+□ Test execution
+□ Check if error is gone
+
+================================================================================
+END
+================================================================================
+

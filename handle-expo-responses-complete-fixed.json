@@ -1,0 +1,241 @@
+{
+    "name": "Handle Expo Form Responses",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-forms:watchResponses",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 13157191,
+                "formId": "1ULw8aIt2VuH4d8xUQDmH4fVbzHxBxacuZZtwT6mPRJI",
+                "limit": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "roundtrip",
+                "variables": [
+                    {
+                        "name": "email",
+                        "value": "{{1.respondentEmail}}"
+                    },
+                    {
+                        "name": "name",
+                        "value": "{{1.answers.1865fa7d.textAnswers.answers[0].value}}"
+                    },
+                    {
+                        "name": "attendance",
+                        "value": "{{1.answers.677abd25.textAnswers.answers[0].value}}"
+                    },
+                    {
+                        "name": "comments",
+                        "value": "{{1.answers.08d2bdde.textAnswers.answers[0].value}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 3,
+                            "module": "google-sheets:updateRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 13156488
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{4.attendance}}",
+                                            "o": "text:equal",
+                                            "b": "Yes, I'll attend"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "mode": "search",
+                                "valueInputOption": "USER_ENTERED",
+                                "from": "drive",
+                                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                                "sheetId": "leads",
+                                "filters": [
+                                    {
+                                        "a": "1",
+                                        "o": "text:equal",
+                                        "b": "{{4.email}}"
+                                    }
+                                ],
+                                "includesHeaders": true,
+                                "values": {
+                                    "10": "Accepted",
+                                    "11": "{{now}}",
+                                    "12": "{{4.comments}}"
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": -150
+                                }
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "module": "resend:sendAnEmail",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12957549
+                            },
+                            "mapper": {
+                                "from": "sales@thesmartpro.io",
+                                "to": [
+                                    {
+                                        "value": "{{4.email}}"
+                                    }
+                                ],
+                                "subject": "Agreement - UAE Property Expo",
+                                "sendEmailAs": "html",
+                                "html": "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Agreement - UAE Property Expo</title></head><body style=\"font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;\"><table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #FFFFFF; margin: 0 auto; border-radius: 8px; overflow: hidden;\"><tr><td style=\"padding: 40px 30px;\"><h1 style=\"color: #1E4168; margin: 0 0 20px 0;\">Thank You for Accepting!</h1><p>Dear {{4.name}},</p><p>We're excited that you'll be attending the <strong style=\"color: #C40021;\">UAE Property Expo – Muscat</strong>!</p><p>Agreement details and further instructions will be sent to you shortly.</p><p style=\"margin-top: 30px;\">Best regards,<br>UAE Property Expo Team</p></td></tr></table></body></html>"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": -150
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 5,
+                            "module": "google-sheets:updateRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 13156488
+                            },
+                            "filter": {
+                                "name": "",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{4.attendance}}",
+                                            "o": "text:equal",
+                                            "b": "No, I cannot attend"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "mode": "search",
+                                "valueInputOption": "USER_ENTERED",
+                                "from": "drive",
+                                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                                "sheetId": "leads",
+                                "filters": [
+                                    {
+                                        "a": "1",
+                                        "o": "text:equal",
+                                        "b": "{{4.email}}"
+                                    }
+                                ],
+                                "includesHeaders": true,
+                                "values": {
+                                    "10": "Rejected",
+                                    "11": "{{now}}",
+                                    "12": "{{4.comments}}"
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 900,
+                                    "y": 150
+                                }
+                            }
+                        },
+                        {
+                            "id": 7,
+                            "module": "resend:sendAnEmail",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12957549
+                            },
+                            "mapper": {
+                                "from": "sales@thesmartpro.io",
+                                "to": [
+                                    {
+                                        "value": "{{4.email}}"
+                                    }
+                                ],
+                                "subject": "Thank You - UAE Property Expo",
+                                "sendEmailAs": "html",
+                                "html": "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>Thank You</title></head><body style=\"font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;\"><table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color: #FFFFFF; margin: 0 auto; border-radius: 8px; overflow: hidden;\"><tr><td style=\"padding: 40px 30px;\"><h1 style=\"color: #1E4168; margin: 0 0 20px 0;\">Thank You!</h1><p>Dear {{4.name}},</p><p>Thank you for your interest in the <strong style=\"color: #C40021;\">UAE Property Expo – Muscat</strong>.</p><p>We understand you cannot attend this time, but we hope to see you at future events!</p><p style=\"margin-top: 30px;\">Best regards,<br>UAE Property Expo Team</p></td></tr></table></body></html>"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 150
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": []
+    }
+}
+

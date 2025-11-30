@@ -1,0 +1,175 @@
+================================================================================
+PROBLEM: NO NAME IN ADD ROW PATH
+================================================================================
+
+Your email goes through "Add Row" path because:
+  • Email not found in sheet
+  • Module 6 → Route 2 (Add Row)
+  • Module 10 adds row
+  • Email sent but {{2.name}} is null
+
+Response forms usually DON'T ask for name (only attendance),
+so Module 2 has name = null.
+
+================================================================================
+QUICK FIX OPTIONS
+================================================================================
+
+OPTION 1: Use Generic Greeting (IMMEDIATE FIX)
+───────────────────────────────────────────────
+
+In email modules (19, 20 - Add Row path), change:
+
+FROM:
+  <p>Dear {{2.name}},</p>
+
+TO:
+  <p>Thank you for your response!</p>
+
+OR:
+  <p>Dear Valued Guest,</p>
+
+This removes dependency on name variable.
+
+OPTION 2: Get Name from Sheet if Found
+─────────────────────────────────────────
+
+If email is found, get name from sheet row:
+
+STEP 1: Update Module 5
+─────────────────────────
+Add variable after Module 12 (Array Aggregator):
+
+Module 5 (Set Variables):
+  • rowNumber: {{12.array[0].__IMTINDEX__}}
+  • rowExists: {{if(12.length > 0; "true"; "false")}}
+  • sheetName: {{if(12.length > 0; 12.array[0].Name; "")}} ← ADD THIS
+
+STEP 2: Create Combined Name Variable
+───────────────────────────────────────
+Add Module 2.5 after Module 5:
+
+Module 2.5 (Set Variables):
+  • displayName: {{if(5.rowExists = "true"; 5.sheetName; 2.name || split(2.email; "@")[0] || "Guest")}}
+
+This means:
+  • If row exists → Use name from sheet
+  • If not → Use name from form OR email username OR "Guest"
+
+STEP 3: Update Email Templates
+────────────────────────────────
+Use:
+  <p>Dear {{2.displayName}},</p>
+
+OPTION 3: Extract Name from Email (SIMPLE)
+────────────────────────────────────────────
+
+In email templates, use:
+  <p>Dear {{2.name || split(2.email; "@")[0] || "Guest"}},</p>
+
+This shows:
+  • Name if available
+  • Email username (before @) if name empty
+  • "Guest" as last resort
+
+Example: chairman@falconeyegroup.net → "Dear chairman,"
+
+================================================================================
+RECOMMENDED: OPTION 1 (Quickest)
+================================================================================
+
+For immediate fix, use generic greeting:
+
+In Modules 19 and 20 (Add Row path emails):
+
+FIND:
+  <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+    Dear {{2.name}},
+  </p>
+
+REPLACE WITH:
+  <p style="color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+    Thank you for your response!
+  </p>
+
+This works immediately and doesn't need name variable.
+
+================================================================================
+BETTER SOLUTION: GET NAME FROM SHEET
+================================================================================
+
+If email exists in sheet, get name from there:
+
+STEP 1: Update Module 5
+─────────────────────────
+After Module 12 (Array Aggregator), update Module 5:
+
+Variables:
+  • rowNumber: {{12.array[0].__IMTINDEX__}}
+  • rowExists: {{if(12.length > 0; "true"; "false")}}
+  • sheetName: {{if(12.length > 0; 12.array[0].Name; "")}} ← NEW
+
+STEP 2: Update Module 2 After Module 5
+────────────────────────────────────────
+Add Module 5.5 (Set Variables) after Module 5:
+
+Variables:
+  • displayName: {{if(5.rowExists = "true"; 5.sheetName; 2.name || split(2.email; "@")[0] || "Guest")}}
+
+STEP 3: Update All Email Templates
+─────────────────────────────────────
+Use:
+  <p>Dear {{5.displayName}},</p>
+
+This ensures name is always available!
+
+================================================================================
+STEP-BY-STEP: GENERIC GREETING (EASIEST)
+================================================================================
+
+STEP 1: Open Module 19
+────────────────────────
+1. Open scenario in Make.com
+2. Find Module 19 (Agreement Email - Add Row path)
+3. Click on it
+
+STEP 2: Find HTML Content
+───────────────────────────
+1. Find "HTML Content" or "html" field
+2. Search for: "Dear {{2.name}},"
+
+STEP 3: Replace
+────────────────
+Replace with:
+  Thank you for your response!
+
+OR:
+  Dear Valued Guest,
+
+STEP 4: Repeat for Module 20
+──────────────────────────────
+1. Open Module 20 (Thank You Email - Add Row path)
+2. Make same change
+
+STEP 5: Save and Test
+──────────────────────
+1. Save scenario
+2. Test form submission
+3. Email should show generic greeting
+
+================================================================================
+CHECKLIST
+================================================================================
+
+□ Understanding: Email going through Add Row path
+□ Choose solution:
+  • Quick fix: Generic greeting
+  • Better fix: Get name from sheet
+□ Update email templates (Modules 19, 20)
+□ Test email - should show proper greeting
+
+================================================================================
+END
+================================================================================
+
+

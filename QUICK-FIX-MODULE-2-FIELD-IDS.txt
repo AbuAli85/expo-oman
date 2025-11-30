@@ -1,0 +1,116 @@
+================================================================================
+QUICK FIX: MODULE 2 FIELD IDs ARE WRONG
+================================================================================
+
+PROBLEM:
+  ❌ Module 2 shows: attendance = null
+  ✅ Sheet shows: Response = "Yes, I'll attend"
+
+The field IDs in Module 2 don't match your form!
+
+================================================================================
+FASTEST FIX: USE MAKE.COM FIELD SELECTOR
+================================================================================
+
+STEP 1: Open Module 2
+──────────────────────
+1. Open scenario in Make.com editor
+2. Click Module 2 (Set Variables)
+
+STEP 2: Fix Attendance Variable
+──────────────────────────────────
+1. Find "attendance" variable
+2. Click the value field (where the mapping is)
+3. Click the "Map" icon (🔍 field selector button)
+4. A popup opens showing Module 1 output
+5. Expand "answers" in the popup
+6. Look through field IDs
+7. Find the one that shows "Yes, I'll attend"
+8. Click on it → Make.com auto-fills the path!
+9. Click OK
+
+STEP 3: Fix Name Variable (if needed)
+───────────────────────────────────────
+1. Find "name" variable
+2. Click value field
+3. Click "Map" icon
+4. Find field ID with name value
+5. Click on it
+6. Click OK
+
+STEP 4: Fix Comments Variable (if needed)
+──────────────────────────────────────────
+1. Find "comments" variable
+2. Click value field
+3. Click "Map" icon
+4. Find field ID with comments value
+5. Click on it
+6. Click OK
+
+STEP 5: Save and Test
+──────────────────────
+1. Save scenario
+2. Submit test form
+3. Check Module 2 output - should show values, not null!
+
+================================================================================
+WHAT TO LOOK FOR IN FIELD SELECTOR
+================================================================================
+
+When you click the Map icon, you'll see:
+
+Module 1 Output:
+  ├─ responseId
+  ├─ respondentEmail: "chairman@falconeyegroup.net"
+  └─ answers
+      ├─ [FIELD_ID_1] ← Click here
+      │   └─ textAnswers
+      │       └─ answers[0].value: "Yes, I'll attend" ✅
+      ├─ [FIELD_ID_2] ← Or here
+      │   └─ textAnswers
+      │       └─ answers[0].value: "name value"
+      └─ [FIELD_ID_3]
+          └─ textAnswers
+              └─ answers[0].value: "comments"
+
+Find the field ID that shows "Yes, I'll attend" and click it!
+
+================================================================================
+IF FIELD SELECTOR DOESN'T WORK
+================================================================================
+
+Then manually check Module 1 output:
+
+1. Open execution
+2. Click Module 1
+3. View output data
+4. Find field ID containing "Yes, I'll attend"
+5. Copy the field ID
+6. Update Module 2:
+   attendance: {{1.answers.COPIED_FIELD_ID.textAnswers.answers[0].value}}
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, Module 2 should show:
+
+{
+  "email": "chairman@falconeyegroup.net",
+  "name": "actual name",        ← Not null!
+  "attendance": "Yes, I'll attend",  ← Not null!
+  "comments": "comments or empty"    ← Not null or empty string
+}
+
+NOT:
+{
+  "email": "chairman@falconeyegroup.net",
+  "name": null,        ❌
+  "attendance": null,  ❌
+  "comments": null     ❌
+}
+
+================================================================================
+END
+================================================================================
+

@@ -1,0 +1,207 @@
+================================================================================
+DIAGNOSE: EMAIL 1 - INVITATION NOT WORKING
+================================================================================
+
+Let's diagnose what's wrong with the Email 1 - Invitation scenario.
+
+================================================================================
+STEP 1: CHECK WHAT'S NOT WORKING
+================================================================================
+
+Please provide details:
+
+□ Is the scenario not triggering at all?
+□ Is it triggering but not sending emails?
+□ Are emails sending but with wrong content?
+□ Are there errors in the execution log?
+□ Is it not updating the Google Sheet?
+
+================================================================================
+COMMON ISSUES TO CHECK
+================================================================================
+
+ISSUE 1: Webhook Trigger Not Working
+──────────────────────────────────────
+
+If using webhook trigger:
+  □ Check if webhook URL is correct
+  □ Verify Google Apps Script is calling webhook
+  □ Check webhook is receiving data
+  □ See if Make.com is receiving webhook calls
+
+ISSUE 2: Watch New Rows Not Triggering
+─────────────────────────────────────────
+
+If using Watch New Rows:
+  □ Check if new rows are being added to sheet
+  □ Verify Watch New Rows is still configured
+  □ Check if rows/columns were deleted (breaks trigger)
+  □ See execution history - are there any triggers?
+
+ISSUE 3: Module Reference Errors
+──────────────────────────────────
+
+Common error: "Module references non-existing module"
+  □ Check if module IDs changed
+  □ Verify all module references are correct
+  □ Check Set Variables module references
+  □ Check Google Sheets module references
+
+ISSUE 4: Email Not Sending
+────────────────────────────
+
+If emails not sending:
+  □ Check Resend API connection
+  □ Verify "To" field format (should be string, not array)
+  □ Check email content/template
+  □ See execution log for errors
+
+ISSUE 5: Variables Not Working
+───────────────────────────────
+
+If variables are null or wrong:
+  □ Check Module 2 (Set Variables) mapping
+  □ Verify form field IDs are correct
+  □ Check webhook data structure matches expected format
+  □ See Module 2 output - are variables populated?
+
+ISSUE 6: Router Filters Not Working
+─────────────────────────────────────
+
+If wrong emails sending:
+  □ Check router filter conditions
+  □ Verify language variable is correct
+  □ Check filter syntax
+
+================================================================================
+QUICK DIAGNOSTIC STEPS
+================================================================================
+
+STEP 1: Check Execution History
+─────────────────────────────────
+
+1. Open Make.com
+2. Go to "Email 1 - Invitation" scenario
+3. Click "Execution history"
+4. Check latest execution:
+   □ Did it run?
+   □ What was the status?
+   □ Any error messages?
+
+STEP 2: Check Trigger
+──────────────────────
+
+1. Open scenario in editor
+2. Check Module 1 (trigger):
+   □ What type is it? (Webhook or Watch New Rows)
+   □ Is it configured correctly?
+   □ Is it active/enabled?
+
+STEP 3: Check Module 2 Output
+───────────────────────────────
+
+1. Open latest execution
+2. Click Module 2 (Set Variables)
+3. Check output:
+   □ Are variables populated?
+   □ Are values correct?
+   □ Any null values?
+
+STEP 4: Check for Errors
+─────────────────────────
+
+1. Look through execution log
+2. Check each module:
+   □ Which modules ran successfully?
+   □ Which modules failed?
+   □ What error messages?
+
+================================================================================
+WHAT TO SHARE FOR HELP
+================================================================================
+
+Please share:
+
+1. Execution log or error messages
+2. Which step is failing:
+   □ Not triggering
+   □ Variables empty/wrong
+   □ Email not sending
+   □ Sheet not updating
+   □ Other: _______________
+
+3. Latest execution details:
+   □ Date/time of last execution
+   □ Status (success/error)
+   □ Error message if any
+
+4. Scenario configuration:
+   □ Trigger type (Webhook or Watch New Rows)
+   □ Module count and structure
+   □ Any recent changes made
+
+================================================================================
+COMMON FIXES
+================================================================================
+
+FIX 1: Webhook Not Receiving Data
+───────────────────────────────────
+
+If webhook trigger:
+  □ Verify webhook URL in Google Apps Script
+  □ Check Apps Script is running on form submit
+  □ Test webhook manually
+  □ Check Make.com webhook is active
+
+FIX 2: Watch New Rows Broken
+──────────────────────────────
+
+If Watch New Rows:
+  □ Right-click module → "Choose where to start"
+  □ Re-select the sheet and range
+  □ Check if rows/columns were deleted
+  □ May need to recreate trigger
+
+FIX 3: Module Reference Error
+───────────────────────────────
+
+If "Module references non-existing module":
+  □ Check module numbers match
+  □ Update references to correct module IDs
+  □ Re-map variables in Set Variables module
+
+FIX 4: Email "To" Field Error
+───────────────────────────────
+
+If 422 error in Resend:
+  □ Change "To" field from array to string
+  □ FROM: ["{{email}}"]
+  □ TO: "{{email}}"
+
+FIX 5: Variables Null
+──────────────────────
+
+If variables are null:
+  □ Check form field IDs in Module 2
+  □ Use Make.com field selector to map correctly
+  □ Verify data structure matches expected format
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Check execution history for errors
+2. Identify which step is failing
+3. Share error messages or execution log
+4. We can then provide specific fix
+
+OR:
+
+1. Check each section above
+2. Fix common issues found
+3. Test scenario again
+
+================================================================================
+END
+================================================================================
+

@@ -1,0 +1,169 @@
+================================================================================
+FIX: Email "to" Field Error - [422] The `to` field must be a `string`
+================================================================================
+
+PROBLEM:
+--------
+The Resend email module is failing with:
+[422] The `to` field must be a `string`.
+
+This means the email address value is either:
+1. Empty/null/undefined
+2. Not resolving correctly from the column reference
+3. Wrong column index
+
+================================================================================
+SOLUTION 1: Updated JSON Format (Applied)
+================================================================================
+
+I've updated email-3-fixed.json with the correct format:
+
+CHANGED FROM:
+"to": [
+    {
+        "value": "{{1.1}}"
+    }
+]
+
+CHANGED TO:
+"to": [
+    "{{1.1}}"
+]
+
+This uses a simple array of strings format instead of array of objects.
+
+================================================================================
+SOLUTION 2: Verify Column Mapping
+================================================================================
+
+The error might also occur if {{1.1}} is empty or pointing to the wrong column.
+
+STEP 1: Check Your Set Variables Module (Module 8)
+---------------------------------------------------
+You have a Set Variables module that tests columns:
+- testCol0 = {{1.`0`}}  (Column A - Name)
+- testCol1 = {{1.`1`}}  (Column B - Email) ← Should contain email
+- testCol2 = {{1.`2`}}  (Column C - Phone)
+- testCol3 = {{1.`3`}}  (Column D - Language)
+
+STEP 2: Run the Scenario and Check Output
+-------------------------------------------
+1. Run the scenario once
+2. Click on Module 8 (Set Variables) in the execution log
+3. Check which variable actually contains the email address
+4. Note: You're using backticks {{1.`1`}} in Set Variables, but {{1.1}} in email
+
+STEP 3: Verify Email Column Index
+-----------------------------------
+Based on your Google Sheets structure:
+- Column A (Name) = index 0 = {{1.0}}
+- Column B (Email) = index 1 = {{1.1}} ← Should be this
+- Column C (Phone) = index 2 = {{1.2}}
+- Column D (Language) = index 3 = {{1.3}}
+
+If testCol1 is empty, try:
+- {{1.0}} (if email is in Name column - unlikely)
+- {{1.2}} (if email is in Phone column - unlikely)
+- Check if your sheet has headers and adjust index accordingly
+
+================================================================================
+SOLUTION 3: Alternative Column Reference Formats
+================================================================================
+
+If {{1.1}} doesn't work, try these formats:
+
+OPTION A: With backticks (like your Set Variables module)
+"to": ["{{1.`1`}}"]
+
+OPTION B: Direct column name (if Make.com supports it)
+"to": ["{{1.Email}}"]  (if column is named "Email")
+
+OPTION C: Use the variable from Set Variables module
+"to": ["{{8.testCol1}}"]  (uses the variable from module 8)
+
+================================================================================
+SOLUTION 4: Debug Empty Email Value
+================================================================================
+
+If the email column is empty for some rows:
+
+1. Check your Google Sheets filter (Module 1)
+   - Make sure it's returning rows with valid email addresses
+   - Verify the filter conditions are correct
+
+2. Add a filter to skip empty emails:
+   - In the router, add a condition: Email is not empty
+   - Or add a filter module before the email module
+
+3. Check the actual data:
+   - Open your Google Sheet
+   - Verify column B (Email) has valid email addresses
+   - Make sure there are no empty cells in the email column
+
+================================================================================
+STEP-BY-STEP DEBUGGING
+================================================================================
+
+1. Import the fixed JSON (email-3-fixed.json) into Make.com
+
+2. Run the scenario in test mode
+
+3. Check Module 8 (Set Variables) output:
+   - Click on the module in execution log
+   - Verify testCol1 contains an email address
+   - If empty, check other testCol variables
+
+4. If testCol1 is empty:
+   - The email might be in a different column
+   - Check testCol0, testCol2, testCol3
+   - Update the email module to use the correct column index
+
+5. If testCol1 has an email but still fails:
+   - Try using the variable: "to": ["{{8.testCol1}}"]
+   - This uses the value from Set Variables module
+
+6. If still failing:
+   - Check if the email value has extra spaces: "{{trim(1.1)}}"
+   - Check if it's a valid email format
+
+================================================================================
+QUICK FIX OPTIONS TO TRY
+================================================================================
+
+OPTION 1: Use Set Variables output
+"to": ["{{8.testCol1}}"]
+
+OPTION 2: Try different column index
+"to": ["{{1.0}}"]  (if email is in column A)
+"to": ["{{1.2}}"]  (if email is in column C)
+
+OPTION 3: Use backticks format
+"to": ["{{1.`1`}}"]
+
+OPTION 4: Trim whitespace
+"to": ["{{trim(1.1)}}"]
+
+================================================================================
+VERIFY THE FIX
+================================================================================
+
+After applying the fix:
+
+1. The "to" field should be: ["{{1.1}}"]
+2. Run the scenario
+3. Check if Module 3 (English Email) executes successfully
+4. If it still fails, check Module 8 output to verify which column has the email
+5. Update the email module to use the correct column reference
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+- The error occurs in Module 3 (English Email) - Route 1
+- Module 4 (Arabic Email) will have the same issue if not fixed
+- Both modules now use the format: "to": ["{{1.1}}"]
+- Make sure your Google Sheets has valid email addresses in column B
+- The router should filter rows that have valid email addresses
+
+================================================================================
+

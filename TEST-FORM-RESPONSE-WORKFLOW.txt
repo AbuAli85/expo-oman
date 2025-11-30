@@ -1,0 +1,358 @@
+================================================================================
+TEST FORM RESPONSE WORKFLOW
+Complete Testing Guide
+================================================================================
+
+This guide shows you how to test the entire Accept/Reject workflow after a client submits the form.
+
+================================================================================
+PRE-TEST CHECKLIST
+================================================================================
+
+Before testing, verify:
+
+□ "Handle Expo Form Responses" scenario is ON
+□ Module 1: Google Forms trigger is connected
+□ Module 4: Set Variables configured
+□ Module 2: Router has filters
+□ Module 3 & 5: Update Row modules configured
+□ Module 6 & 7: Email modules have HTML content
+□ Google Sheets has columns K, L, M (Response, Response Date, Comments)
+□ Test lead exists in Google Sheets with email address
+
+================================================================================
+TEST METHOD 1: SUBMIT TEST FORM RESPONSE (RECOMMENDED)
+================================================================================
+
+STEP 1: Prepare Test Data (2 minutes)
+---------------------------------------
+1. Open your Google Sheets
+2. Find or add a test lead:
+   - Name: Test User
+   - Email: YOUR-EMAIL@example.com (use your real email to receive test emails)
+   - Language: en or ar
+   - Other columns can be empty
+3. Note the email address (you'll use it in the form)
+
+STEP 2: Submit Form Response (2 minutes)
+------------------------------------------
+1. Open your Google Form:
+   https://docs.google.com/forms/d/e/1FAIpQLSex6irOI08Rn8WeOyZNMfzj9qnMNYLVZ5I7yUzKfYgtiUfnGA/viewform
+
+2. Fill the form:
+   - Email: Use the SAME email from your test lead in Google Sheets
+   - Name: Test User (or any name)
+   - Will you attend the expo?: Select "Yes, I'll attend" (for Route 1 test)
+   - Comments: (optional) Test comment
+
+3. Click "Submit"
+
+STEP 3: Wait (30 seconds)
+--------------------------
+Wait for Make.com to process the response
+
+STEP 4: Check Make.com Execution (3 minutes)
+--------------------------------------------
+1. Go to Make.com
+2. Open "Handle Expo Form Responses" scenario
+3. Click "Execution history" (top right)
+4. Click on the LATEST execution
+
+CHECK EACH MODULE:
+------------------
+□ Module 1 (Google Forms): Should show form response data ✅
+   - Check: respondentEmail, answers
+   - Should show your test email and response
+
+□ Module 4 (Set Variables): Should show variables ✅
+   - email: Your test email
+   - name: Test User
+   - attendance: "Yes, I'll attend" (or "No, I cannot attend")
+   - comments: Your comment (if provided)
+
+□ Module 2 (Router): Should route correctly ✅
+   - If attendance = "Yes, I'll attend" → Route 1
+   - If attendance = "No, I cannot attend" → Route 2
+
+□ Module 3 or 5 (Update Row): Should update Google Sheets ✅
+   - Check execution log
+   - Should show "Updated" or success message
+
+□ Module 6 or 7 (Send Email): Should send email ✅
+   - Check execution log
+   - Should show "Sent" or success message
+
+STEP 5: Check Google Sheets (2 minutes)
+----------------------------------------
+1. Open your Google Sheets
+2. Find the row with your test email
+3. Check:
+   □ Column K (Response): Should show "Accepted" or "Rejected" ✅
+   □ Column L (Response Date): Should show current date/time ✅
+   □ Column M (Comments): Should show your comment (if provided) ✅
+
+STEP 6: Check Email Inbox (1 minute)
+-------------------------------------
+1. Check your email inbox
+2. Check spam folder
+3. You should receive:
+   - If "Yes, I'll attend": Agreement email ✅
+   - If "No, I cannot attend": Thank you email ✅
+
+================================================================================
+TEST METHOD 2: TEST BOTH ROUTES
+================================================================================
+
+TEST ROUTE 1 (ACCEPT):
+----------------------
+
+1. Submit form with:
+   - Email: test-accept@example.com
+   - Attendance: "Yes, I'll attend"
+   - Submit
+
+2. Verify:
+   □ Google Sheets: Response = "Accepted"
+   □ Email received: Agreement email
+   □ Execution log: Route 1 executed
+
+TEST ROUTE 2 (REJECT):
+----------------------
+
+1. Submit form with:
+   - Email: test-reject@example.com
+   - Attendance: "No, I cannot attend"
+   - Submit
+
+2. Verify:
+   □ Google Sheets: Response = "Rejected"
+   □ Email received: Thank you email
+   □ Execution log: Route 2 executed
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE 1: Scenario Not Triggering
+----------------------------------
+SYMPTOM: No execution appears after form submission
+
+CHECK:
+□ Is scenario ON? (green toggle)
+□ Is Module 1 connected to correct form?
+□ Did form submission complete successfully?
+□ Check form responses in Google Forms
+
+FIX:
+→ Turn scenario ON
+→ Verify form ID in Module 1
+→ Submit form again
+→ Wait 1 minute
+
+ISSUE 2: Router Not Routing
+----------------------------
+SYMPTOM: Both routes execute or no route executes
+
+CHECK:
+□ Module 4 variables: Is "attendance" value correct?
+□ Router filters: Do they match exactly?
+   - Route 1: "Yes, I'll attend" (exact match, case-sensitive)
+   - Route 2: "No, I cannot attend" (exact match)
+
+FIX:
+→ Check Module 4 output in execution log
+→ Verify attendance value matches filter exactly
+→ Update filters if needed
+
+ISSUE 3: Update Row Not Working
+---------------------------------
+SYMPTOM: Google Sheets not updated
+
+CHECK:
+□ Search Rows module: Did it find the row?
+□ Row number: Is {{searchResult.__ROW_NUMBER__}} correct?
+□ Email match: Does email in form match email in sheet exactly?
+□ Columns K, L, M: Do they exist?
+
+FIX:
+→ Check Search Rows output in execution log
+→ Verify email format matches (no extra spaces)
+→ Add columns K, L, M if missing
+→ Check Update Row values configuration
+
+ISSUE 4: Email Not Sending
+--------------------------
+SYMPTOM: No email received
+
+CHECK:
+□ Module 6/7: "To" field format correct?
+   - Should be: [{"value": "{{4.email}}"}]
+   - NOT: ["{{4.email}}"]
+□ HTML content: Is it added?
+□ Resend connection: Is it working?
+□ Email address: Is it valid?
+
+FIX:
+→ Fix "To" field format
+→ Add HTML content
+→ Check Resend connection
+→ Verify email address
+
+ISSUE 5: Email Not Received
+----------------------------
+SYMPTOM: Email sent but not in inbox
+
+CHECK:
+□ Spam folder
+□ Email address correct?
+□ Resend logs: Check if email was delivered
+□ Email provider: Some providers delay emails
+
+FIX:
+→ Check spam folder
+→ Verify email address
+→ Check Resend dashboard for delivery status
+→ Wait a few minutes
+
+================================================================================
+STEP-BY-STEP TEST PROCEDURE
+================================================================================
+
+COMPLETE TEST (10 MINUTES):
+----------------------------
+
+1. PREPARE (2 min)
+   □ Add test lead to Google Sheets
+   □ Note the email address
+   □ Verify scenario is ON
+
+2. SUBMIT FORM (2 min)
+   □ Open Google Form
+   □ Fill with test data
+   □ Use SAME email as in Google Sheets
+   □ Submit
+
+3. WAIT (30 sec)
+   □ Wait for Make.com to process
+
+4. CHECK EXECUTION (3 min)
+   □ Open Make.com execution history
+   □ Check each module
+   □ Verify all modules ran successfully
+
+5. CHECK GOOGLE SHEETS (2 min)
+   □ Open Google Sheets
+   □ Find test lead row
+   □ Verify Response, Response Date, Comments updated
+
+6. CHECK EMAIL (1 min)
+   □ Check inbox
+   □ Check spam folder
+   □ Verify email received
+
+================================================================================
+QUICK TEST CHECKLIST
+================================================================================
+
+□ Scenario is ON
+□ Test lead in Google Sheets
+□ Form submitted with matching email
+□ Execution appears in Make.com
+□ Module 1: Shows form response
+□ Module 4: Shows variables
+□ Module 2: Routes correctly
+□ Module 3/5: Updates Google Sheets
+□ Module 6/7: Sends email
+□ Google Sheets: Response column updated
+□ Email received in inbox
+
+If all checked → SUCCESS! ✅
+
+================================================================================
+TESTING BOTH SCENARIOS
+================================================================================
+
+TEST 1: ACCEPT RESPONSE
+-----------------------
+1. Submit form: "Yes, I'll attend"
+2. Expected:
+   - Google Sheets: Response = "Accepted"
+   - Email: Agreement email received
+   - Route 1 executed
+
+TEST 2: REJECT RESPONSE
+-----------------------
+1. Submit form: "No, I cannot attend"
+2. Expected:
+   - Google Sheets: Response = "Rejected"
+   - Email: Thank you email received
+   - Route 2 executed
+
+================================================================================
+VERIFICATION POINTS
+================================================================================
+
+AFTER FORM SUBMISSION, VERIFY:
+
+1. MAKE.COM:
+   □ Execution appears (within 1 minute)
+   □ All modules run successfully
+   □ No error messages
+
+2. GOOGLE SHEETS:
+   □ Response column updated
+   □ Response Date column updated
+   □ Comments column updated (if provided)
+
+3. EMAIL:
+   □ Email received (within 2 minutes)
+   □ Correct email template
+   □ Personalization works (name appears)
+
+================================================================================
+COMMON TESTING MISTAKES
+================================================================================
+
+MISTAKE 1: Using different email
+----------------------------------
+Problem: Form email doesn't match Google Sheets email
+Result: Can't find row to update
+
+Fix: Use EXACT same email in both
+
+MISTAKE 2: Wrong attendance value
+----------------------------------
+Problem: Typo in form response
+Result: Router doesn't route correctly
+
+Fix: Use exact values: "Yes, I'll attend" or "No, I cannot attend"
+
+MISTAKE 3: Scenario is OFF
+---------------------------
+Problem: Scenario not running
+Result: No execution appears
+
+Fix: Turn scenario ON (green toggle)
+
+MISTAKE 4: Missing columns
+---------------------------
+Problem: Columns K, L, M don't exist
+Result: Update fails
+
+Fix: Add columns to Google Sheets
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+TEST IS SUCCESSFUL IF:
+----------------------
+✅ Form submission triggers Make.com scenario
+✅ Set Variables stores data correctly
+✅ Router routes to correct route
+✅ Google Sheets updated with Response, Date, Comments
+✅ Follow-up email sent and received
+✅ All modules execute without errors
+
+================================================================================
+

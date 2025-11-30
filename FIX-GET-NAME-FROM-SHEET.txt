@@ -1,0 +1,210 @@
+================================================================================
+FIX: GET NAME FROM SHEET WHEN EMAIL EXISTS
+================================================================================
+
+The "Handle Expo Form Responses - Improved" scenario SHOULD:
+  1. Check if email exists in leads sheet
+  2. If email exists → Get name from that row
+  3. Use that name in the email
+
+Currently, it's not getting the name from the sheet even when email exists.
+
+================================================================================
+CURRENT WORKFLOW
+================================================================================
+
+Module 1: Form Response
+Module 2: Set Variables (name = null if not in form)
+Module 11: Search Rows (finds row if email exists)
+Module 12: Array Aggregator (contains sheet row data)
+Module 5: Set Variables (only sets rowNumber and rowExists)
+Module 6: Router (routes by email existence)
+  ├─ Route 1: Update Row (email exists)
+  └─ Route 2: Add Row (email not found)
+
+PROBLEM: Name from sheet row is NOT being extracted!
+
+================================================================================
+THE FIX: EXTRACT NAME FROM SHEET ROW
+================================================================================
+
+When Module 11 finds a row, Module 12 contains that row's data.
+We need to extract the Name from that data!
+
+STEP 1: Update Module 5 to Extract Name
+──────────────────────────────────────────
+
+Currently Module 5 only sets:
+  • rowNumber: {{12.array[0].__IMTINDEX__}}
+  • rowExists: {{if(12.length > 0; "true"; "false")}}
+
+ADD this variable:
+  • sheetName: {{if(12.length > 0; 12.array[0].Name; "")}}
+
+This extracts the Name column from the sheet row if email was found.
+
+STEP 2: Create Display Name Variable
+────────────────────────────────────────
+
+Add Module 5.5 (Set Variables) after Module 5:
+
+Variables:
+  • displayName: {{if(5.rowExists = "true"; 5.sheetName; 2.name || split(2.email; "@")[0] || "Guest")}}
+
+This means:
+  • If row exists → Use name from sheet (5.sheetName)
+  • If not → Use name from form (2.name) OR email username OR "Guest"
+
+STEP 3: Update Email Templates
+────────────────────────────────
+
+In ALL email modules (16, 17, 19, 20), change:
+
+FROM:
+  Dear {{2.name}},
+
+TO:
+  Dear {{5.displayName}},
+
+This ensures we always have a name:
+  • From sheet if email exists
+  • From form if new email
+  • Fallback if neither
+
+================================================================================
+DETAILED STEP-BY-STEP
+================================================================================
+
+STEP 1: Update Module 5 (Set Variables)
+──────────────────────────────────────────
+
+1. Open scenario in Make.com
+2. Find Module 5 (Set Variables)
+3. Add a new variable:
+
+Variable Name: sheetName
+Variable Value: {{if(12.length > 0; 12.array[0].Name; "")}}
+
+Explanation:
+  • If search found rows (12.length > 0)
+  • Get Name from first result (12.array[0].Name)
+  • Otherwise empty string
+
+STEP 2: Add Module 5.5 (Set Variables) After Module 5
+─────────────────────────────────────────────────────────
+
+1. Click "+" after Module 5
+2. Add "Set Variables" module
+3. Position it between Module 5 and Module 6
+4. Configure variables:
+
+Variable 1: displayName
+Value: {{if(5.rowExists = "true"; 5.sheetName; 2.name || split(2.email; "@")[0] || "Guest")}}
+
+This creates a smart name that:
+  • Uses sheet name if email found
+  • Uses form name if new email
+  • Falls back to email username
+  • Falls back to "Guest"
+
+STEP 3: Update Email Templates
+────────────────────────────────
+
+In ALL email modules (16, 17, 19, 20):
+
+1. Find in HTML content:
+   <p>Dear {{2.name}},</p>
+
+2. Replace with:
+   <p>Dear {{5.displayName}},</p>
+
+3. Save all modules
+
+================================================================================
+ALTERNATIVE: SIMPLER APPROACH
+================================================================================
+
+If you don't want to add Module 5.5, update email templates directly:
+
+FOR MODULES 16, 17 (Update Path - Email Exists):
+───────────────────────────────────────────────────
+Use: {{if(5.rowExists = "true"; 12.array[0].Name; 2.name)}}
+
+This gets name directly from sheet if row exists.
+
+FOR MODULES 19, 20 (Add Path - Email Not Found):
+───────────────────────────────────────────────────
+Use: {{2.name || split(2.email; "@")[0] || "Guest"}}
+
+This uses form name or fallback.
+
+================================================================================
+WHAT EACH MODULE HAS ACCESS TO
+================================================================================
+
+Module 5 (after search):
+  • rowNumber: Row number if found
+  • rowExists: "true" or "false"
+  • sheetName: Name from sheet row (if found)
+
+Module 12 (Array Aggregator):
+  • array[0].Name: Name column from sheet
+  • array[0].Email: Email column from sheet
+  • All other columns from sheet row
+
+Module 2 (Form Variables):
+  • email: From form
+  • name: From form (might be null)
+  • attendance: From form
+  • comments: From form
+
+================================================================================
+RECOMMENDED APPROACH
+================================================================================
+
+BEST: Use Module 5.5 approach
+───────────────────────────────
+
+1. Module 5 adds sheetName variable
+2. Module 5.5 creates displayName (smart name selection)
+3. All emails use {{5.displayName}}
+
+This ensures:
+  ✅ Name from sheet if email exists
+  ✅ Name from form if new email
+  ✅ Fallback if neither available
+  ✅ Consistent across all emails
+
+================================================================================
+CHECKLIST
+================================================================================
+
+□ Update Module 5: Add sheetName variable
+□ Add Module 5.5: Create displayName variable
+□ Update Module 16: Use {{5.displayName}}
+□ Update Module 17: Use {{5.displayName}}
+□ Update Module 19: Use {{5.displayName}}
+□ Update Module 20: Use {{5.displayName}}
+□ Test: Email with existing email → Should show sheet name
+□ Test: Email with new email → Should show form name or fallback
+
+================================================================================
+EXPECTED RESULT
+================================================================================
+
+AFTER FIX:
+
+When email EXISTS in sheet:
+  ✅ Module 11 finds row
+  ✅ Module 5 extracts sheetName
+  ✅ Module 5.5 uses sheetName
+  ✅ Email shows: "Dear [Name from sheet],"
+
+When email NOT in sheet:
+  ✅ Module 5.5 uses form name or fallback
+  ✅ Email shows: "Dear [Name from form or Guest],"
+
+================================================================================
+END OF FIX GUIDE
+================================================================================
+

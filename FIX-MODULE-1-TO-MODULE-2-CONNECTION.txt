@@ -1,0 +1,226 @@
+================================================================================
+FIX: FLOW STOPS AT MODULE 1 - CONNECTION ISSUE
+Module 1 Not Connected to Module 2
+================================================================================
+
+PROBLEM:
+--------
+Module 1 (Google Sheets) runs successfully
+But flow stops there - doesn't continue to Module 2 (Router)
+
+ROOT CAUSE:
+-----------
+Module 1 is NOT connected to Module 2 in the flow
+
+================================================================================
+IMMEDIATE FIX: CONNECT MODULE 1 TO MODULE 2
+================================================================================
+
+STEP 1: Open Make.com Scenario
+-------------------------------
+1. Go to Make.com
+2. Open "Email 1 - Invitation" scenario
+3. You should see the flow diagram
+
+STEP 2: Check Connection
+------------------------
+Look at the visual flow:
+- Do you see a LINE connecting Module 1 to Module 2?
+
+IF NO LINE:
+-----------
+→ Modules are NOT connected
+→ Go to STEP 3
+
+IF YES LINE:
+------------
+→ Modules ARE connected
+→ Problem might be different (go to STEP 6)
+
+================================================================================
+STEP 3: CONNECT MODULE 1 TO MODULE 2
+================================================================================
+
+METHOD 1: Drag Connection (EASIEST)
+------------------------------------
+1. Hover your mouse over Module 1 (Google Sheets Watch Rows)
+2. Look for a small circle/dot on the RIGHT side of Module 1
+3. Click and HOLD on that dot
+4. Drag your mouse to Module 2 (Router)
+5. Release when you're over Module 2
+6. A connection line should appear
+7. Save the scenario
+
+METHOD 2: Use Module Settings
+-------------------------------
+1. Click on Module 2 (Router)
+2. Look for "Input" or "Connection" option
+3. Click on it
+4. Select "Module 1" or "Google Sheets Watch Rows"
+5. Save Module 2
+
+METHOD 3: Re-add Router Module
+-------------------------------
+1. Delete Module 2 (Router) - right-click → Delete
+2. Add new "Router" module
+3. Make.com should automatically connect it to Module 1
+4. If not, use Method 1 or 2
+5. Reconfigure the routes (Route 1 → Module 3, Route 2 → Module 4)
+6. Save
+
+================================================================================
+STEP 4: VERIFY CONNECTION
+================================================================================
+
+After connecting:
+
+1. Look at the flow diagram
+2. You should see:
+   Module 1 → [LINE] → Module 2
+
+3. Click on Module 2
+4. It should show "Connected to Module 1" or similar
+
+IF CONNECTED:
+-------------
+→ Go to STEP 5 (Test)
+
+IF NOT CONNECTED:
+-----------------
+→ Try Method 3 (Re-add Router)
+
+================================================================================
+STEP 5: TEST THE CONNECTION
+================================================================================
+
+1. Save all changes
+2. Make sure scenario is ON
+3. Add test lead to Google Sheets:
+   - Name: Connection Test
+   - Email: your-email@example.com
+   - Language: en
+
+4. Wait 30 seconds
+
+5. Check execution history:
+   □ Module 1: Should run ✅
+   □ Module 2: Should run ✅ (THIS IS THE KEY!)
+   □ Module 3 or 4: Should run ✅
+
+IF MODULE 2 RUNS:
+-----------------
+→ Connection fixed! ✅
+→ Flow should continue
+
+IF MODULE 2 STILL DOESN'T RUN:
+------------------------------
+→ Go to STEP 6
+
+================================================================================
+STEP 6: CHECK MODULE 2 CONFIGURATION
+================================================================================
+
+If Module 2 is connected but not running:
+
+1. Open Module 2 (Router)
+2. Check routes:
+   - Route 1: Should contain Module 3
+   - Route 2: Should contain Module 4
+
+3. Check filters:
+   - Route 1: Filter on Module 3 ({{1.3}} = "en")
+   - Route 2: Filter on Module 4 ({{1.3}} = "ar")
+
+4. Make sure routes are properly configured
+
+================================================================================
+STEP 7: ALTERNATIVE - CHECK MODULE ORDER
+================================================================================
+
+In Make.com, the flow should be:
+
+Module 1 (Google Sheets Watch Rows)
+    ↓ [CONNECTION LINE]
+Module 2 (Router)
+    ├─ Route 1 → Module 3 → Module 5
+    └─ Route 2 → Module 4 → Module 7
+
+If Module 2 is BEFORE Module 1:
+→ Delete Module 2
+→ Add it AFTER Module 1
+→ Connect Module 1 to Module 2
+
+================================================================================
+VISUAL GUIDE: WHAT IT SHOULD LOOK LIKE
+================================================================================
+
+CORRECT FLOW:
+-------------
+┌─────────────┐
+│  Module 1   │
+│ (Watch Rows)│
+└──────┬──────┘
+       │ [LINE]
+       ▼
+┌─────────────┐
+│  Module 2   │
+│  (Router)   │
+└──────┬──────┘
+       │
+   ┌───┴───┐
+   │       │
+Route 1  Route 2
+   │       │
+   ▼       ▼
+Module 3 Module 4
+
+WRONG (NO CONNECTION):
+-----------------------
+┌─────────────┐
+│  Module 1   │
+│ (Watch Rows)│
+└─────────────┘
+       [NO LINE]
+┌─────────────┐
+│  Module 2   │
+│  (Router)   │
+└─────────────┘
+
+================================================================================
+QUICK FIX SUMMARY
+================================================================================
+
+THE PROBLEM:
+------------
+Module 1 and Module 2 are NOT connected
+
+THE FIX:
+--------
+1. Drag a line from Module 1 to Module 2
+2. OR reconnect Module 2 to Module 1
+3. Save scenario
+4. Test
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+Check these:
+
+1. Is Module 2 actually a Router module?
+   → Should be "Flow Control" → "Router"
+
+2. Is Module 2 positioned AFTER Module 1?
+   → Module 2 should be to the right of Module 1
+
+3. Are there any error messages in Module 2?
+   → Check execution log for Module 2
+
+4. Try deleting and re-adding Module 2:
+   → Delete Module 2
+   → Add new Router
+   → Connect to Module 1
+   → Reconfigure routes
+
+================================================================================
+

@@ -1,0 +1,278 @@
+================================================================================
+FIX: GOOGLE SHEETS NOT SHOWING DATA
+Module 1 Not Retrieving Data
+================================================================================
+
+PROBLEM:
+--------
+Module 1 (Google Sheets Watch Rows) runs but doesn't show data
+OR doesn't retrieve data from Google Sheets
+
+================================================================================
+STEP 1: CHECK GOOGLE SHEETS CONNECTION
+================================================================================
+
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click on Module 1 (Google Sheets Watch Rows)
+4. Check the connection:
+   - Does it show "My Google connection (luxsess2001@gmail.com)"?
+   - Is there a red error icon?
+
+IF CONNECTION ERROR:
+--------------------
+1. Click on the connection
+2. Click "Reconnect" or "Authorize"
+3. Grant permissions to Google Sheets
+4. Save Module 1
+5. Test again
+
+================================================================================
+STEP 2: VERIFY SPREADSHEET ID
+================================================================================
+
+Your current Spreadsheet ID:
+/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+
+TO VERIFY:
+----------
+1. Open your Google Sheets
+2. Look at the URL in browser
+3. The ID should be: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+
+IF DIFFERENT:
+-------------
+1. Copy the correct Spreadsheet ID from URL
+2. Open Module 1
+3. Update "Spreadsheet ID" field
+4. Save
+
+================================================================================
+STEP 3: VERIFY SHEET NAME
+================================================================================
+
+Your current Sheet Name: "leads"
+
+TO VERIFY:
+----------
+1. Open your Google Sheets
+2. Look at the bottom tabs
+3. What is the exact name of the sheet tab?
+   - Is it "leads" (lowercase)?
+   - Is it "Leads" (capital L)?
+   - Is it something else?
+
+IF DIFFERENT:
+-------------
+1. Open Module 1
+2. Update "Sheet Name" field to match exactly
+3. Sheet names are CASE-SENSITIVE!
+4. Save
+
+================================================================================
+STEP 4: VERIFY HEADERS AND TABLE RANGE
+================================================================================
+
+Your current settings:
+- Table First Row: A1:J1
+- Includes Headers: Yes
+
+TO VERIFY:
+----------
+1. Open your Google Sheets
+2. Check Row 1:
+   - Does it have headers?
+   - Headers should be: Name, Email, Phone, Language, Status, Date Added, Email 1 Date, Email 2 Date, Email 3 Date, Notes
+   - Are they in columns A through J?
+
+IF HEADERS ARE IN DIFFERENT ROW:
+---------------------------------
+1. Open Module 1
+2. Update "Table First Row" to match
+   - If headers in Row 2: A2:J2
+   - If headers in Row 3: A3:J3
+3. Save
+
+IF HEADERS ARE IN DIFFERENT COLUMNS:
+------------------------------------
+1. Check which columns have data
+2. Update "Table First Row" accordingly
+   - If data starts at column B: B1:J1
+   - If data in columns A-K: A1:K1
+
+================================================================================
+STEP 5: CHECK IF DATA EXISTS
+================================================================================
+
+1. Open your Google Sheets
+2. Check if you have data rows:
+   - Is there at least ONE row with data (besides headers)?
+   - Does the row have:
+     * Name in Column A?
+     * Email in Column B?
+     * Language in Column D?
+
+IF NO DATA:
+-----------
+→ Add a test row:
+   - Row 2: Name, Email, Language
+   - Save sheet
+   - Wait 30 seconds
+   - Check Make.com execution
+
+IF DATA EXISTS:
+---------------
+→ Continue to Step 6
+
+================================================================================
+STEP 6: TEST MODULE 1 MANUALLY
+================================================================================
+
+1. Open Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click on Module 1 (Google Sheets Watch Rows)
+4. Look for "Run once" or "Test" button
+5. Click it
+
+WHAT HAPPENS:
+-------------
+□ Shows data → Module 1 works! ✅
+□ Shows error → Check error message
+□ Shows empty → Check Steps 1-5
+
+IF SHOWS ERROR:
+--------------
+→ Copy the error message
+→ Check:
+   - Connection issue?
+   - Spreadsheet ID wrong?
+   - Sheet name wrong?
+   - Permissions issue?
+
+================================================================================
+STEP 7: CHECK MODULE 1 SETTINGS
+================================================================================
+
+Open Module 1 and verify:
+
+□ Connection: My Google connection (luxsess2001@gmail.com)
+□ Spreadsheet ID: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+□ Sheet Name: leads (exact match, case-sensitive)
+□ Table First Row: A1:J1
+□ Includes Headers: Yes
+□ Limit: 1
+□ Mode: Search by path
+
+IF ANY DIFFERENT:
+-----------------
+→ Update to match above
+→ Save
+
+================================================================================
+STEP 8: CHECK GOOGLE SHEETS PERMISSIONS
+================================================================================
+
+1. Make sure the Google account (luxsess2001@gmail.com) has access to the sheet
+2. In Google Sheets, click "Share" button
+3. Check if luxsess2001@gmail.com has access
+4. If not, add it with "Editor" or "Viewer" permission
+
+================================================================================
+STEP 9: VERIFY DATA FORMAT
+================================================================================
+
+Check your Google Sheets data:
+
+ROW 1 (HEADERS):
+----------------
+A: Name
+B: Email
+C: Phone
+D: Language
+E: Status
+F: Date Added
+G: Email 1 Date
+H: Email 2 Date
+I: Email 3 Date
+J: Notes
+
+ROW 2 (TEST DATA):
+------------------
+A: Test User
+B: test@example.com
+C: (can be empty)
+D: en (must be exactly "en" or "ar")
+E: (can be empty)
+F: (can be empty)
+G: (can be empty)
+H: (can be empty)
+I: (can be empty)
+J: (can be empty)
+
+================================================================================
+COMMON ISSUES AND FIXES
+================================================================================
+
+ISSUE 1: Connection expired
+----------------------------
+FIX: Reconnect Google account in Module 1
+
+ISSUE 2: Spreadsheet ID wrong
+------------------------------
+FIX: Copy correct ID from Google Sheets URL
+
+ISSUE 3: Sheet name doesn't match
+----------------------------------
+FIX: Sheet name must match exactly (case-sensitive)
+
+ISSUE 4: Headers in wrong row
+------------------------------
+FIX: Update "Table First Row" to match header row
+
+ISSUE 5: No data in sheet
+-------------------------
+FIX: Add at least one row of data
+
+ISSUE 6: Wrong columns
+----------------------
+FIX: Check which columns have data, update range
+
+================================================================================
+QUICK DIAGNOSTIC TEST
+================================================================================
+
+1. Open Google Sheets
+2. Add test row:
+   - Column A: Test
+   - Column B: test@test.com
+   - Column D: en
+3. Save sheet
+4. In Make.com, click Module 1 → "Run once"
+5. Does it show the test data?
+
+IF YES:
+-------
+→ Module 1 works!
+→ Problem might be with "Watch Rows" trigger
+→ Check if scenario is ON
+
+IF NO:
+------
+→ Check connection, spreadsheet ID, sheet name
+→ Follow Steps 1-9 above
+
+================================================================================
+IF STILL NOT WORKING
+================================================================================
+
+Tell me:
+1. What error message do you see in Module 1?
+2. Does "Run once" show any data?
+3. What does the Google Sheets URL show?
+4. What is the exact sheet tab name?
+5. Do you have data rows in the sheet?
+
+This will help me give you the exact fix!
+
+================================================================================
+

@@ -1,0 +1,330 @@
+{
+    "name": "Handle Expo Form Responses - Improved",
+    "flow": [
+        {
+            "id": 1,
+            "module": "google-forms:watchResponses",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 13157191,
+                "formId": "1ULw8aIt2VuH4d8xUQDmH4fVbzHxBxacuZZtwT6mPRJI",
+                "limit": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 2,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "execution",
+                "variables": [
+                    {
+                        "name": "email",
+                        "value": "{{1.respondentEmail}}"
+                    },
+                    {
+                        "name": "name",
+                        "value": "{{1.answers.1865fa7d.textAnswers.answers[0].value}}"
+                    },
+                    {
+                        "name": "attendance",
+                        "value": "{{1.answers.677abd25.textAnswers.answers[0].value}}"
+                    },
+                    {
+                        "name": "comments",
+                        "value": "{{1.answers.08d2bdde.textAnswers.answers[0].value}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 3,
+            "module": "google-sheets:searchRows",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 13156488
+            },
+            "mapper": {
+                "from": "drive",
+                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                "sheetId": "leads",
+                "filters": [
+                    {
+                        "a": "1",
+                        "o": "text:equal",
+                        "b": "{{2.email}}"
+                    }
+                ],
+                "limit": 1,
+                "includesHeaders": true
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 4,
+            "module": "builtin:ArrayAggregator",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "aggregation": "array",
+                "array": "{{3}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 5,
+            "module": "util:SetVariables",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "scope": "execution",
+                "variables": [
+                    {
+                        "name": "rowNumber",
+                        "value": "{{4[0].rowNumber}}"
+                    },
+                    {
+                        "name": "rowExists",
+                        "value": "{{if(4.length > 0; \"true\"; \"false\")}}"
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 0
+                }
+            },
+            "routes": [
+                {
+                    "name": "Update Existing Row",
+                    "filter": {
+                        "name": "Row exists",
+                        "conditions": [
+                            [
+                                {
+                                    "a": "{{5.rowExists}}",
+                                    "o": "text:equal",
+                                    "b": "true"
+                                }
+                            ]
+                        ]
+                    },
+                    "flow": [
+                        {
+                            "id": 7,
+                            "module": "google-sheets:updateRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 13156488
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                                "sheetId": "leads",
+                                "mode": "rowNumber",
+                                "rowNumber": "{{5.rowNumber}}",
+                                "valueInputOption": "USER_ENTERED",
+                                "includesHeaders": true,
+                                "values": {
+                                    "10": "{{if(2.attendance = \"Yes, I'll attend\"; \"Accepted\"; \"Rejected\")}}",
+                                    "11": "{{now}}",
+                                    "12": "{{2.comments}}"
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": -150
+                                }
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "module": "builtin:ArrayAggregator",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "aggregation": "array",
+                                "array": "{{7}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": -150
+                                }
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "module": "resend:sendAnEmail",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12957549
+                            },
+                            "mapper": {
+                                "from": "sales@thesmartpro.io",
+                                "to": [
+                                    {
+                                        "value": "{{2.email}}"
+                                    }
+                                ],
+                                "subject": "{{if(2.attendance = \"Yes, I'll attend\"; \"Agreement - UAE Property Expo\"; \"Thank You - UAE Property Expo\")}}",
+                                "sendEmailAs": "html",
+                                "html": "{{if(2.attendance = \"Yes, I'll attend\"; \"<!DOCTYPE html><html lang=\\\"en\\\"><head><meta charset=\\\"UTF-8\\\"><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\"><title>Agreement - UAE Property Expo</title></head><body style=\\\"margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;\\\"><table role=\\\"presentation\\\" width=\\\"100%\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #f5f5f5;\\\"><tr><td align=\\\"center\\\" style=\\\"padding: 20px 0;\\\"><table role=\\\"presentation\\\" width=\\\"600\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\\\"><tr><td><img src=\\\"https://i.imgur.com/9GWYlQI.jpeg\\\" alt=\\\"UAE Property Expo Muscat\\\" style=\\\"width: 100%; height: auto; display: block; max-width: 600px;\\\"></td></tr><tr><td style=\\\"padding: 40px 30px; background-color: #FFFFFF;\\\"><h1 style=\\\"color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;\\\">Thank You for Accepting!</h1><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">Dear {{2.name}},</p><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">We're thrilled that you'll be joining us at the <strong style=\\\"color: #C40021;\\\">UAE Property Expo – Muscat</strong>! Your acceptance means a lot to us, and we're excited to have you as part of this exclusive event.</p><div style=\\\"background: linear-gradient(135deg, #1E4168 0%, #000000 100%); color: #FFFFFF; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center;\\\"><p style=\\\"margin: 0 0 10px 0; font-size: 20px; font-weight: bold; color: #D4AF37;\\\">📅 26–27 December 2025</p><p style=\\\"margin: 0; font-size: 18px;\\\">📍 Grand Hyatt, Muscat</p></div><div style=\\\"background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #C40021;\\\"><p style=\\\"color: #1E4168; font-size: 16px; font-weight: bold; margin: 0 0 10px 0;\\\">📋 What's Next:</p><ul style=\\\"color: #333333; font-size: 15px; line-height: 1.8; margin: 0; padding-left: 20px;\\\"><li>You'll receive detailed event information and agenda closer to the date</li><li>Exclusive access to premium property showcases</li><li>Direct meetings with top developers and consultants</li><li>Special expo-only offers and financing options</li><li>Networking opportunities with industry leaders</li></ul></div><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;\\\">We look forward to welcoming you to this exceptional event. If you have any questions or need assistance, please don't hesitate to contact us.</p><div style=\\\"background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;\\\"><p style=\\\"color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;\\\">Contact Us:</p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">UAE: <a href=\\\"tel:+971585312174\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+971 58 531 2174</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Oman: <a href=\\\"tel:+96897083232\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 970 83232</a> | <a href=\\\"tel:+96879665511\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 796 65511</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Email: <a href=\\\"mailto:sales@thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">sales@thesmartpro.io</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Website: <a href=\\\"https://www.thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">www.thesmartpro.io</a></p></div><p style=\\\"color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;\\\">Organized by: UAE Property Expo • Falcon Eye • Globo</p></td></tr></table></td></tr></table></body></html>\"; \"<!DOCTYPE html><html lang=\\\"en\\\"><head><meta charset=\\\"UTF-8\\\"><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\"><title>Thank You</title></head><body style=\\\"margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;\\\"><table role=\\\"presentation\\\" width=\\\"100%\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #f5f5f5;\\\"><tr><td align=\\\"center\\\" style=\\\"padding: 20px 0;\\\"><table role=\\\"presentation\\\" width=\\\"600\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\\\"><tr><td style=\\\"padding: 40px 30px; background-color: #FFFFFF;\\\"><h1 style=\\\"color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;\\\">Thank You!</h1><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">Dear {{2.name}},</p><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">Thank you for your interest in the <strong style=\\\"color: #C40021;\\\">UAE Property Expo – Muscat</strong>.</p><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">We understand you cannot attend this time, but we hope to see you at future events!</p><div style=\\\"background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;\\\"><p style=\\\"color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;\\\">Contact Us:</p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">UAE: <a href=\\\"tel:+971585312174\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+971 58 531 2174</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Oman: <a href=\\\"tel:+96897083232\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 970 83232</a> | <a href=\\\"tel:+96879665511\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 796 65511</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Email: <a href=\\\"mailto:sales@thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">sales@thesmartpro.io</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Website: <a href=\\\"https://www.thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">www.thesmartpro.io</a></p></div><p style=\\\"color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;\\\">Organized by: UAE Property Expo • Falcon Eye • Globo</p></td></tr></table></td></tr></table></body></html>\")}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": -150
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Add New Row",
+                    "flow": [
+                        {
+                            "id": 10,
+                            "module": "google-sheets:addRow",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 13156488
+                            },
+                            "mapper": {
+                                "from": "drive",
+                                "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+                                "sheetId": "leads",
+                                "valueInputOption": "USER_ENTERED",
+                                "values": {
+                                    "1": "{{2.email}}",
+                                    "2": "{{2.name}}",
+                                    "10": "{{if(2.attendance = \"Yes, I'll attend\"; \"Accepted\"; \"Rejected\")}}",
+                                    "11": "{{now}}",
+                                    "12": "{{2.comments}}"
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": 150
+                                }
+                            }
+                        },
+                        {
+                            "id": 11,
+                            "module": "builtin:ArrayAggregator",
+                            "version": 1,
+                            "parameters": {},
+                            "mapper": {
+                                "aggregation": "array",
+                                "array": "{{10}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2100,
+                                    "y": 150
+                                }
+                            }
+                        },
+                        {
+                            "id": 12,
+                            "module": "resend:sendAnEmail",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 12957549
+                            },
+                            "mapper": {
+                                "from": "sales@thesmartpro.io",
+                                "to": [
+                                    {
+                                        "value": "{{2.email}}"
+                                    }
+                                ],
+                                "subject": "{{if(2.attendance = \"Yes, I'll attend\"; \"Agreement - UAE Property Expo\"; \"Thank You - UAE Property Expo\")}}",
+                                "sendEmailAs": "html",
+                                "html": "{{if(2.attendance = \"Yes, I'll attend\"; \"<!DOCTYPE html><html lang=\\\"en\\\"><head><meta charset=\\\"UTF-8\\\"><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\"><title>Agreement - UAE Property Expo</title></head><body style=\\\"margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;\\\"><table role=\\\"presentation\\\" width=\\\"100%\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #f5f5f5;\\\"><tr><td align=\\\"center\\\" style=\\\"padding: 20px 0;\\\"><table role=\\\"presentation\\\" width=\\\"600\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\\\"><tr><td><img src=\\\"https://i.imgur.com/9GWYlQI.jpeg\\\" alt=\\\"UAE Property Expo Muscat\\\" style=\\\"width: 100%; height: auto; display: block; max-width: 600px;\\\"></td></tr><tr><td style=\\\"padding: 40px 30px; background-color: #FFFFFF;\\\"><h1 style=\\\"color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;\\\">Thank You for Accepting!</h1><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">Dear {{2.name}},</p><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">We're thrilled that you'll be joining us at the <strong style=\\\"color: #C40021;\\\">UAE Property Expo – Muscat</strong>! Your acceptance means a lot to us, and we're excited to have you as part of this exclusive event.</p><div style=\\\"background: linear-gradient(135deg, #1E4168 0%, #000000 100%); color: #FFFFFF; padding: 30px; border-radius: 8px; margin: 30px 0; text-align: center;\\\"><p style=\\\"margin: 0 0 10px 0; font-size: 20px; font-weight: bold; color: #D4AF37;\\\">📅 26–27 December 2025</p><p style=\\\"margin: 0; font-size: 18px;\\\">📍 Grand Hyatt, Muscat</p></div><div style=\\\"background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #C40021;\\\"><p style=\\\"color: #1E4168; font-size: 16px; font-weight: bold; margin: 0 0 10px 0;\\\">📋 What's Next:</p><ul style=\\\"color: #333333; font-size: 15px; line-height: 1.8; margin: 0; padding-left: 20px;\\\"><li>You'll receive detailed event information and agenda closer to the date</li><li>Exclusive access to premium property showcases</li><li>Direct meetings with top developers and consultants</li><li>Special expo-only offers and financing options</li><li>Networking opportunities with industry leaders</li></ul></div><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;\\\">We look forward to welcoming you to this exceptional event. If you have any questions or need assistance, please don't hesitate to contact us.</p><div style=\\\"background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;\\\"><p style=\\\"color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;\\\">Contact Us:</p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">UAE: <a href=\\\"tel:+971585312174\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+971 58 531 2174</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Oman: <a href=\\\"tel:+96897083232\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 970 83232</a> | <a href=\\\"tel:+96879665511\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 796 65511</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Email: <a href=\\\"mailto:sales@thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">sales@thesmartpro.io</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Website: <a href=\\\"https://www.thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">www.thesmartpro.io</a></p></div><p style=\\\"color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;\\\">Organized by: UAE Property Expo • Falcon Eye • Globo</p></td></tr></table></td></tr></table></body></html>\"; \"<!DOCTYPE html><html lang=\\\"en\\\"><head><meta charset=\\\"UTF-8\\\"><meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\"><title>Thank You</title></head><body style=\\\"margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;\\\"><table role=\\\"presentation\\\" width=\\\"100%\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #f5f5f5;\\\"><tr><td align=\\\"center\\\" style=\\\"padding: 20px 0;\\\"><table role=\\\"presentation\\\" width=\\\"600\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" style=\\\"background-color: #FFFFFF; max-width: 600px; width: 100%; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);\\\"><tr><td style=\\\"padding: 40px 30px; background-color: #FFFFFF;\\\"><h1 style=\\\"color: #1E4168; font-size: 32px; margin: 0 0 20px 0; text-align: center; font-weight: 700;\\\">Thank You!</h1><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">Dear {{2.name}},</p><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">Thank you for your interest in the <strong style=\\\"color: #C40021;\\\">UAE Property Expo – Muscat</strong>.</p><p style=\\\"color: #333333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;\\\">We understand you cannot attend this time, but we hope to see you at future events!</p><div style=\\\"background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px; border-left: 4px solid #C40021;\\\"><p style=\\\"color: #1E4168; font-size: 14px; margin: 5px 0; font-weight: bold;\\\">Contact Us:</p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">UAE: <a href=\\\"tel:+971585312174\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+971 58 531 2174</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Oman: <a href=\\\"tel:+96897083232\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 970 83232</a> | <a href=\\\"tel:+96879665511\\\" style=\\\"color: #C40021; text-decoration: none;\\\">+968 796 65511</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Email: <a href=\\\"mailto:sales@thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">sales@thesmartpro.io</a></p><p style=\\\"color: #333333; font-size: 14px; margin: 5px 0;\\\">Website: <a href=\\\"https://www.thesmartpro.io\\\" style=\\\"color: #C40021; text-decoration: none;\\\">www.thesmartpro.io</a></p></div><p style=\\\"color: #666666; font-size: 12px; margin: 30px 0 0 0; text-align: center;\\\">Organized by: UAE Property Expo • Falcon Eye • Globo</p></td></tr></table></td></tr></table></body></html>\")}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2400,
+                                    "y": 150
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": [
+            "IMPROVED SCENARIO - Best Practices Implementation",
+            "1. Variables use 'execution' scope to prevent leakage",
+            "2. Search rows BEFORE router to check if row exists",
+            "3. Array aggregator collects search results",
+            "4. Router: Route 1 updates existing row, Route 2 adds new row",
+            "5. Update row uses rowNumber mode for efficiency",
+            "6. Array aggregator before email ensures single email per submission",
+            "7. Error handling: maxErrors set to 3, autoCommit enabled"
+        ]
+    }
+}
+
+
+

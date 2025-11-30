@@ -1,0 +1,313 @@
+================================================================================
+MAKE.COM SCENARIO VERIFICATION CHECKLIST
+Email 1 - Invitation Workflow
+================================================================================
+
+SCENARIO URL:
+-----------
+https://eu2.make.com/1066389/scenarios/8165341/edit
+
+SCENARIO NAME:
+------------
+"Email 1 - Invitation" (or similar)
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+MODULE 1: WEBHOOK TRIGGER ✅ MUST VERIFY
+─────────────────────────────────────────
+
+□ Module Type: Webhooks → Custom webhook
+
+□ Webhook URL matches:
+  https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+□ Method: POST (or GET, but POST recommended)
+
+□ Scenario is ACTIVE (turned on - toggle switch in top right)
+
+□ Webhook URL is accessible (green/active indicator)
+
+VERIFICATION STEPS:
+1. Click on Module 1 (Webhook)
+2. Copy the webhook URL shown
+3. Compare with: m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+4. Ensure scenario is ON (not paused)
+
+EXPECTED OUTPUT FROM WEBHOOK:
+{
+  "timestamp": "...",
+  "name": "...",
+  "email": "...",
+  "phone": "...",
+  "language": "en" or "ar",
+  "status": "...",
+  "attendance": "...",
+  "response": "...",
+  "responseDate": "...",
+  "comments": "..."
+}
+
+================================================================================
+MODULE 2: SET VARIABLES ✅ RECOMMENDED
+─────────────────────────────────────────
+
+□ Module Type: Tools → Set multiple variables
+
+□ Scope: "Execution" (recommended) or "Scenario"
+
+□ Variables configured:
+  □ email: {{1.email}} or {{1.body.email}}
+  □ name: {{1.name}} or {{1.body.name}}
+  □ language: {{1.language}} or {{1.body.language}}
+  □ attendance: {{1.attendance}} or {{1.body.attendance}}
+  □ comments: {{1.comments}} or {{1.body.comments}}
+
+NOTE: Variable mapping depends on webhook format.
+If webhook sends JSON body, use: {{1.body.email}}
+If webhook sends form data, use: {{1.email}}
+
+================================================================================
+MODULE 3: ROUTER (Language Check) ✅ RECOMMENDED
+──────────────────────────────────────────────────
+
+□ Module Type: Flow Control → Router
+
+□ Route 1: English (EN)
+  Condition: {{2.language}} = "en" OR {{1.language}} = "en"
+
+□ Route 2: Arabic (AR)
+  Condition: {{2.language}} = "ar" OR {{1.language}} = "ar"
+
+□ Route 3: Default/Fallback (optional)
+
+VERIFICATION:
+- Language should be checked from webhook payload
+- Routes should lead to appropriate email modules
+
+================================================================================
+MODULE 4/5: SEND EMAIL ✅ MUST VERIFY
+───────────────────────────────────────
+
+ROUTE 1 (English):
+□ Module Type: Email (Resend) → Send an Email
+
+□ From: sales@thesmartpro.io (or your email)
+
+□ To: {{2.email}} or {{1.email}}
+
+□ Subject: "Invitation - UAE Property Expo" (or similar)
+
+□ Email template configured (HTML content)
+
+□ Language: English
+
+ROUTE 2 (Arabic):
+□ Module Type: Email (Resend) → Send an Email
+
+□ From: sales@thesmartpro.io (or your email)
+
+□ To: {{2.email}} or {{1.email}}
+
+□ Subject: Arabic subject text
+
+□ Email template configured (Arabic HTML content)
+
+□ Language: Arabic
+
+VERIFICATION:
+- Email addresses use correct variable reference
+- Email templates are properly formatted
+- Both EN and AR routes have email modules
+
+================================================================================
+MODULE 6: UPDATE GOOGLE SHEETS ✅ MUST VERIFY
+──────────────────────────────────────────────
+
+□ Module Type: Google Sheets → Update Row
+
+□ Spreadsheet: Your leads sheet selected
+
+□ Sheet: "leads"
+
+□ Mode: "Search Rows" (RECOMMENDED) or "rowNumber"
+
+If using "Search Rows" mode:
+  □ Search Filter:
+    - Column: 1 or "Email"
+    - Operator: equals
+    - Value: {{2.email}} or {{1.email}}
+
+If using "rowNumber" mode:
+  ⚠️ This may cause "missing rowNumber" error
+  → Switch to "Search Rows" mode instead
+
+Values to Update:
+  □ Column E (5): Status = "Email 1 Sent"
+
+  □ Column G (7): Email 1 Date = {{now}}
+
+VERIFICATION:
+- Spreadsheet matches your sheet URL
+- Sheet name is "leads"
+- Status is updated to "Email 1 Sent"
+- Email 1 Date is set to current time
+
+================================================================================
+SCENARIO SETTINGS ✅ VERIFY
+───────────────────────────
+
+□ Scenario Name: "Email 1 - Invitation" (or descriptive name)
+
+□ Scenario is ACTIVE (toggle switch ON)
+
+□ Error handling configured (optional but recommended)
+
+□ Data retention settings appropriate
+
+================================================================================
+COMPLETE WORKFLOW STRUCTURE
+================================================================================
+
+Expected Flow:
+──────────────
+1. Webhook → Receives form data from Google Apps Script
+2. Set Variables → Extract email, name, language, etc.
+3. Router → Route based on language (EN/AR)
+4. Send Email → Send appropriate email template
+5. Update Row → Update Google Sheets with status and date
+
+================================================================================
+TROUBLESHOOTING CHECKLIST
+================================================================================
+
+ISSUE: Webhook not receiving data
+─────────────────────────────────
+□ Verify webhook URL in Module 1 matches script webhook URL
+□ Check Google Apps Script is sending data
+□ Verify webhook format (JSON body vs form data)
+□ Check Make.com execution log for errors
+□ Test webhook manually with testWebhook() function
+
+ISSUE: Variables are empty
+──────────────────────────
+□ Check variable references match webhook output format
+□ Verify webhook is sending expected fields
+□ Use {{1.body.field}} if JSON body format
+□ Use {{1.field}} if form data format
+□ Check Module 1 output to see actual data structure
+
+ISSUE: Router not routing correctly
+───────────────────────────────────
+□ Verify language field is being read correctly
+□ Check language values: "en" or "ar" (lowercase)
+□ Test router conditions
+□ Check variable references
+
+ISSUE: Email not sending
+────────────────────────
+□ Verify email service (Resend) is connected
+□ Check email addresses are valid
+□ Verify "From" email is authorized
+□ Check email templates are valid HTML
+□ Look at email module error messages
+
+ISSUE: Update Row fails - missing rowNumber
+───────────────────────────────────────────
+□ Switch Update Row mode to "Search Rows"
+□ Verify Search Filter finds the email
+□ Check email variable reference is correct
+□ See: FIX-UPDATE-ROW-MISSING-ROW-NUMBER.txt for details
+
+ISSUE: Google Sheets not updating
+─────────────────────────────────
+□ Verify spreadsheet connection
+□ Check sheet name is "leads"
+□ Verify column indexes (E=5 for Status, G=7 for Email 1 Date)
+□ Check Update Row module executed successfully
+□ Verify no filter errors
+
+================================================================================
+TESTING PROCEDURE
+================================================================================
+
+STEP 1: Test Webhook Connection
+───────────────────────────────
+1. Open Google Apps Script
+2. Run testWebhook() function
+3. Check Apps Script execution log
+4. Check Make.com execution log
+5. Verify scenario executed
+
+STEP 2: Test with Actual Data
+──────────────────────────────
+1. Run testLastRow() in Apps Script
+2. Processes last row from sheet (row 4)
+3. Sends to webhook
+4. Check Make.com execution
+5. Verify email sent
+6. Verify Google Sheets updated
+
+STEP 3: Test Full Flow
+──────────────────────
+1. Submit a test form response
+2. Check Apps Script log (should trigger automatically)
+3. Check Make.com execution log
+4. Verify Email 1 sent to correct address
+5. Verify Google Sheets updated:
+   - Status = "Email 1 Sent"
+   - Email 1 Date = current timestamp
+
+STEP 4: Test Both Languages
+───────────────────────────
+1. Submit form with language = "en"
+2. Verify English email sent
+3. Submit form with language = "ar"
+4. Verify Arabic email sent
+
+================================================================================
+QUICK VERIFICATION COMMANDS
+================================================================================
+
+In Google Apps Script:
+──────────────────────
+1. diagnoseSheetStructure() ✅ (Already verified)
+2. testWebhook() → Test webhook connection
+3. testLastRow() → Test with actual data
+
+In Make.com:
+────────────
+1. Check execution log (View → Executions)
+2. Run scenario manually (Run button)
+3. Check webhook module output
+4. Verify each module executed successfully
+
+================================================================================
+VERIFICATION SUMMARY
+================================================================================
+
+After checking all items above:
+
+✅ Webhook URL matches script webhook URL
+✅ Variables are correctly mapped
+✅ Router routes by language correctly
+✅ Email modules send appropriate templates
+✅ Update Row updates Google Sheets correctly
+✅ Scenario is active and ready
+
+STATUS: ✅ READY FOR PRODUCTION
+
+================================================================================
+IMPORTANT WEBHOOK URL REFERENCE
+================================================================================
+
+Your webhook URL should be:
+https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+If different in Make.com Module 1, update it to match this URL.
+
+================================================================================
+END
+================================================================================
+

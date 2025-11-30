@@ -1,0 +1,89 @@
+================================================================================
+UPDATE WEBHOOK URL IN GOOGLE APPS SCRIPT
+================================================================================
+
+Your new webhook URL:
+  https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+You need to update this in your Google Apps Script!
+
+================================================================================
+STEP-BY-STEP UPDATE
+================================================================================
+
+STEP 1: Open Apps Script
+──────────────────────────
+
+1. Open your Google Sheet
+2. Go to Extensions → Apps Script
+
+STEP 2: Find WEBHOOK_URL
+──────────────────────────
+
+1. In the script, find this line:
+   const WEBHOOK_URL = 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u';
+
+STEP 3: Update the URL
+───────────────────────
+
+1. Delete the old URL
+2. Replace with:
+   const WEBHOOK_URL = 'https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn';
+
+Or simply change the URL part:
+   FROM: 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u'
+   TO:   'https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn'
+
+STEP 4: Save Script
+────────────────────
+
+1. Click Save (or Ctrl+S / Cmd+S)
+2. Script is now updated!
+
+STEP 5: Test
+─────────────
+
+1. Run testWebhook() function
+2. Check logs for success
+3. Verify Make.com receives data
+
+================================================================================
+QUICK COPY-PASTE
+================================================================================
+
+Find this line in your script:
+────────────────────────────────
+const WEBHOOK_URL = 'https://hook.eu2.make.com/aiflluclc1hiyci8slmm4rex79tfvn5u';
+
+Replace with:
+──────────────
+const WEBHOOK_URL = 'https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn';
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After updating:
+
+1. Save the script
+2. Run testWebhook()
+3. Check logs - should show success
+4. Check Make.com - should see new execution
+
+================================================================================
+ALSO UPDATE IN MODULE 12
+================================================================================
+
+Make sure Make.com Module 12 (Webhook) is configured with this URL:
+
+1. Open Make.com scenario
+2. Click Module 12 (Webhook)
+3. Verify webhook URL matches:
+   https://hook.eu2.make.com/m0i3qbv1dwbh41jd9g9vpek57dqmglnn
+
+If different, reconfigure the webhook module.
+
+================================================================================
+END
+================================================================================
+

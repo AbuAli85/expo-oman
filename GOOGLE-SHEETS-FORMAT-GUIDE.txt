@@ -1,0 +1,300 @@
+================================================================================
+GOOGLE SHEETS FORMAT GUIDE
+How to Add Leads for Automatic Email Sending
+================================================================================
+
+This guide shows you exactly how to format your Google Sheets so the
+automation works perfectly.
+
+================================================================================
+REQUIRED COLUMN STRUCTURE
+================================================================================
+
+Your Google Sheets should have these columns (in this order):
+
+| Column | Header        | Required | Example              | Notes                    |
+|--------|---------------|----------|----------------------|--------------------------|
+| A      | Name          | YES      | "John Smith"         | Lead's full name         |
+| B      | Email         | YES      | "john@example.com"   | Valid email address      |
+| C      | Phone         | NO       | "+968 12345678"      | Optional but recommended |
+| D      | Language      | YES      | "en" or "ar"        | Must be "en" or "ar"      |
+| E      | Status        | NO       | "New"               | Auto-updated by system   |
+| F      | Date Added    | NO       | Auto-filled         | Auto-filled              |
+| G      | Email 1 Date  | NO       | Auto-filled         | Auto-filled              |
+| H      | Email 2 Date  | NO       | Auto-filled         | Auto-filled              |
+| I      | Email 3 Date  | NO       | Auto-filled         | Auto-filled              |
+| J      | Notes         | NO       | "Interested in..."   | Optional notes           |
+
+================================================================================
+EXAMPLE: ADDING A NEW LEAD
+================================================================================
+
+STEP 1: Open Google Sheets
+----------------------------
+Open your leads spreadsheet
+
+STEP 2: Add New Row
+--------------------
+Click on the first empty row and fill in:
+
+Row 2 (example):
+| A: John Smith | B: john@example.com | C: +968 12345678 | D: en | E: (leave empty) |
+
+STEP 3: Save
+------------
+Just save the sheet (Ctrl+S or Cmd+S)
+
+STEP 4: Automatic!
+-------------------
+Within seconds:
+→ Email 1 will be sent automatically ✅
+→ Status will update to "Email 1 Sent"
+→ Email 1 Date will be filled
+
+YOU DON'T NEED TO DO ANYTHING ELSE!
+
+================================================================================
+EXAMPLE ROWS
+================================================================================
+
+ENGLISH LEAD:
+-------------
+| Name       | Email              | Phone         | Language | Status |
+|------------|--------------------|---------------|----------|--------|
+| John Smith | john@example.com  | +968 12345678 | en       | New    |
+
+ARABIC LEAD:
+------------
+| Name        | Email               | Phone         | Language | Status |
+|-------------|---------------------|---------------|----------|--------|
+| أحمد محمد   | ahmed@example.com   | +968 87654321 | ar       | New    |
+
+MULTIPLE LEADS:
+---------------
+| Name         | Email                | Phone         | Language | Status |
+|--------------|----------------------|---------------|-----------|--------|
+| John Smith   | john@example.com     | +968 12345678 | en        | New    |
+| Sarah Ali    | sarah@example.com    | +968 11111111 | en        | New    |
+| أحمد محمد    | ahmed@example.com    | +968 87654321 | ar        | New    |
+| فاطمة علي    | fatima@example.com  | +968 22222222 | ar        | New    |
+
+All of these will get Email 1 automatically!
+
+================================================================================
+LANGUAGE VALUES
+================================================================================
+
+IMPORTANT: Language column (D) must be EXACTLY:
+- "en" (lowercase) for English
+- "ar" (lowercase) for Arabic
+
+OR:
+- "EN" (uppercase) for English
+- "AR" (uppercase) for Arabic
+
+BUT: Make sure your router filters match the case you use!
+
+RECOMMENDED: Use lowercase "en" and "ar" for consistency.
+
+================================================================================
+WHAT HAPPENS AFTER YOU ADD A LEAD
+================================================================================
+
+IMMEDIATELY (within seconds):
+-----------------------------
+1. Make.com detects new row
+2. Reads the data:
+   - Name: Column A
+   - Email: Column B
+   - Language: Column D
+3. Routes based on Language
+4. Sends Email 1 (English or Arabic)
+5. Updates Google Sheets:
+   - Status (E) = "Email 1 Sent"
+   - Email 1 Date (G) = Current date/time
+
+AFTER 3 DAYS:
+-------------
+1. Scenario 2 runs daily at 9:00 AM
+2. Finds leads with:
+   - Status = "Email 1 Sent"
+   - Email 1 Date = More than 3 days ago
+3. Sends Email 2
+4. Updates:
+   - Status = "Email 2 Sent"
+   - Email 2 Date (H) = Current date/time
+
+AFTER 4 MORE DAYS (7 days total):
+-----------------------------------
+1. Scenario 3 runs daily at 9:00 AM
+2. Finds leads with:
+   - Status = "Email 2 Sent"
+3. Sends Email 3
+4. Updates:
+   - Status = "Email 3 Sent"
+   - Email 3 Date (I) = Current date/time
+
+================================================================================
+BULK IMPORT FROM CSV/EXCEL
+================================================================================
+
+If you have many leads in a CSV or Excel file:
+
+STEP 1: Prepare Your CSV/Excel
+--------------------------------
+Make sure it has these columns (in order):
+- Column 1: Name
+- Column 2: Email
+- Column 3: Phone (optional)
+- Column 4: Language ("en" or "ar")
+- Column 5: Status (can leave empty)
+
+STEP 2: Import to Google Sheets
+--------------------------------
+1. Open Google Sheets
+2. File → Import
+3. Upload your CSV/Excel file
+4. Make sure columns align correctly
+
+STEP 3: Verify Format
+----------------------
+Check that:
+- Column A = Name
+- Column B = Email
+- Column D = Language ("en" or "ar")
+
+STEP 4: Save
+------------
+Save the sheet
+
+STEP 5: Automatic!
+-------------------
+Make.com will detect all new rows
+Email 1 will be sent to ALL new leads automatically!
+
+================================================================================
+TIPS FOR ADDING LEADS
+================================================================================
+
+TIP 1: Use Consistent Language Values
+------------------------------------
+Always use "en" or "ar" (lowercase) for consistency
+
+TIP 2: Validate Email Addresses
+--------------------------------
+Make sure email addresses are valid before adding
+Invalid emails will cause errors
+
+TIP 3: Add Phone Numbers
+------------------------
+While optional, phone numbers are useful for follow-up
+
+TIP 4: Use Status Column
+-------------------------
+You can manually set Status to skip emails:
+- Set to "Email 2 Sent" to skip Email 1 and 2
+- Set to "Email 3 Sent" to skip all emails
+
+TIP 5: Batch Add Leads
+-----------------------
+You can add multiple leads at once
+Each will get Email 1 automatically
+
+================================================================================
+COMMON MISTAKES TO AVOID
+================================================================================
+
+MISTAKE 1: Wrong Language Value
+---------------------------------
+❌ Using "English" or "Arabic" (full words)
+❌ Using "ENGLISH" or "ARABIC" (all caps)
+✅ Use "en" or "ar" (lowercase)
+
+MISTAKE 2: Missing Email
+-------------------------
+❌ Leaving Email column (B) empty
+✅ Always fill Email column
+
+MISTAKE 3: Invalid Email Format
+--------------------------------
+❌ "john@example" (missing .com)
+❌ "john example.com" (missing @)
+✅ "john@example.com" (valid format)
+
+MISTAKE 4: Wrong Column Order
+------------------------------
+❌ Email in column A, Name in column B
+✅ Name in column A, Email in column B
+
+MISTAKE 5: Extra Spaces
+------------------------
+❌ " en " (with spaces)
+✅ "en" (no spaces)
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+Before adding leads, verify:
+□ Google Sheets has correct column structure
+□ Column A = Name
+□ Column B = Email
+□ Column D = Language
+□ Language values are "en" or "ar"
+□ Scenario 1 is active in Make.com
+□ Scenario 2 is active in Make.com
+□ Scenario 3 is active in Make.com
+
+After adding a lead:
+□ Check if Email 1 was sent (within seconds)
+□ Verify Status updated to "Email 1 Sent"
+□ Verify Email 1 Date was filled
+□ Check execution logs in Make.com
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+TO ADD A LEAD:
+--------------
+1. Open Google Sheets
+2. Add row with: Name, Email, Language
+3. Save
+4. Done! Email 1 sends automatically ✅
+
+TO ADD MULTIPLE LEADS:
+----------------------
+1. Import CSV/Excel to Google Sheets
+2. Verify column format
+3. Save
+4. Done! All leads get Email 1 automatically ✅
+
+TO CHECK PROGRESS:
+------------------
+1. Look at Status column (E) in Google Sheets
+2. Check date columns (G, H, I)
+3. All updates happen automatically
+
+================================================================================
+SUMMARY
+================================================================================
+
+YOUR WORK:
+----------
+✅ Add lead details to Google Sheets
+✅ That's it!
+
+AUTOMATIC:
+----------
+✅ Email 1 sent immediately
+✅ Email 2 sent after 3 days
+✅ Email 3 sent after 4 more days
+✅ Google Sheets updated automatically
+✅ Status tracked automatically
+
+RESULT:
+-------
+Complete automation - just add leads, everything else is automatic! 🚀
+
+================================================================================
+

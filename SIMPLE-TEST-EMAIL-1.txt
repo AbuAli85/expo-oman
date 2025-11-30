@@ -1,0 +1,205 @@
+================================================================================
+SIMPLE TEST: IS EMAIL 1 WORKING?
+5-Minute Test Procedure
+================================================================================
+
+Follow these steps to test if Email 1 is working correctly.
+
+================================================================================
+BEFORE YOU START
+================================================================================
+
+Make sure you have:
+□ Access to Make.com
+□ Access to Google Sheets
+□ A test email address you can check
+
+================================================================================
+TEST STEP 1: CHECK SCENARIO STATUS (30 seconds)
+================================================================================
+
+1. Go to Make.com
+2. Find "Email 1 - Invitation" scenario
+3. Look at the top-right corner
+4. Is there a toggle switch?
+5. What color is it?
+
+RESULT:
+-------
+🟢 GREEN/ON = Good, continue
+🔴 GRAY/OFF = Problem! Turn it ON, then continue
+
+ACTION:
+-------
+If OFF: Click the toggle to turn it ON
+Wait 5 seconds
+
+================================================================================
+TEST STEP 2: CHECK GOOGLE SHEETS (1 minute)
+================================================================================
+
+1. Open your Google Sheets
+2. Find the "leads" sheet (or your sheet name)
+3. Add a test row with this EXACT data:
+
+   | Column A (Name) | Column B (Email) | Column C (Phone) | Column D (Language) |
+   |----------------|------------------|------------------|---------------------|
+   | Test User      | your-email@example.com | +968 12345678 | en |
+
+4. IMPORTANT: Make sure:
+   - Email is YOUR real email (so you can check it)
+   - Language is "en" (lowercase, exact)
+   - Save the sheet (Ctrl+S or Cmd+S)
+
+RESULT:
+-------
+✅ Data added = Good, continue
+❌ Can't add data = Check Google Sheets access
+
+================================================================================
+TEST STEP 3: WAIT AND CHECK (2 minutes)
+================================================================================
+
+1. Wait 15 seconds (Make.com needs time to detect new row)
+2. Go to Make.com
+3. Click "Execution history" or "Logs"
+4. Do you see a NEW execution?
+
+RESULT:
+-------
+✅ YES - New execution appears = Good, continue to Step 4
+❌ NO - No new execution = Problem! Go to TROUBLESHOOTING
+
+TROUBLESHOOTING (If no execution):
+-----------------------------------
+1. Is scenario ON? (Step 1)
+2. Click Module 1 (Watch Rows)
+3. Click "Run once" button
+4. Does it return your test data?
+   - YES → Scenario should trigger automatically
+   - NO → Google Sheets connection issue, reconnect
+
+================================================================================
+TEST STEP 4: CHECK EXECUTION RESULT (1 minute)
+================================================================================
+
+1. Click on the execution you found in Step 3
+2. What do you see?
+
+RESULT A: ✅ SUCCESS (Green checkmark)
+---------------------------------------
+Good! Continue to Step 5
+
+RESULT B: ❌ ERROR (Red X)
+---------------------------
+1. Click on the error
+2. Read the error message
+3. See COMMON ERRORS below
+
+RESULT C: ⚠️ WARNING (Yellow triangle)
+--------------------------------------
+Check the warning message
+Usually not critical, continue to Step 5
+
+================================================================================
+TEST STEP 5: CHECK EMAIL (1 minute)
+================================================================================
+
+1. Check your email inbox
+2. Check spam/junk folder
+3. Do you see the email?
+
+RESULT:
+-------
+✅ YES - Email received = SUCCESS! ✅
+❌ NO - No email = Continue to Step 6
+
+================================================================================
+TEST STEP 6: CHECK GOOGLE SHEETS UPDATE (30 seconds)
+================================================================================
+
+1. Go back to Google Sheets
+2. Find your test row
+3. Check Column E (Status) - what does it say?
+4. Check Column G (Email 1 Date) - is it filled?
+
+RESULT:
+-------
+✅ Status = "Email 1 Sent" AND Date is filled = SUCCESS! ✅
+❌ Status is empty or wrong = Problem, see below
+
+IF STATUS NOT UPDATED:
+---------------------
+1. Check Module 5 or 7 (Update Row) in Make.com
+2. Check if it executed in logs
+3. Check configuration:
+   - Row number: `{{1.__ROW_NUMBER__}}`
+   - Status: "Email 1 Sent"
+   - Email 1 Date: `{{now}}`
+
+================================================================================
+COMMON ERRORS AND QUICK FIXES
+================================================================================
+
+ERROR: "Missing value of required parameter 'to'"
+-------------------------------------------------
+FIX:
+1. Open Module 3 or 4 (Email module)
+2. Change "To" field to: `[{"value": "{{1.1}}"}]`
+3. Save and test again
+
+ERROR: "The 'to' field must be a 'string'"
+-------------------------------------------
+FIX:
+1. Open Module 3 or 4
+2. Change "To" field to: `[{"value": "{{1.1}}"}]`
+3. Save and test again
+
+ERROR: "Filter condition not met"
+---------------------------------
+FIX:
+1. Check Column D in Google Sheets - what value?
+2. Open Module 3 or 4
+3. Check filter - what does it check?
+4. Make them match exactly (case-sensitive!)
+
+ERROR: "Connection error"
+------------------------
+FIX:
+1. Reconnect Google Sheets (Module 1)
+2. Reconnect Resend (Module 3/4)
+3. Test again
+
+================================================================================
+TEST RESULTS SUMMARY
+================================================================================
+
+AFTER COMPLETING ALL STEPS:
+
+✅ ALL GREEN = WORKING!
+   - Scenario is ON
+   - Execution appears
+   - Email received
+   - Google Sheets updated
+   → Your Email 1 is working correctly!
+
+❌ ANY RED = NOT WORKING
+   - Check which step failed
+   - Follow the troubleshooting for that step
+   - Fix the issue
+   - Test again
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+SCENARIO ON? → Check toggle (top-right)
+EXECUTION? → Check logs (within 15 seconds)
+EMAIL? → Check inbox + spam
+SHEET UPDATED? → Check Status column
+
+IF ALL YES: ✅ WORKING!
+IF ANY NO: ❌ Check that step's troubleshooting
+
+================================================================================
+

@@ -1,0 +1,198 @@
+================================================================================
+FIX: [422] Invalid `to` Field Error
+Email Address Not Resolving
+================================================================================
+
+ERROR MESSAGE:
+-------------
+[422] Invalid `to` field. The email address needs to follow the 
+`email@example.com` or `Name <email@example.com>` format.
+
+PROBLEM:
+--------
+Your "To" field shows: "8. email" (just the label)
+But it needs to actually resolve to the email address value.
+
+The variable {{8.email}} is not being used correctly.
+
+================================================================================
+ROOT CAUSE
+================================================================================
+
+In Make.com UI, you see:
+To Array → Item 1 → value: "8. email"
+
+But "8. email" is just the LABEL, not the actual variable.
+
+The "value" field needs to contain: {{8.email}} (with curly braces)
+
+================================================================================
+FIX: MODULE 3 (ENGLISH EMAIL)
+================================================================================
+
+STEP 1: Open Module 3
+---------------------
+1. Click Module 3 (Resend - Send an Email)
+
+STEP 2: Fix To Field
+---------------------
+1. Click "To" field
+2. You should see: [{"value": "8. email"}]
+3. Click on the object item (the one showing "8. email")
+4. Click on the "value" field
+5. DELETE: "8. email"
+6. Type or map: {{8.email}} (with curly braces!)
+7. Should now show: [{"value": "{{8.email}}"}]
+8. Save
+
+IMPORTANT:
+----------
+Make sure the "value" field contains:
+{{8.email}}
+
+NOT:
+"8. email" (just the label)
+
+================================================================================
+FIX: MODULE 4 (ARABIC EMAIL)
+================================================================================
+
+STEP 1: Open Module 4
+---------------------
+1. Click Module 4 (Resend - Send an Email)
+
+STEP 2: Fix To Field
+---------------------
+1. Click "To" field
+2. Click on the object item
+3. Click on "value" field
+4. DELETE: "8. email"
+5. Type or map: {{8.email}} (with curly braces!)
+6. Should now show: [{"value": "{{8.email}}"}]
+7. Save
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After fixing, verify:
+
+1. Click "To" field
+2. Click on the object item
+3. "value" field should show: {{8.email}}
+4. NOT: "8. email" or "8. email" (without curly braces)
+
+If it shows {{8.email}} → ✅ CORRECT!
+If it shows "8. email" → ❌ WRONG - Fix it!
+
+================================================================================
+ALTERNATIVE: USE DIRECT COLUMN REFERENCE
+================================================================================
+
+If {{8.email}} doesn't work, try using direct column reference:
+
+OPTION 1: Use {{1.1}} (direct from Module 1)
+---------------------------------------------
+1. Open Module 3
+2. "To" field → value: {{1.1}}
+3. This directly uses Email column from Google Sheets
+
+OPTION 2: Check Module 8 Output
+--------------------------------
+1. Run scenario once
+2. Check Module 8 output
+3. What does "email" variable contain?
+4. If empty, Module 8 might not be working
+5. Fix Module 8 variables (remove backticks)
+
+================================================================================
+CHECK MODULE 8 IS WORKING
+================================================================================
+
+If {{8.email}} is empty, check Module 8:
+
+1. Open Module 8 (Set Variables)
+2. Check "email" variable
+3. Value should be: {{1.1}} (NOT {{1.`1`}})
+4. Remove backticks if present
+5. Save
+
+Then Module 8 will set:
+- email = value from Column B (Email)
+
+And Module 3 can use:
+- {{8.email}} = the email address
+
+================================================================================
+COMPLETE FIX PROCEDURE
+================================================================================
+
+FIX 1: Module 8 (Set Variables)
+--------------------------------
+1. Open Module 8
+2. For "email" variable:
+   - Change: {{1.`1`}}
+   - To: {{1.1}} (remove backticks)
+3. Save
+
+FIX 2: Module 3 (English Email)
+---------------------------------
+1. Open Module 3
+2. "To" field → Click object item
+3. "value" field: Change "8. email" to {{8.email}}
+4. Save
+
+FIX 3: Module 4 (Arabic Email)
+-------------------------------
+1. Open Module 4
+2. "To" field → Click object item
+3. "value" field: Change "8. email" to {{8.email}}
+4. Save
+
+FIX 4: Subject Lines (Optional)
+---------------------------------
+Module 3: Change "8. name," to "{{8.name}}, "
+Module 4: Change "8. name," to "{{8.name}}، "
+
+================================================================================
+TEST AFTER FIXING
+================================================================================
+
+1. Save all changes
+2. Make sure scenario is ON
+3. Add test lead to Google Sheets
+4. Wait 15 seconds
+5. Check execution logs
+
+EXPECTED:
+---------
+✅ No error
+✅ Email sent successfully
+✅ Email received
+
+IF STILL ERROR:
+---------------
+Check:
+- Module 8 output - does "email" have value?
+- Module 3 "To" field - does it show {{8.email}}?
+- Google Sheets - does Column B have email?
+
+================================================================================
+QUICK FIX SUMMARY
+================================================================================
+
+THE PROBLEM:
+------------
+"To" field value is "8. email" (label) instead of {{8.email}} (variable)
+
+THE FIX:
+--------
+Change "value" field from "8. email" to {{8.email}}
+
+IN BOTH:
+--------
+- Module 3 (English Email)
+- Module 4 (Arabic Email)
+
+================================================================================
+
