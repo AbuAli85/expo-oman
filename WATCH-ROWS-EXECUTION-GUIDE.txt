@@ -1,0 +1,200 @@
+================================================================================
+GOOGLE SHEETS - WATCH NEW ROWS EXECUTION GUIDE
+================================================================================
+
+YOUR EXECUTION LOG ANALYSIS:
+----------------------------
+
+✅ Module Status: SUCCESSFUL
+✅ Scenario Status: COMPLETED
+✅ Credit Used: 1 credit (normal for watch operations)
+
+WHAT HAPPENED:
+--------------
+The "Watch New Rows" module executed successfully but found NO new rows to process.
+
+This is NORMAL behavior! The module will only trigger when:
+- A new row is added to your Google Sheets
+- The row is added AFTER the scenario was activated
+
+================================================================================
+UNDERSTANDING "WATCH NEW ROWS" BEHAVIOR
+================================================================================
+
+HOW IT WORKS:
+-------------
+1. The module checks your Google Sheets for new rows
+2. It compares against the last check (or since activation)
+3. If new rows exist → Triggers the scenario
+4. If no new rows → Completes without triggering (what happened here)
+
+EXECUTION FREQUENCY:
+-------------------
+- Make.com checks for new rows periodically (usually every few minutes)
+- Each check uses 1 credit
+- If no new rows are found, the scenario completes without running modules
+
+================================================================================
+YOUR CURRENT CONFIGURATION
+================================================================================
+
+Based on your config file (google-sheets-config.json):
+
+✅ Spreadsheet ID: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+✅ Sheet Name: leads
+✅ Limit: 1 (processes one row at a time)
+✅ Headers: A1:J1
+✅ Table contains headers: true
+
+================================================================================
+HOW TO TEST THE TRIGGER
+================================================================================
+
+STEP 1: Add a Test Row to Google Sheets
+----------------------------------------
+1. Open your Google Sheets
+2. Go to the "leads" sheet
+3. Add a NEW row with test data:
+
+   | Name          | Email              | Phone          | Language | Status | Date Added        |
+   |---------------|--------------------|----------------|----------|--------|-------------------|
+   | Test Lead     | test@example.com   | +968 12345678  | EN       | New    | [Leave empty]     |
+
+4. Save the sheet
+
+STEP 2: Wait for Make.com to Detect
+------------------------------------
+- Make.com will check within a few minutes
+- The scenario should automatically trigger
+- You'll see the next modules execute
+
+STEP 3: Verify Execution
+-------------------------
+Check Make.com execution logs:
+- Should see "Google Sheets - Watch New Rows" find the row
+- Should see subsequent modules execute (Router, Email, etc.)
+- Should see Google Sheets update module run
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Module runs but never finds new rows
+-------------------------------------------
+SOLUTION 1: Check Sheet Name
+- Verify the sheet is named exactly "leads" (case-sensitive)
+- In Make.com module, check the Sheet dropdown matches
+
+SOLUTION 2: Check Spreadsheet ID
+- Verify you're watching the correct spreadsheet
+- The ID should be: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+
+SOLUTION 3: Check Row Position
+- Make sure new rows are added BELOW the header row
+- Header should be in row 1 (A1:J1)
+- New data should start in row 2
+
+SOLUTION 4: Check Permissions
+- Make.com needs read access to your Google Sheets
+- Re-authenticate the Google Sheets connection if needed
+
+ISSUE: Module finds rows but scenario doesn't continue
+------------------------------------------------------
+SOLUTION: Check Module 2 (Router or next module)
+- Verify Module 2 is properly connected
+- Check for errors in Module 2 configuration
+- Ensure data mapping is correct
+
+ISSUE: Duplicate triggers
+-------------------------
+SOLUTION: Add Status Filter
+- In Watch Rows module, add filter: Status = "New"
+- This prevents processing rows that were already processed
+- Update Status to "Email 1 Sent" after processing
+
+================================================================================
+RECOMMENDED FILTER SETUP
+================================================================================
+
+To prevent processing the same row twice, add a filter in Watch Rows:
+
+Filter Configuration:
+- Column: E (Status)
+- Operator: text:equal
+- Value: "New"
+
+This ensures only rows with Status = "New" will trigger the scenario.
+
+After processing, update Status to "Email 1 Sent" so it won't trigger again.
+
+================================================================================
+EXPECTED EXECUTION FLOW
+================================================================================
+
+When a new row is added:
+
+1. ✅ Google Sheets - Watch New Rows
+   - Detects new row
+   - Outputs row data
+
+2. ✅ Router - Check Language
+   - Routes based on Language column (D)
+   - Route 1: EN → English email
+   - Route 2: AR → Arabic email
+
+3. ✅ Send Email 1
+   - Sends invitation email
+   - Uses template from all-email-templates.html
+
+4. ✅ Google Sheets - Update Row
+   - Updates Status to "Email 1 Sent"
+   - Updates Email 1 Date to current timestamp
+
+5. ⏳ Wait 3 Days (or use scheduled scenario for Email 2)
+
+================================================================================
+MONITORING YOUR AUTOMATION
+================================================================================
+
+CHECK EXECUTION LOGS:
+---------------------
+1. Go to Make.com → Scenarios
+2. Click on your scenario
+3. View "Executions" tab
+4. Look for:
+   - Green checkmarks = Success
+   - Red X = Error (check error message)
+   - Clock icon = Waiting/Scheduled
+
+EXPECTED BEHAVIOR:
+------------------
+- Watch Rows: Runs every few minutes, uses 1 credit per check
+- When new row found: Full scenario executes
+- When no new rows: Completes without errors (normal)
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. ✅ Your Watch Rows module is configured correctly
+2. ⏳ Add a test row to Google Sheets to trigger the scenario
+3. ⏳ Verify the full flow executes (Router → Email → Update)
+4. ⏳ Check that Google Sheets updates correctly
+5. ⏳ Test with both English (EN) and Arabic (AR) leads
+
+================================================================================
+QUICK TEST CHECKLIST
+================================================================================
+
+☐ Watch Rows module configured ✅ (from your logs)
+☐ Add test row to Google Sheets
+☐ Wait for Make.com to detect (2-5 minutes)
+☐ Verify scenario triggers
+☐ Check email is sent
+☐ Verify Google Sheets Status updated to "Email 1 Sent"
+☐ Verify Email 1 Date is populated
+☐ Test with English lead (Language = "EN")
+☐ Test with Arabic lead (Language = "AR")
+
+================================================================================
+

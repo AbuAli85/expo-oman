@@ -1,0 +1,196 @@
+================================================================================
+FIX: Watch Rows Module Stuck - Spreadsheet ID Issue
+================================================================================
+
+PROBLEM IDENTIFIED:
+-------------------
+Your Watch Rows module is stuck because the `spreadsheetId` parameter is using
+a path format instead of just the spreadsheet ID.
+
+CURRENT (WRONG):
+----------------
+"spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ"
+
+CORRECT:
+--------
+"spreadsheetId": "1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ"
+
+================================================================================
+STEP-BY-STEP FIX IN MAKE.COM
+================================================================================
+
+STEP 1: Open Your Scenario
+---------------------------
+1. Go to Make.com
+2. Open "Email 1 - Invitation" scenario
+3. Click on Module 1 (Google Sheets - Watch Rows)
+
+STEP 2: Fix Spreadsheet ID
+---------------------------
+1. Click on the "Spreadsheet ID" field
+2. You'll see a file picker or text field
+3. Clear the current value
+4. Enter ONLY the spreadsheet ID: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+   (Remove the path prefix: /127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/)
+
+IMPORTANT: 
+- Do NOT include the path prefix
+- Use ONLY the spreadsheet ID: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+
+STEP 3: Verify Other Settings
+------------------------------
+Make sure these are correct:
+- Drive: "My Drive" ✅
+- Search Method: "Search by path" or "Select" ✅
+- Sheet Name: "leads" ✅
+- Row with headers: "A1:J1" ✅
+- Table contains headers: "Yes" ✅
+- Limit: 1 ✅
+
+STEP 4: Save and Test
+---------------------
+1. Click "Save" on the module
+2. Save the scenario
+3. Run the scenario manually (or wait for it to check automatically)
+4. Check execution logs
+
+================================================================================
+ALTERNATIVE: If File Picker Shows Path
+================================================================================
+
+If Make.com's file picker automatically shows the path format, try this:
+
+OPTION 1: Use File Picker Correctly
+------------------------------------
+1. Click on "Spreadsheet ID" field
+2. Use the file browser to navigate to your spreadsheet
+3. Select "UAE Property Expo" spreadsheet
+4. Make.com should extract just the ID automatically
+
+OPTION 2: Manual Entry
+----------------------
+1. Click on "Spreadsheet ID" field
+2. Switch to "Text" mode (if available)
+3. Paste: 1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ
+4. Save
+
+OPTION 3: Re-select Spreadsheet
+---------------------------------
+1. Delete the current spreadsheet selection
+2. Click "Select Spreadsheet" again
+3. Choose "UAE Property Expo" from your Google Drive
+4. Make sure it shows just the ID, not a path
+
+================================================================================
+VERIFY THE FIX
+================================================================================
+
+After fixing, the module parameters should show:
+
+CORRECT FORMAT:
+---------------
+{
+    "spreadsheetId": "1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+    "sheetId": "leads",
+    "tableFirstRow": "A1:J1",
+    "includesHeaders": true,
+    "limit": 1,
+    "mode": "select",
+    "from": "drive"
+}
+
+NOT THIS (WRONG):
+-----------------
+{
+    "spreadsheetId": "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ",
+    ...
+}
+
+================================================================================
+ADDITIONAL TROUBLESHOOTING
+================================================================================
+
+ISSUE: Still Stuck After Fix
+------------------------------
+SOLUTION 1: Check Permissions
+- Verify Make.com has access to your Google Sheets
+- Re-authenticate Google connection if needed
+- Check that the spreadsheet is shared with the Google account used in Make.com
+
+SOLUTION 2: Check Sheet Name
+- Verify the sheet is exactly named "leads" (case-sensitive)
+- Check for extra spaces: "leads " or " leads" won't work
+- The sheet name must match exactly
+
+SOLUTION 3: Check Row Range
+- Verify headers are in row 1 (A1:J1)
+- Make sure there's at least one data row below headers
+- Check that the range A1:J1 contains your headers
+
+SOLUTION 4: Test with Manual Run
+- Instead of waiting for automatic check, run scenario manually
+- This will help identify if it's a timing issue or configuration issue
+
+ISSUE: Module Shows Error
+--------------------------
+If you see an error like "Spreadsheet not found" or "Access denied":
+1. Re-authenticate Google Sheets connection
+2. Verify spreadsheet ID is correct
+3. Check that spreadsheet exists and is accessible
+4. Try selecting the spreadsheet again using the file picker
+
+================================================================================
+EXPECTED BEHAVIOR AFTER FIX
+================================================================================
+
+Once fixed, the Watch Rows module should:
+1. ✅ Initialize successfully
+2. ✅ Check for new rows periodically (every few minutes)
+3. ✅ Trigger the scenario when a new row is added
+4. ✅ Pass data to Module 8 (Set Variables)
+5. ✅ Continue through Router → Email → Update Sheets
+
+You should see in execution logs:
+- "The operation was started" ✅
+- "The operation used 1 credit" ✅
+- "Cycle #1 was completed" ✅
+- When new row found: "Cycle #2 was started" with data flow
+
+================================================================================
+QUICK REFERENCE: Spreadsheet ID Format
+================================================================================
+
+CORRECT FORMATS:
+----------------
+✅ "1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ" (just the ID)
+✅ Can be found in Google Sheets URL: 
+   https://docs.google.com/spreadsheets/d/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ/edit
+
+WRONG FORMATS:
+--------------
+❌ "/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ"
+❌ "drive:/127Kk2lIQrAu9ayn2ptF8bRxUTgAtZdp6/1cv2JYytpapLB24UsvPsHAtoYyu2vaIQA1pZGhNWjfyQ"
+❌ Any path prefix before the ID
+
+================================================================================
+TESTING AFTER FIX
+================================================================================
+
+1. Fix the spreadsheetId as described above
+2. Save the scenario
+3. Add a test row to Google Sheets:
+   - Name: Test Lead
+   - Email: test@example.com
+   - Phone: 96812345678
+   - Language: EN
+   - Status: New
+4. Wait 2-5 minutes for Make.com to detect
+5. Check execution logs - should see:
+   - Watch Rows finds the row
+   - Set Variables executes
+   - Router routes to English email
+   - Email is sent
+   - Google Sheets updates
+
+================================================================================
+
